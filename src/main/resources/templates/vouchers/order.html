@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm Voucher Order</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Confirm Voucher Order</h2>
+    <form th:action="@{/order/{orderId}/{userId}(orderId=${voucher.orderId}, userId=${user.id})}" method="post">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" th:value="${voucher.title}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" th:text="${voucher.description}" readonly></textarea>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" class="form-control" id="price" th:value="${voucher.price}" readonly>
+        </div>
+        <!-- Additional fields like tourType, transferType, etc., can be displayed similarly -->
+        <div class="form-group">
+            <label for="arrivalDate">Arrival Date</label>
+            <input type="text" class="form-control" id="arrivalDate" th:value="${voucher.arrivalDate}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="evictionDate">Eviction Date</label>
+            <input type="text" class="form-control" id="evictionDate" th:value="${voucher.evictionDate}" readonly>
+        </div>
+        <!-- Assuming you have a User object to get the userId -->
+        <button type="submit" class="btn btn-success">Confirm Order</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
