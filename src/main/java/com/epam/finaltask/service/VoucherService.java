@@ -1,13 +1,8 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
-import com.epam.finaltask.model.HotelType;
-import com.epam.finaltask.model.TourType;
-import com.epam.finaltask.model.TransferType;
-import com.epam.finaltask.model.Voucher;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface VoucherService {
     VoucherDTO create(VoucherDTO voucherDTO);

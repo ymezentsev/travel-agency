@@ -15,14 +15,6 @@ public class RemoteResponse {
     private String statusMessage;
     private List results;
 
-    public static RemoteResponse create(boolean succeeded, String statusCode, String statusMessage, List additionalElements) {
-        RemoteResponse response = new RemoteResponse();
-        response.setSucceeded(succeeded);
-        response.setStatusCode(statusCode);
-        response.setStatusMessage(statusMessage);
-        response.setResults(additionalElements);
-
-        return response;
-    }
+    //TODO: write create method here
 
 }
