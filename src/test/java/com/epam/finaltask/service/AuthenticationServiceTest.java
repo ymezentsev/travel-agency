@@ -1,9 +1,7 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.auth.AuthenticationRequest;
-import com.epam.finaltask.auth.AuthenticationResponse;
 import com.epam.finaltask.auth.AuthenticationService;
-import com.epam.finaltask.config.JwtService;
 import com.epam.finaltask.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
