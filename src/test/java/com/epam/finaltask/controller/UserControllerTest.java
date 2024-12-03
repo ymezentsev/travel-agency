@@ -1,6 +1,7 @@
 package com.epam.finaltask.controller;
 
 import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.exception.StatusCodes;
 import com.epam.finaltask.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

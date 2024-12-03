@@ -1,7 +1,11 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.exception.EntityAlreadyExistsException;
+import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.mapper.UserMapper;
+import com.epam.finaltask.model.Role;
+import com.epam.finaltask.model.User;
 import com.epam.finaltask.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
