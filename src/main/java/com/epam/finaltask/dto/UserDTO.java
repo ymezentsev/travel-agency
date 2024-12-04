@@ -1,5 +1,6 @@
 package com.epam.finaltask.dto;
 
+import com.epam.finaltask.model.Voucher;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -27,7 +28,7 @@ public class UserDTO {
     private String password;
 
     private String role;
-    private List<VoucherDTO> vouchers;
+    private List<Voucher> vouchers;
 
    // @Size(min = 10, max = 14, message = "Phone number's length must be from 10 to 14 characters long")
     @Pattern(regexp = "\\d{10,14}", message = "Phone number must contain only numbers")

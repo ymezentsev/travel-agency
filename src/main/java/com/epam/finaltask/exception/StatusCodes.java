@@ -2,9 +2,10 @@ package com.epam.finaltask.exception;
 
 public enum StatusCodes {
     OK,
-    INVALID_DATA,
     ENTITY_NOT_FOUND,
-    ENTITY_ALREADY_EXISTS,
+    INVALID_DATA,
+    INVALID_CREDENTIALS,
     VALUE_NOT_FOUND,
     NOT_A_NUMBER,
+    DUPLICATE_USERNAME
 }

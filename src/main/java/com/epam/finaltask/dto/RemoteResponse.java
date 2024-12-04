@@ -16,7 +16,4 @@ public class RemoteResponse {
     private String statusCode;
     private String statusMessage;
     private List results;
-
-    //TODO: write create method here
-
 }

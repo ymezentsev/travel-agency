@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static com.epam.finaltask.exception.ErrorCodes.DUPLICATE_USERNAME;
+import static com.epam.finaltask.exception.StatusCodes.DUPLICATE_USERNAME;
 import static com.epam.finaltask.exception.StatusCodes.ENTITY_NOT_FOUND;
 
 @Slf4j
@@ -24,6 +24,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private static final String USER_NOT_FOUND = "User not found";
 
     @Override
     public UserDTO register(UserDTO userDTO) {
@@ -38,43 +40,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(String username, UserDTO userDTO) {
-        User user = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
-                        "User with username " + username + " not found"));
+        User user = userMapper.toUser(getUserByUsername(username));
 
         user.setRole(Role.valueOf(userDTO.getRole()));
         user.setAccountStatus(userDTO.isAccountStatus());
         user.setBalance(userDTO.getBalance());
         user.setPhoneNumber(userDTO.getPhoneNumber());
 
-        userMapper.toUser(userDTO);
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
     @Override
     public UserDTO getUserByUsername(String username) {
         User user = userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
-                        "User with username " + username + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
         return userMapper.toUserDTO(user);
     }
 
     @Override
     public UserDTO changeAccountStatus(UserDTO userDTO) {
-        User user = userRepository.findById(UUID.fromString(userDTO.getId()))
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
-                        "User with id " + userDTO.getId() + " not found"));
+        User user = userMapper.toUser(
+                getUserById(UUID.fromString(userDTO.getId())));
 
-        user.setAccountStatus(!userDTO.isAccountStatus());
-        userMapper.toUser(userDTO);
+        user.setAccountStatus(userDTO.isAccountStatus());
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
     @Override
     public UserDTO getUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
-                        "User with id " + id.toString() + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
 
         return userMapper.toUserDTO(user);
     }

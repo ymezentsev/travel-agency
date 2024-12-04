@@ -2,6 +2,7 @@ package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.exception.EntityNotFoundException;
+import com.epam.finaltask.mapper.UserMapper;
 import com.epam.finaltask.mapper.VoucherMapper;
 import com.epam.finaltask.model.*;
 import com.epam.finaltask.repository.VoucherRepository;
@@ -14,14 +15,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import static com.epam.finaltask.exception.StatusCodes.ENTITY_NOT_FOUND;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoucherServiceImpl implements VoucherService {
     private final VoucherMapper voucherMapper;
     private final VoucherRepository voucherRepository;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
-    private static final String VOUCHER_IS_NOT_EXISTS = "Such voucher not exists";
+    private static final String VOUCHER_NOT_EXISTS = "Voucher not exists";
 
     @Override
     public VoucherDTO create(VoucherDTO voucherDTO) {
@@ -32,28 +37,25 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public VoucherDTO update(String id, VoucherDTO voucherDTO) {
-        Voucher voucherToUpdate = voucherRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new EntityNotFoundException(VOUCHER_IS_NOT_EXISTS));
+        Voucher voucher = getVoucherById(id);
+        Voucher newVoucher = voucherMapper.toVoucher(voucherDTO);
 
-        Voucher newVoucherData = voucherMapper.toVoucher(voucherDTO);
-
-        voucherToUpdate.setTitle(newVoucherData.getTitle());
-        voucherToUpdate.setDescription(newVoucherData.getDescription());
-        voucherToUpdate.setPrice(newVoucherData.getPrice());
-        voucherToUpdate.setTourType(newVoucherData.getTourType());
-        voucherToUpdate.setTransferType(newVoucherData.getTransferType());
-        voucherToUpdate.setHotelType(newVoucherData.getHotelType());
-        voucherToUpdate.setStatus(newVoucherData.getStatus());
-        voucherToUpdate.setArrivalDate(newVoucherData.getArrivalDate());
-        voucherToUpdate.setEvictionDate(newVoucherData.getEvictionDate());
-        voucherToUpdate.setHot(newVoucherData.isHot());
-        return voucherMapper.toVoucherDTO(voucherRepository.save(voucherToUpdate));
+        voucher.setTitle(newVoucher.getTitle());
+        voucher.setDescription(newVoucher.getDescription());
+        voucher.setPrice(newVoucher.getPrice());
+        voucher.setTourType(newVoucher.getTourType());
+        voucher.setTransferType(newVoucher.getTransferType());
+        voucher.setHotelType(newVoucher.getHotelType());
+        voucher.setStatus(newVoucher.getStatus());
+        voucher.setArrivalDate(newVoucher.getArrivalDate());
+        voucher.setEvictionDate(newVoucher.getEvictionDate());
+        voucher.setHot(newVoucher.isHot());
+        return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
     @Override
     public void delete(String voucherId) {
-        voucherRepository.findById(UUID.fromString(voucherId))
-                .orElseThrow(() -> new EntityNotFoundException(VOUCHER_IS_NOT_EXISTS));
+        getVoucherById(voucherId);
 
         //  checkIfUserHasAuthorityToDeleteReservation(reservationForDeleting.get());
         voucherRepository.deleteById(UUID.fromString(voucherId));
@@ -61,14 +63,12 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public VoucherDTO changeHotStatus(String id, VoucherDTO voucherDTO) {
-        Voucher voucherToChangeStatus = voucherRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new EntityNotFoundException(VOUCHER_IS_NOT_EXISTS));
+        Voucher voucher = getVoucherById(id);
+        Voucher newVoucher = voucherMapper.toVoucher(voucherDTO);
 
-        Voucher newVoucherData = voucherMapper.toVoucher(voucherDTO);
-
-        voucherToChangeStatus.setHot(newVoucherData.isHot());
-        voucherToChangeStatus.setStatus(VoucherStatus.REGISTERED);
-        return voucherMapper.toVoucherDTO(voucherRepository.save(voucherToChangeStatus));
+        voucher.setHot(newVoucher.isHot());
+        voucher.setStatus(newVoucher.getStatus());
+        return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
     @Override
@@ -121,17 +121,24 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public VoucherDTO order(String id, String userId) {
-        return null;
+        Voucher voucher = getVoucherById(id);
+        User user = userMapper.toUser(userService.getUserById(UUID.fromString(id)));
+
+        voucher.setUser(user);
+        voucher.setStatus(VoucherStatus.REGISTERED);
+
+        return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
-
-
-
-
+    private Voucher getVoucherById(String id) {
+        return voucherRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
+                        VOUCHER_NOT_EXISTS));
+    }
 
     @Override
     public Page<VoucherDTO> findAllWithPage(Pageable pageable) {
         return voucherRepository.findAll(pageable)
                 .map(voucherMapper::toVoucherDTO);
-     }
+    }
 }

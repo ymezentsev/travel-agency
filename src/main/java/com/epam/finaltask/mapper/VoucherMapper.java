@@ -9,6 +9,9 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface VoucherMapper {
 
+    @Mappings({
+            @Mapping(target = "user", expression = "java(null)")
+    })
     Voucher toVoucher(VoucherDTO voucherDTO);
 
     @Mappings({

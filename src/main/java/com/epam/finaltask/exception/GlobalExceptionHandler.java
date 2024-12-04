@@ -2,38 +2,38 @@ package com.epam.finaltask.exception;
 
 import com.epam.finaltask.dto.RemoteResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<RemoteResponse> handleEntityNotFoundException(EntityNotFoundException e) {
         log.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new RemoteResponse(false, StatusCodes.ENTITY_NOT_FOUND.name(),
-                        e.getMessage(), Collections.EMPTY_LIST));
+                .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
     }
 
     @ExceptionHandler(EntityAlreadyExistsException.class)
     public ResponseEntity<RemoteResponse> handleEntityAlreadyExistsException(EntityAlreadyExistsException e) {
         log.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new RemoteResponse(false, StatusCodes.ENTITY_ALREADY_EXISTS.name(),
-                        e.getMessage(), Collections.EMPTY_LIST));
+                .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RemoteResponse(false, StatusCodes.VALUE_NOT_FOUND.name(),
-                        e.getMessage(), Collections.EMPTY_LIST));
+                        e.getMessage(), null));
     }
 
     @ExceptionHandler(NumberFormatException.class)
@@ -49,39 +49,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new RemoteResponse(false, StatusCodes.NOT_A_NUMBER.name(),
-                        e.getMessage(), Collections.EMPTY_LIST));
+                        e.getMessage(), null));
     }
 
-    //todo update errors and statusMessage
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatusCode status,
-            WebRequest request) {
+            @NonNull HttpHeaders headers,
+            @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("succeeded", false);
         body.put("statusCode", StatusCodes.INVALID_DATA.name());
 
         List<String> errors = ex.getBindingResult().getAllErrors()
                 .stream()
-                .map(this::getErrorMessage)
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
         body.put("statusMessage", errors);
-        body.put("errors", errors);
 
         log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(body, headers, status);
-    }
-
-    private String getErrorMessage(ObjectError e) {
-        if (e instanceof FieldError) {
-            String field = ((FieldError) e).getField();
-           //String message = e.getDefaultMessage();
-           // return field + " " + message;
-            System.out.println(e.getDefaultMessage());
-            return e.getDefaultMessage();
-        }
-        return e.getDefaultMessage();
     }
 }

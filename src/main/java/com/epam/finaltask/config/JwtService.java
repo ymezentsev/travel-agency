@@ -1,4 +1,4 @@
-package com.epam.finaltask.token;
+package com.epam.finaltask.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
