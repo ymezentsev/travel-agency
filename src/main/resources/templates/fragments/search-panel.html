@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Search panel</title>
+</head>
+<body>
+<div th:fragment="search-panel">
+    <form sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
+          th:action="@{/v1/vouchers/anonymous/by-price}" method="get" class="row g-3">
+        <label for="maxPrice">Search by price (less or equal than input)</label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="maxPrice" name="maxPrice"
+                   placeholder="Maximum price">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-success btn-sm">Search by price</button>
+        </div>
+    </form>
+
+    <form sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+          th:action="@{/v1/vouchers/auth-manager/by-price}" method="get" class="row g-3">
+        <label for="maxPrice">Search by price (less or equal than input)</label>
+        <div class="col-md-2">
+            <input type="text" class="form-control" id="maxPrice" name="maxPrice"
+                   placeholder="Maximum price">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-success btn-sm">Search by price</button>
+        </div>
+    </form>
+
+    <div class="alert alert-danger form-group col-md-3" role="alert" th:if="${errors}"
+         th:each="error: ${errors}">
+        <small th:text="${error}"></small>
+    </div>
+    <br>
+
+    <div class="btn-group">
+        <button class="form-control" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            Search by tour type
+        </button>
+        <ul class="dropdown-menu">
+            <li th:each="tourType : ${tourTypes}">
+                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
+                   class="dropdown-item"
+                   th:href="@{/v1/vouchers/anonymous/by-tourType/{tourType}(tourType=${tourType})}"
+                   th:text="${tourType}"></a>
+                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+                   class="dropdown-item"
+                   th:href="@{/v1/vouchers/auth-manager/by-tourType/{tourType}(tourType=${tourType})}"
+                   th:text="${tourType}"></a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        <button class="form-control" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            Search by transfer type
+        </button>
+        <ul class="dropdown-menu">
+            <li th:each="transferType : ${transferTypes}">
+                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
+                   class="dropdown-item"
+                   th:href="@{/v1/vouchers/anonymous/by-transferType/{transferType}(transferType=${transferType})}"
+                   th:text="${transferType}"></a>
+                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+                   class="dropdown-item"
+                   th:href="@{/v1/vouchers/auth-manager/by-transferType/{transferType}(transferType=${transferType})}"
+                   th:text="${transferType}"></a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        <button class="form-control" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            Search by hotel type
+        </button>
+        <ul class="dropdown-menu">
+            <li th:each="hotelType : ${hotelTypes}">
+                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
+                   class="dropdown-item"
+                   th:href="@{/v1/vouchers/anonymous/by-hotelType/{hotelType}(hotelType=${hotelType})}"
+                   th:text="${hotelType}"></a>
+                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+                   class="dropdown-item"
+                   th:href="@{/v1/vouchers/auth-manager/by-hotelType/{hotelType}(hotelType=${hotelType})}"
+                   th:text="${hotelType}"></a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="btn-group" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
+        <button class="form-control" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            Search by voucher status
+        </button>
+        <ul class="dropdown-menu">
+            <li th:each="voucherStatus : ${voucherStatuses}">
+                <a class="dropdown-item"
+                   th:href="@{/v1/vouchers/auth-manager/by-voucherStatus/{voucherStatus}(voucherStatus=${voucherStatus})}"
+                   th:text="${voucherStatus}"></a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

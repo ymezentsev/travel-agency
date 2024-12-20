@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Action button</title>
+</head>
+<body>
+<div th:fragment="action-button">
+    <button sec:authorize="hasAuthority('ROLE_ADMIN')" th:if="${voucher.status} != 'PAID'"
+            class="form-control" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+        Choose action
+    </button>
+
+    <button sec:authorize="hasAuthority('ROLE_MANAGER')"
+            th:if="${voucher.status} == 'REGISTERED' or ${voucher.status} == 'AVAILABLE'"
+            class="form-control" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+        Choose action
+    </button>
+
+    <ul class="dropdown-menu">
+        <li th:if="${!voucher.isHot} and ${voucher.status} == 'AVAILABLE'">
+            <a class="dropdown-item"
+               th:href="@{/v1/vouchers/auth-manager/{voucherId}?newHotStatus=true
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                Make hot</a>
+        </li>
+        <li th:if="${voucher.isHot} and ${voucher.status} == 'AVAILABLE'">
+            <a class="dropdown-item"
+               th:href="@{/v1/vouchers/auth-manager/{voucherId}?newHotStatus=false
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                Cancel "hot" status</a>
+        </li>
+        <li th:if="${voucher.status} == 'REGISTERED'">
+            <a class="dropdown-item"
+               th:href="@{/v1/vouchers/auth-manager/{voucherId}/status?newStatus=PAID
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                Set status "PAID"</a>
+        </li>
+        <li th:if="${voucher.status} == 'REGISTERED'">
+            <a class="dropdown-item"
+               th:href="@{/v1/vouchers/auth-manager/{voucherId}/status?newStatus=CANCELED
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                Set status "CANCELED"</a>
+        </li>
+
+        <div sec:authorize="hasAuthority('ROLE_ADMIN')">
+            <li th:if="${voucher.status} != 'REGISTERED' and ${voucher.status} != 'PAID'">
+                <a class="dropdown-item"
+                   th:href="@{/v1/vouchers/auth-admin/{voucherId}/update
+                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">Update</a>
+            </li>
+            <li th:if="${voucher.status} != 'REGISTERED' and ${voucher.status} != 'PAID'">
+                <a class="dropdown-item"
+                   th:href="@{/v1/vouchers/auth-admin/{voucherId}/delete
+                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">Delete</a>
+            </li>
+        </div>
+    </ul>
+</div>
+</body>
+</html>

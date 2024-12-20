@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create voucher</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<header class="header" style="position: fixed; top: 0; width: 100%; height: 80px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-1 mt-2">
+                <a th:href="@{/v1/vouchers/anonymous/index}">Home</a>
+            </div>
+
+            <div class="col-md-10 mt-2">
+                <a th:href="@{/v1/vouchers/auth-manager}">All tours</a>
+            </div>
+
+            <div class="col-md-1 mt-2" sec:authorize="isAuthenticated()" align="center">
+                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${userId})}">
+                    <span><img src="/images/user-icon.png" alt="User-icon" width="20" height="20"/></span>
+                    <span class="user" th:text="${username}"></span>
+                </a><br>
+                <span class="user"><a href="/logout">Sign out</a></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container mt-4">
+        <div class="col-md-12 mb-4" style="height: 40px;"></div>
+        <form th:action="@{/v1/vouchers/auth-admin/create}" th:object="${voucherDto}" method="post" class="row g-3"
+              id="form" style="height: 524px;">
+
+            <h1>Create voucher</h1>
+
+            <input type="hidden" name="previousPage" th:value="${previousPage}">
+
+            <div class="col-md-8">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" th:field="*{title}" class="form-control" id="title"
+                       aria-describedby="titleHelp" placeholder="Enter voucher's title">
+                <small id="titleHelp" class="form-text text-muted">Max size for title is 255 characters</small>
+            </div>
+
+            <div class="col-md-4">
+                <label for="price" class="form-label">Price</label>
+                <input type="text" th:field="*{price}" class="form-control" id="price"
+                       aria-describedby="priceHelp" placeholder="Enter voucher's price">
+                <small id="priceHelp" class="form-text text-muted">Price must be positive number</small>
+            </div>
+
+            <div class="col-md-12">
+                <label for="description" class="form-label">Description</label>
+                <textarea th:field="*{description}" class="form-control" id="description"
+                          cols="30" rows="4" aria-describedby="descriptionHelp"
+                          placeholder="Voucher's description"></textarea>
+                <small id="descriptionHelp" class="form-text text-muted">Max size for description is 1000
+                    characters</small>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="tourType" class="form-label">Tour type</label>
+                    <select th:field="*{tourType}" id="tourType" class="form-select">
+                        <option th:each="tourType : ${tourTypes}" th:value="${tourType}" th:text="${tourType}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="transferType" class="form-label">Transfer Type</label>
+                    <select th:field="*{transferType}" id="transferType" class="form-select">
+                        <option th:each="transferType : ${transferTypes}" th:value="${transferType}"
+                                th:text="${transferType}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="hotelType" class="form-label">Hotel type</label>
+                    <select th:field="*{hotelType}" id="hotelType" class="form-select">
+                        <option th:each="hotelType : ${hotelTypes}" th:value="${hotelType}"
+                                th:text="${hotelType}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="arrivalDate" class="form-label">Arrival date</label>
+                <input type="date" name="arrivalDate" id="arrivalDate" class="form-control"
+                       aria-describedby="arrivalDateHelp" value="2024/12/18" min="2024-12-01" max="2034-01-01"
+                       th:value="${#temporals.format(voucherDto.arrivalDate, 'yyyy-MM-dd')}">
+                <small id="arrivalDateHelp" class="form-text text-muted">Arrival date must be future or present</small>
+            </div>
+
+            <div class="col-md-4">
+                <label for="evictionDate" class="form-label">Eviction date</label>
+                <input type="date" name="evictionDate" id="evictionDate" class="form-control"
+                       aria-describedby="evictionDateHelp" min="2024-12-01" max="2034-01-01"
+                       th:value="${#temporals.format(voucherDto.evictionDate, 'yyyy-MM-dd')}">
+                <small id="evictionDateHelp" class="form-text text-muted">Eviction date must be future and
+                    after arrival date</small>
+            </div>
+
+            <div class="col-4">
+                <div class="form-check">
+                    <br>
+                    <input type="checkbox" th:field="*{isHot}" id="isHot" value="true" class="form-check-input">
+                    <label class="form-check-label" for="isHot"> Is hot </label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-success btn-lg mt-2" type="submit">Submit</button>
+            </div>
+
+            <div class="alert alert-danger" role="alert" th:if="${errors}" th:each="error: ${errors}">
+                <small th:text="${error}"></small>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

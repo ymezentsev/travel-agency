@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Voucher dashboard</title>
+</head>
+<body>
+<div th:fragment="voucher-dashboard(myLinks)">
+    <h2 class="table-title" align="center" th:if="${myLinks}">My tours</h2>
+    <h2 class="table-title" align="center" th:unless="${myLinks}">Tours</h2>
+
+    <input type="hidden" name="requestURI" th:value="${requestURI}">
+    <input type="hidden" name="queryString" th:value="${queryString}">
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col" class="col-2">Title</th>
+            <th scope="col" class="col-3">Description</th>
+            <th scope="col" class="col-1">Tour type</th>
+            <th scope="col" class="col-1">Transfer type</th>
+            <th scope="col" class="col-1">Hotel type</th>
+            <th scope="col" class="col-1">Arrival date</th>
+            <th scope="col" class="col-1">Eviction date</th>
+            <th scope="col" class="col-1">Price</th>
+            <th scope="col" class="col-1">Is hot</th>
+            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
+                <th scope="col" class="col-1">Status</th>
+                <th scope="col" class="col-1">Action</th>
+            </div>
+            <div sec:authorize="hasAuthority('ROLE_USER')">
+                <div th:if="${myLinks}">
+                    <th scope="col" class="col-1">Status</th>
+                </div>
+                <div th:unless="${myLinks}">
+                    <th scope="col" class="col-1">Action</th>
+                </div>
+            </div>
+        </tr>
+        </thead>
+
+        <div class="form-group mb-2" th:each="voucher : ${vouchers}">
+            <tbody>
+            <td>
+                <div th:text="${voucher.title}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.description}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.tourType}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.transferType}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.hotelType}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.arrivalDate}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.evictionDate}"></div>
+            </td>
+            <td>
+                <div th:text="${voucher.price}"></div>
+            </td>
+            <td>
+                <div th:if="${voucher.isHot}">
+                    <span><img src="/images/hot.jpg" alt="hot" width="40" height="30"/></span>
+                </div>
+            </td>
+            <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
+                <td>
+                    <div th:text="${voucher.status}"></div>
+                </td>
+                <td>
+                    <div th:replace="~{fragments/action-button.html :: action-button}"></div>
+                </td>
+            </div>
+
+            <div sec:authorize="hasAuthority('ROLE_USER')">
+                <td th:if="${voucher.status == 'AVAILABLE'}">
+                    <form th:action="@{/v1/vouchers/auth-user/{voucherId}/{userId}(voucherId=${voucher.id}, userId=${userId})}"
+                          method="post" class="form-inline">
+                        <button type="submit" class="btn btn-outline-dark btn-sm">Order</button>
+                    </form>
+                </td>
+                <td th:unless="${voucher.status == 'AVAILABLE'}">
+                    <div th:text="${voucher.status}"></div>
+                </td>
+            </div>
+        </div>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+body {
+            background-image: url('../images/bamboo7.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+header {
+            background-color: #e4faac;
+        }
+
+.dynamic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: auto;
+            height: auto;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+.dynamic-container table {
+            width: 100%;
+            border-collapse: collapse;
+       }
+
+table td, table th {
+            vertical-align: top;
+        }
+
+select.form-control {
+            font-size: 12px;
+        }

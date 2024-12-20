@@ -1,6 +1,5 @@
 package com.epam.finaltask.token;
 
-
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        username = username.toLowerCase().strip();
         return userRepository.findUserByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), "Can't find user by email"));
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), "Can't find user by username"));
     }
 }

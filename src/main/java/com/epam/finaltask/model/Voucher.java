@@ -27,19 +27,15 @@ public class Voucher {
     @Column
     private double price;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private TourType tourType;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private TransferType transferType;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private HotelType hotelType;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private VoucherStatus status;
 

@@ -2,6 +2,7 @@ package com.epam.finaltask.controller;
 
 import com.epam.finaltask.auth.AuthenticationRequest;
 import com.epam.finaltask.auth.AuthenticationService;
+import com.epam.finaltask.controller.openapi.AuthenticationControllerOpenApi;
 import com.epam.finaltask.dto.RemoteResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,12 @@ import static com.epam.finaltask.exception.StatusCodes.OK;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-public class AuthenticationController {
+public class AuthenticationController implements AuthenticationControllerOpenApi {
     private final AuthenticationService authenticationService;
 
     private static final String STATUS_AUTH_MESSAGE = "User is successfully authenticated";
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<RemoteResponse> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         return new ResponseEntity<>(new RemoteResponse(true, OK.name(),

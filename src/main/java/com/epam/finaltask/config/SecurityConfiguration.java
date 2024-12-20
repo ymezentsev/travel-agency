@@ -1,11 +1,13 @@
 package com.epam.finaltask.config;
 
-import com.epam.finaltask.token.AuthEntryPointJwt;
+import com.epam.finaltask.token.CookieAuthenticationFilter;
+import com.epam.finaltask.token.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,7 +28,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final AuthEntryPointJwt unauthorizedHandler;
+    private final CookieAuthenticationFilter cookieAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,9 +36,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
@@ -52,38 +53,39 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .httpBasic(withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/auth/**",
-                                        "/users/register"/*,
-                                        "/api/v1/users/forgot-password/**",
+                                        "/users/register",
+                                        "/images/**",
+                                        "/css/**",
+
+                                        "/v1/auth/**",
+                                        "/v1/users/register",
+                                        "/v1/vouchers/anonymous/**",
+
+                                       /* "/api/v1/users/forgot-password/**",
                                         "/api/v1/users/reset-password/**",
                                         "/api/v1/google/**",
-                                        "/error",
+                                        "/error",*/
                                         "/v3/api-docs/**",
-                                        "/swagger-ui/**"*/)
+                                        "/swagger-ui/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "vouchers/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "vouchers/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "vouchers/**", "vouchers/change/**")
-                                .hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.PATCH, "vouchers/**").hasAuthority("MANAGER")
-                                .requestMatchers("/users/accountStatus",
-                                        "vouchers/create").hasAuthority("ADMIN")
+                                .requestMatchers("/v1/vouchers/auth-manager/**")
+                                .hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
+                                .requestMatchers("/v1/vouchers/auth-admin/**").hasAuthority("ROLE_ADMIN")
                                 .anyRequest().authenticated()
-                        //  .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                /*.formLogin(form -> form.loginPage("/V2/urls")
+                .addFilterBefore(cookieAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin(form -> form.loginPage("/v1/vouchers/anonymous/index")
                         .permitAll())
-                .logout(logout -> logout
-                        .deleteCookies("jwtToken")
-                        .logoutUrl("/logout"))*/
                 .logout(logout -> logout.clearAuthentication(true)
+                        .deleteCookies("jwtToken")
                         .logoutUrl("/logout"))
                 .build();
     }

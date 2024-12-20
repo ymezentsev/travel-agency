@@ -1,31 +1,29 @@
-package com.epam.finaltask.config;
+package com.epam.finaltask.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
 import java.util.function.Function;
 
-@Slf4j
 @Component
 public class JwtService {
     @Value("${jwt.expiration}")
     private Duration expiration;
 
-    private final Key secret;
+    private final Key secretKey;
 
     public JwtService(@Value("${jwt.secret}") String secretString) {
-        secret = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
+        secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
     }
 
     public String generateToken(UserDetails user) {
@@ -33,14 +31,14 @@ public class JwtService {
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration.toMillis()))
-                .signWith(secret)
+                .signWith(secretKey)
                 .compact();
     }
 
     public boolean isValidToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(secret)
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
 
@@ -56,7 +54,7 @@ public class JwtService {
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secret)
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

@@ -1,6 +1,5 @@
-package com.epam.finaltask.config;
+package com.epam.finaltask.token;
 
-import com.epam.finaltask.config.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,8 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("User {} authenticated successfully", username);
-        } else {
-            log.warn("JWT token is invalid or not present. Skipping authentication");
         }
         filterChain.doFilter(request, response);
     }

@@ -3,11 +3,9 @@ package com.epam.finaltask.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,11 +27,10 @@ public class User implements UserDetails {
     @Column
     private String password;
 
-    @Column
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Voucher> vouchers;
 
     @Column
@@ -45,9 +42,25 @@ public class User implements UserDetails {
     @Column
     private boolean accountStatus;
 
+    @Column
+    private String email;
+
+    public User(UUID id, String username, String password,
+                Role role, List<Voucher> vouchers, String phoneNumber,
+                Double balance, boolean accountStatus) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.vouchers = vouchers;
+        this.phoneNumber = phoneNumber;
+        this.balance = balance;
+        this.accountStatus = accountStatus;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+        return role.getAuthorities();
     }
 
     @Override

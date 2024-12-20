@@ -8,9 +8,8 @@ import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface VoucherMapper {
-
     @Mappings({
-            @Mapping(target = "user", expression = "java(null)")
+            @Mapping(target = "user", ignore = true)
     })
     Voucher toVoucher(VoucherDTO voucherDTO);
 

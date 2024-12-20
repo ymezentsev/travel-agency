@@ -1,6 +1,7 @@
 package com.epam.finaltask.exception;
 
 import com.epam.finaltask.dto.RemoteResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,6 +38,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<RemoteResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new RemoteResponse(false, StatusCodes.VALUE_NOT_FOUND.name(),
+                        e.getMessage(), null));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<RemoteResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         log.error(e.getMessage(), e);
@@ -44,11 +54,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         e.getMessage(), null));
     }
 
-    @ExceptionHandler(NumberFormatException.class)
-    public ResponseEntity<RemoteResponse> handleNumberFormatException(NumberFormatException e) {
+    @ExceptionHandler(InvalidVoucherOperationException.class)
+    public ResponseEntity<RemoteResponse> handleInvalidVoucherOperationException(InvalidVoucherOperationException e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new RemoteResponse(false, StatusCodes.NOT_A_NUMBER.name(),
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(new RemoteResponse(false, StatusCodes.INVALID_VOUCHER_OPERATION.name(),
+                        e.getMessage(), null));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<RemoteResponse> handleAccessDeniedException(AccessDeniedException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new RemoteResponse(false, StatusCodes.FORBIDDEN.name(),
                         e.getMessage(), null));
     }
 
@@ -70,5 +88,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(body, headers, status);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<RemoteResponse> handleException(Exception e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new RemoteResponse(false, StatusCodes.INTERNAL_SERVER_ERROR.name(),
+                        e.getMessage(), null));
     }
 }
