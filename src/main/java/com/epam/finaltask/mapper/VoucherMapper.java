@@ -15,6 +15,7 @@ public interface VoucherMapper {
 
     @Mappings({
             @Mapping(target = "userId", source = "user.id"),
+            @Mapping(target = "username", source = "user.username"),
             @Mapping(target = "isHot", source = "hot")
     })
     VoucherDTO toVoucherDTO(Voucher voucher);

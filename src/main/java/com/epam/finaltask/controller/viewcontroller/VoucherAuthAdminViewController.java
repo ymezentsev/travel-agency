@@ -46,7 +46,7 @@ public class VoucherAuthAdminViewController {
                                        HttpServletRequest request) {
         model.addAttribute("voucherDto", new VoucherDTO());
         model.addAttribute("previousPage", getPreviousPageUri(request));
-        return "create-voucher";
+        return "vouchers/create-voucher";
     }
 
     @PostMapping("/create")
@@ -57,14 +57,16 @@ public class VoucherAuthAdminViewController {
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", getErrors(bindingResult));
-            return "create-voucher";
+            model.addAttribute("previousPage", previousPage);
+            return "vouchers/create-voucher";
         }
 
         try {
             voucherService.create(voucherDto);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
-            return "create-voucher";
+            model.addAttribute("previousPage", previousPage);
+            return "vouchers/create-voucher";
         }
         redirectAttributes.addFlashAttribute("message", "Voucher created successfully");
         return "redirect:" + previousPage;
@@ -76,7 +78,7 @@ public class VoucherAuthAdminViewController {
                                      HttpServletRequest request) {
         model.addAttribute("voucherDto", voucherService.findById(voucherId));
         model.addAttribute("previousPage", getPreviousPageUri(request));
-        return "update-voucher";
+        return "vouchers/update-voucher";
     }
 
     @PostMapping("/update")
@@ -87,14 +89,16 @@ public class VoucherAuthAdminViewController {
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", getErrors(bindingResult));
-            return "update-voucher";
+            model.addAttribute("previousPage", previousPage);
+            return "vouchers/update-voucher";
         }
 
         try {
             voucherService.update(voucherDto.getId(), voucherDto);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
-            return "update-voucher";
+            model.addAttribute("previousPage", previousPage);
+            return "vouchers/update-voucher";
         }
         redirectAttributes.addFlashAttribute("message", "Voucher updated successfully");
         return "redirect:" + previousPage;
@@ -104,8 +108,7 @@ public class VoucherAuthAdminViewController {
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user) {
         if (user != null) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("userId", user.getId());
+            model.addAttribute("authUser", user);
         }
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());

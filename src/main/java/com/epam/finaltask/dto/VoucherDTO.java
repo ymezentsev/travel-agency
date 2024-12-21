@@ -35,7 +35,7 @@ public class VoucherDTO {
     private String title;
 
     @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "Description is required")
-    @Length(max = 1000, message = "Max size for description is 1000 characters")
+    @Length(max = 2000, message = "Max size for description is 2000 characters")
     @Schema(description = "Voucher description", example = "Enjoy a summer escape")
     private String description;
 
@@ -79,6 +79,9 @@ public class VoucherDTO {
 
     @Schema(description = "Id of the user who reserved the voucher", example = "f3e02ce0-365d-4c03-90a1-98f00cf6d3d1")
     private UUID userId;
+
+    @Schema(description = "Username of the user who reserved the voucher", example = "user")
+    private String username;
 
     @Schema(description = "Is this hot voucher", defaultValue = "false")
     private String isHot;

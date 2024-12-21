@@ -25,7 +25,6 @@ public interface VoucherService {
     Page<VoucherDTO> search(VoucherSearchParametersDto params, Pageable pageable);
     Page<VoucherDTO> findAllByUserId(String userId, Pageable pageable);
     Page<VoucherDTO> findAll(Pageable pageable);
-
-
-
+    VoucherDTO cancelOrder(String voucherId);
+    VoucherDTO payVoucher(String voucherId);
 }

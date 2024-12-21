@@ -25,7 +25,7 @@ public class UserAnonymousViewController {
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("userDto", new UserDTO());
-        return "register";
+        return "users/register";
     }
 
     @PostMapping("/register")
@@ -35,14 +35,14 @@ public class UserAnonymousViewController {
                            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", getErrors(bindingResult));
-            return "register";
+            return "users/register";
         }
 
         try {
             userService.register(userDto);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
-            return "register";
+            return "users/register";
         }
         redirectAttributes.addFlashAttribute("message", "User registered successfully");
         return "redirect:/v1/auth/login";

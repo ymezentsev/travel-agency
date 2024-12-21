@@ -1,5 +1,6 @@
 package com.epam.finaltask.service;
 
+import com.epam.finaltask.dto.ChangePasswordRequestDto;
 import com.epam.finaltask.dto.UserDTO;
 
 import java.util.UUID;
@@ -10,8 +11,12 @@ public interface UserService {
     UserDTO updateUser(String username, UserDTO userDTO);
 
     UserDTO getUserByUsername(String username);
+
     UserDTO changeAccountStatus(UserDTO userDTO);
+
     UserDTO getUserById(UUID id);
 
     UserDTO updateBalance(UserDTO userDTO);
+
+    void changePassword(ChangePasswordRequestDto requestDto, UUID userId);
 }

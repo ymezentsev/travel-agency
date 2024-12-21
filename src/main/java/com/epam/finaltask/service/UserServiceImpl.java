@@ -1,8 +1,10 @@
 package com.epam.finaltask.service;
 
+import com.epam.finaltask.dto.ChangePasswordRequestDto;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
 import com.epam.finaltask.exception.EntityNotFoundException;
+import com.epam.finaltask.exception.InvalidPasswordException;
 import com.epam.finaltask.mapper.UserMapper;
 import com.epam.finaltask.model.Role;
 import com.epam.finaltask.model.User;
@@ -15,8 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static com.epam.finaltask.exception.StatusCodes.DUPLICATE_USERNAME;
-import static com.epam.finaltask.exception.StatusCodes.ENTITY_NOT_FOUND;
+import static com.epam.finaltask.exception.StatusCodes.*;
 
 @Slf4j
 @Service
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private static final String USER_NOT_FOUND = "User not found";
     private static final String USER_ALREADY_EXISTS = "This username is already exist";
+    private static final String INVALID_PASSWORD = "Invalid current password";
 
     @Override
     public UserDTO register(UserDTO userDTO) {
@@ -113,6 +115,18 @@ public class UserServiceImpl implements UserService {
 
         user.setBalance(userDTO.getBalance());
         return userMapper.toUserDTO(userRepository.save(user));
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequestDto request, UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new InvalidPasswordException(INVALID_CREDENTIALS.name(), INVALID_PASSWORD);
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     private void checkIfUserExists(String username) {

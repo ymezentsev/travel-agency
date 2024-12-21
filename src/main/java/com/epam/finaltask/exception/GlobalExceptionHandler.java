@@ -70,6 +70,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         e.getMessage(), null));
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<RemoteResponse> handleInvalidPasswordException(InvalidPasswordException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new RemoteResponse(false, StatusCodes.FORBIDDEN.name(),
+                        e.getMessage(), null));
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

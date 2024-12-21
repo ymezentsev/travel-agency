@@ -28,9 +28,9 @@
             </div>
 
             <div class="col-md-1 mt-2" align="center">
-                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${userId})}">
+                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${authUser.id})}">
                     <span><img src="/images/user-icon.png" alt="User-icon" width="20" height="20"/></span>
-                    <span class="user" th:text="${username}"></span>
+                    <span class="user" th:text="${authUser.username}"></span>
                 </a><br>
                 <span class="user"><a href="/logout">Sign out</a></span>
             </div>
@@ -51,6 +51,7 @@
 
             <input type="hidden" th:field="*{id}">
             <input type="hidden" th:field="*{username}">
+            <input type="hidden" name="previousPage" th:value="${previousPage}">
 
             <div class="form-group mb-2">
                 <label for="balance">Balance</label>

@@ -27,7 +27,7 @@ public class VoucherAuthManagerViewController {
                                  @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                          sort = {"status", "arrivalDate", "id"}) Pageable pageable) {
         model.addAttribute("vouchers", voucherService.findAll(pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-voucherStatus/{voucherStatus}")
@@ -40,7 +40,7 @@ public class VoucherAuthManagerViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-tourType/{tourType}")
@@ -53,7 +53,7 @@ public class VoucherAuthManagerViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-transferType/{transferType}")
@@ -66,7 +66,7 @@ public class VoucherAuthManagerViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-hotelType/{hotelType}")
@@ -79,7 +79,7 @@ public class VoucherAuthManagerViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-price")
@@ -87,15 +87,15 @@ public class VoucherAuthManagerViewController {
                                         Model model,
                                         @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                 sort = {"status", "arrivalDate", "id"}) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
-                .maxPrice(Double.parseDouble(maxPrice))
-                .build();
         try {
+            VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+                    .maxPrice(Double.parseDouble(maxPrice))
+                    .build();
             model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
         }
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/{voucherId}")
@@ -135,8 +135,7 @@ public class VoucherAuthManagerViewController {
                               @AuthenticationPrincipal User user,
                               HttpServletRequest request) {
         if (user != null) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("userId", user.getId());
+            model.addAttribute("authUser", user);
         }
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());

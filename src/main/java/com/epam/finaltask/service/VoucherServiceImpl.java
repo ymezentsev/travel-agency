@@ -38,6 +38,9 @@ public class VoucherServiceImpl implements VoucherService {
     private static final String INVALID_STATUS_CHANGE = "Status '%s' cannot be set for a voucher with status '%s'";
     private static final String INVALID_DELETE = "Voucher with status '%s' cannot be deleted";
     private static final String INVALID_UPDATE = "Status '%s' cannot be set by an update operation";
+    private static final String INVALID_CANCEL_ORDER = "For voucher with status '%s' order cannot be canceled";
+    private static final String INVALID_PAY_VOUCHER = "Voucher with status '%s' cannot be paid";
+    private static final String NOT_ENOUGH_BALANCE = "Not enough balance to pay voucher";
 
 
     @Override
@@ -77,6 +80,12 @@ public class VoucherServiceImpl implements VoucherService {
                 || newVoucher.getStatus().equals(VoucherStatus.REGISTERED)) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
                     String.format(INVALID_UPDATE, newVoucher.getStatus()));
+        }
+
+        if ((newVoucher.getStatus().equals(VoucherStatus.AVAILABLE)
+                || newVoucher.getStatus().equals(VoucherStatus.NOT_SOLD))
+                && voucher.getUser() != null) {
+            voucher.setUser(null);
         }
         voucher.setStatus(newVoucher.getStatus());
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
@@ -215,6 +224,39 @@ public class VoucherServiceImpl implements VoucherService {
     public Page<VoucherDTO> findAll(Pageable pageable) {
         return voucherRepository.findAll(pageable)
                 .map(voucherMapper::toVoucherDTO);
+    }
+
+    @Override
+    public VoucherDTO cancelOrder(String voucherId) {
+        Voucher voucher = getVoucherById(voucherId);
+
+        if (!voucher.getStatus().equals(VoucherStatus.REGISTERED)) {
+            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
+                    String.format(INVALID_CANCEL_ORDER, voucher.getStatus()));
+        }
+
+        voucher.setStatus(VoucherStatus.AVAILABLE);
+        voucher.setUser(null);
+        return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
+    }
+
+    @Override
+    public VoucherDTO payVoucher(String voucherId) {
+        Voucher voucher = getVoucherById(voucherId);
+        User user = voucher.getUser();
+
+        if (!voucher.getStatus().equals(VoucherStatus.REGISTERED)) {
+            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
+                    String.format(INVALID_PAY_VOUCHER, voucher.getStatus()));
+        }
+
+        if (user.getBalance() < voucher.getPrice()) {
+            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(), NOT_ENOUGH_BALANCE);
+        }
+
+        user.setBalance(user.getBalance() - voucher.getPrice());
+        voucher.setStatus(VoucherStatus.PAID);
+        return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
     private Voucher getVoucherById(String id) {

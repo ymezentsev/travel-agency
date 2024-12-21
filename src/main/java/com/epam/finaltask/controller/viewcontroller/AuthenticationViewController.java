@@ -26,7 +26,7 @@ public class AuthenticationViewController {
     @GetMapping("/login")
     public String authenticate(Model model) {
         model.addAttribute("loginRequest", new AuthenticationRequest());
-        return "login";
+        return "auth/login";
     }
 
     @PostMapping("/login")
@@ -36,14 +36,14 @@ public class AuthenticationViewController {
                                HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", getErrors(bindingResult));
-            return "login";
+            return "auth/login";
         }
 
         try {
             authenticationService.authenticateWithCookie(loginRequest, response);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
-            return "login";
+            return "auth/login";
         }
         return "redirect:/v1/auth/getDashboard";
     }

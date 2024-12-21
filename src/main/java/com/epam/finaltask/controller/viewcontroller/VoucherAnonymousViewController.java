@@ -35,6 +35,17 @@ public class VoucherAnonymousViewController {
         return "index";
     }
 
+    @GetMapping("/{voucherId}")
+    public String getVoucherById(Model model,
+                                 @PathVariable("voucherId") String voucherId) {
+        try{
+            model.addAttribute("voucher", voucherService.findById(voucherId));
+        } catch (Exception e){
+            model.addAttribute("error", e.getMessage());
+        }
+        return "vouchers/voucher-info";
+    }
+
     @GetMapping()
     public String getAllAvailableVouchers(Model model,
                                           @PageableDefault(size = DEFAULT_PAGE_SIZE,
@@ -45,7 +56,7 @@ public class VoucherAnonymousViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-tourType/{tourType}")
@@ -60,7 +71,7 @@ public class VoucherAnonymousViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-transferType/{transferType}")
@@ -75,7 +86,7 @@ public class VoucherAnonymousViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-hotelType/{hotelType}")
@@ -90,7 +101,7 @@ public class VoucherAnonymousViewController {
                 .build();
 
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @GetMapping("/by-price")
@@ -99,25 +110,23 @@ public class VoucherAnonymousViewController {
                                                  @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                          sort = {"isHot", "id"},
                                                          direction = Sort.Direction.DESC) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
-                .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
-                .maxPrice(Double.parseDouble(maxPrice))
-                .build();
-
         try {
+            VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+                    .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
+                    .maxPrice(Double.parseDouble(maxPrice))
+                    .build();
             model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
         }
-        return "vouchers";
+        return "vouchers/vouchers";
     }
 
     @ModelAttribute
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user) {
         if (user != null) {
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("userId", user.getId());
+            model.addAttribute("authUser", user);
         }
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());

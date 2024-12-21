@@ -25,9 +25,9 @@
             </div>
 
             <div class="col-md-1 mt-2" sec:authorize="isAuthenticated()" align="center">
-                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${userId})}">
+                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${authUser.id})}">
                     <span><img src="/images/user-icon.png" alt="User-icon" width="20" height="20"/></span>
-                    <span class="user" th:text="${username}"></span>
+                    <span class="user" th:text="${authUser.username}"></span>
                 </a><br>
                 <span class="user"><a href="/logout">Sign out</a></span>
             </div>
@@ -65,7 +65,7 @@
                 <textarea th:field="*{description}" class="form-control" id="description"
                           cols="30" rows="4" aria-describedby="descriptionHelp"
                           placeholder="Voucher's description"></textarea>
-                <small id="descriptionHelp" class="form-text text-muted">Max size for description is 1000
+                <small id="descriptionHelp" class="form-text text-muted">Max size for description is 2000
                     characters</small>
             </div>
 
