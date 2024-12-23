@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>User action button</title>
+</head>
+<body>
+<div th:fragment="action-button">
+    <button th:unless="${#strings.equals(user.id, authUser.id)}"
+            class="form-control" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+        Choose action
+    </button>
+
+    <ul class="dropdown-menu">
+        <li th:if="${user.role} != 'USER'">
+            <a class="dropdown-item"
+               th:href="@{/v1/users/auth-admin/role/{userId} (userId=${user.id}, role = 'USER',
+               requestURI=${requestURI}, queryString=${queryString})}">
+                Set role 'USER'</a>
+        </li>
+        <li th:if="${user.role} != 'MANAGER'">
+            <a class="dropdown-item"
+               th:href="@{/v1/users/auth-admin/role/{userId} (userId=${user.id}, role = 'MANAGER',
+               requestURI=${requestURI}, queryString=${queryString})}">
+                Set role 'MANAGER'</a>
+        </li>
+        <li th:if="${user.role} != 'ADMIN'">
+            <a class="dropdown-item"
+               th:href="@{/v1/users/auth-admin/role/{userId} (userId=${user.id}, role = 'ADMIN',
+               requestURI=${requestURI}, queryString=${queryString})}">
+                Set role 'ADMIN'</a>
+        </li>
+        <li th:if="${user.accountStatus}">
+            <a class="dropdown-item"
+               th:href="@{/v1/users/auth-admin/account-status/{userId}
+                   (userId=${user.id}, accountStatus=false, requestURI=${requestURI}, queryString=${queryString})}">
+                Locked user</a>
+        </li>
+        <li th:unless="${user.accountStatus}">
+            <a class="dropdown-item"
+               th:href="@{/v1/users/auth-admin/account-status/{userId}
+                   (userId=${user.id}, accountStatus=true, requestURI=${requestURI}, queryString=${queryString})}">
+                Unlocked user</a>
+        </li>
+        <li th:if="${user.vouchers.size} != 0">
+            <a class="dropdown-item"
+               th:href="@{/v1/vouchers/auth-admin/{userId}
+                   (userId=${user.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                User's vouchers</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

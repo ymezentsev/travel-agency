@@ -6,6 +6,9 @@ import com.epam.finaltask.model.*;
 import com.epam.finaltask.service.VoucherService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.epam.finaltask.utils.ViewUtils.getErrors;
-import static com.epam.finaltask.utils.ViewUtils.getPreviousPageUri;
+import static com.epam.finaltask.utils.ViewUtils.*;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-admin")
@@ -36,6 +38,7 @@ public class VoucherAuthAdminViewController {
             voucherService.delete(voucherId);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
+            return "vouchers/vouchers";
         }
         redirectAttributes.addFlashAttribute("message", "Voucher deleted successfully");
         return "redirect:" + getPreviousPageUri(request);
@@ -74,10 +77,11 @@ public class VoucherAuthAdminViewController {
 
     @GetMapping("/{voucherId}/update")
     public String getUpdateVoucherPage(@PathVariable("voucherId") String voucherId,
-                                     Model model,
-                                     HttpServletRequest request) {
+                                       Model model,
+                                       HttpServletRequest request) {
         model.addAttribute("voucherDto", voucherService.findById(voucherId));
         model.addAttribute("previousPage", getPreviousPageUri(request));
+        getVoucherStatusesForUpdate(model);
         return "vouchers/update-voucher";
     }
 
@@ -90,6 +94,7 @@ public class VoucherAuthAdminViewController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", getErrors(bindingResult));
             model.addAttribute("previousPage", previousPage);
+            getVoucherStatusesForUpdate(model);
             return "vouchers/update-voucher";
         }
 
@@ -98,10 +103,22 @@ public class VoucherAuthAdminViewController {
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
             model.addAttribute("previousPage", previousPage);
+            getVoucherStatusesForUpdate(model);
             return "vouchers/update-voucher";
         }
         redirectAttributes.addFlashAttribute("message", "Voucher updated successfully");
         return "redirect:" + previousPage;
+    }
+
+    @GetMapping("/{userId}")
+    public String getAllUsersVouchers(Model model,
+                                      @PathVariable("userId") String userId,
+                                      @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                              sort = {"status", "arrivalDate", "id"},
+                                              direction = Sort.Direction.DESC) Pageable pageable) {
+        model.addAttribute("myLinks", true);
+        model.addAttribute("vouchers", voucherService.findAllByUserId(userId, pageable));
+        return "vouchers/vouchers";
     }
 
     @ModelAttribute
@@ -113,6 +130,10 @@ public class VoucherAuthAdminViewController {
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());
         model.addAttribute("hotelTypes", HotelType.values());
+        model.addAttribute("voucherStatuses", VoucherStatus.values());
+    }
+
+    private void getVoucherStatusesForUpdate(Model model) {
         model.addAttribute("voucherStatuses", Arrays.stream(VoucherStatus.values())
                 .filter(value -> !value.equals(VoucherStatus.REGISTERED) && !value.equals(VoucherStatus.PAID))
                 .collect(Collectors.toList()));

@@ -2,6 +2,8 @@ package com.epam.finaltask.controller.openapi;
 
 import com.epam.finaltask.dto.RemoteResponse;
 import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.UserSearchParamsDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.dto.group.OnChangeStatus;
 import com.epam.finaltask.dto.group.OnCreate;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -172,4 +175,22 @@ public interface UserControllerOpenApi {
                             schema = @Schema(implementation = Error.class)))
     })
     ResponseEntity<RemoteResponse> getUserById(@PathVariable("userId") String userId);
+
+    @Operation(summary = "Get page of users filtered by username, role, phone number, email, " +
+            "isUnlocked status, and sorted by chosen parameters")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Users successfully obtained",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RemoteResponse.class))),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Unexpected internal error",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Error.class)))
+    })
+    ResponseEntity<RemoteResponse> search(UserSearchParamsDto params, Pageable pageable);
 }

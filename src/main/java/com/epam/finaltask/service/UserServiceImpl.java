@@ -1,7 +1,6 @@
 package com.epam.finaltask.service;
 
-import com.epam.finaltask.dto.ChangePasswordRequestDto;
-import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.*;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.exception.InvalidPasswordException;
@@ -9,8 +8,11 @@ import com.epam.finaltask.mapper.UserMapper;
 import com.epam.finaltask.model.Role;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.repository.UserRepository;
+import com.epam.finaltask.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserSpecification userSpecification;
 
     private static final String USER_NOT_FOUND = "User not found";
     private static final String USER_ALREADY_EXISTS = "This username is already exist";
@@ -77,6 +80,7 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getEmail() != null) {
             user.setEmail((userDTO.getEmail()));
         }
+        //todo delete setAccountStatus from method and test
         user.setAccountStatus(userDTO.isAccountStatus());
 
         return userMapper.toUserDTO(userRepository.save(user));
@@ -97,6 +101,16 @@ public class UserServiceImpl implements UserService {
         userMapper.toUser(userDTO);
 
         user.setAccountStatus(userDTO.isAccountStatus());
+        return userMapper.toUserDTO(userRepository.save(user));
+    }
+
+    @Override
+    public UserDTO changeRole(UserDTO userDTO) {
+        User user = userRepository.findById(UUID.fromString(userDTO.getId()))
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
+        userMapper.toUser(userDTO);
+
+        user.setRole(Role.valueOf(userDTO.getRole()));
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
@@ -127,6 +141,18 @@ public class UserServiceImpl implements UserService {
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toUserDTO);
+    }
+
+    @Override
+    public Page<UserDTO> search(UserSearchParamsDto params, Pageable pageable) {
+        return userRepository.findAll(userSpecification.build(params), pageable)
+                .map(userMapper::toUserDTO);
     }
 
     private void checkIfUserExists(String username) {

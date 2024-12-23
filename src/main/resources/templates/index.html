@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Travel agency</title>
+    <link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
     <link rel="stylesheet" href="/css/style.css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
           integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyL4pDlT1Yg2V6w1x4DT+3UZsFqB8AlWhN" crossorigin="anonymous">
@@ -15,60 +16,14 @@
 </head>
 
 <body>
-<header class="header" style="position: fixed; top: 0; width: 100%; height: 80px;">
-    <div class="container-fluid" sec:authorize="isAuthenticated()">
-        <div class="row">
-            <div class="col-md-11 mt-2"></div>
-
-            <div class="col-md-1 mt-2" align="center">
-                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${authUser.id})}">
-                    <span><img src="/images/user-icon.png" alt="User-icon" width="20" height="20"/></span>
-                    <span class="user" th:text="${authUser.username}"></span>
-                </a><br>
-                <span class="user"><a href="/logout">Sign out</a></span>
-            </div>
-
-        </div>
-    </div>
-</header>
+<header th:replace="~{fragments/header.html :: header}"></header>
 
 <main>
     <div class="container mt-4">
         <div class="row mt-4">
             <div class="col-md-12 mb-4" style="height: 40px;"></div>
 
-            <div class="col-md-4 offset-md-1 mt-4" style="height: 100px;">
-                <h1>Travel agency</h1>
-            </div>
-
-            <div class="col-md-1"></div>
-
-            <div class="col mt-4" sec:authorize="isAnonymous()">
-                <a th:href="@{/v1/users/register}" class="btn btn-success btn-lg">Register</a>
-            </div>
-
-            <div class="col mt-4" sec:authorize="isAnonymous()">
-                <a th:href="@{/v1/auth/login}" class="btn btn-success btn-lg">Sign in</a>
-            </div>
-
-            <div class="col mt-4">
-                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
-                   th:href="@{/v1/vouchers/anonymous}" class="btn btn-success btn-lg">All tours</a>
-                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
-                   th:href="@{/v1/vouchers/auth-manager}" class="btn btn-success btn-lg">All tours</a>
-            </div>
-
-            <div class="col mt-4" sec:authorize="hasAuthority('ROLE_USER')">
-                <a th:href="@{/v1/vouchers/auth-user}" class="btn btn-success btn-lg">My tours</a>
-            </div>
-
-            <div class="col mt-4" sec:authorize="hasAuthority('ROLE_ADMIN')">
-                <a href="/V2/admin/users" class="btn btn-success btn-lg">Users</a>
-            </div>
-
-            <div class="col mt-4">
-                <a th:href="@{/swagger-ui/index.html}" class="btn btn-secondary btn-lg" target="_blank">Swagger</a>
-            </div>
+            <h1 align="center" style="height: 100px;">Travel agency</h1>
         </div>
     </div>
 
@@ -76,7 +31,7 @@
          class="container dynamic-container"
          th:if="${vouchers} != null and ${vouchers.content.size() > 0}">
         <div class="container col-12">
-            <h2 class="table-title" align="center">Hot tours</h2>
+            <h2 class="table-title" align="center">Hot vouchers</h2>
             <div th:replace="~{fragments/voucher-dashboard.html :: voucher-dashboard(myLinks = ${myLinks})}"></div>
             <div th:replace="~{fragments/pagination.html :: paginationLinks(pagination = ${vouchers})}"></div>
         </div>

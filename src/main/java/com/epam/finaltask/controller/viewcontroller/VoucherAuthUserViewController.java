@@ -30,6 +30,7 @@ public class VoucherAuthUserViewController {
             voucherService.order(voucherId, userId);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
+            return "vouchers/vouchers";
         }
         return "redirect:/v1/vouchers/auth-user";
     }
@@ -53,6 +54,8 @@ public class VoucherAuthUserViewController {
             voucherService.cancelOrder(voucherId);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
+            model.addAttribute("myLinks", true);
+            return "vouchers/vouchers";
         }
         return "redirect:" + getPreviousPageUri(request);
     }

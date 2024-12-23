@@ -1,9 +1,8 @@
 package com.epam.finaltask.controller.viewcontroller;
 
-import com.epam.finaltask.dto.VoucherSearchParametersDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.model.*;
 import com.epam.finaltask.service.VoucherService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import static com.epam.finaltask.utils.ViewUtils.DEFAULT_PAGE_SIZE;
 
@@ -26,7 +24,7 @@ public class VoucherAnonymousViewController {
     public String getIndexPageWithHotAvailableVouchers(Model model,
                                                        @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                                sort = {"arrivalDate", "id"}) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .isHot(true)
                 .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                 .build();
@@ -51,7 +49,7 @@ public class VoucherAnonymousViewController {
                                           @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                   sort = {"isHot", "id"},
                                                   direction = Sort.Direction.DESC) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                 .build();
 
@@ -65,7 +63,7 @@ public class VoucherAnonymousViewController {
                                                     @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                             sort = {"isHot", "id"},
                                                             direction = Sort.Direction.DESC) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                 .tourTypes(new String[]{tourType})
                 .build();
@@ -80,7 +78,7 @@ public class VoucherAnonymousViewController {
                                                         @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                                 sort = {"isHot", "id"},
                                                                 direction = Sort.Direction.DESC) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                 .transferTypes(new String[]{transferType})
                 .build();
@@ -95,7 +93,7 @@ public class VoucherAnonymousViewController {
                                                      @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                              sort = {"isHot", "id"},
                                                              direction = Sort.Direction.DESC) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                 .hotelTypes(new String[]{hotelType})
                 .build();
@@ -111,7 +109,7 @@ public class VoucherAnonymousViewController {
                                                          sort = {"isHot", "id"},
                                                          direction = Sort.Direction.DESC) Pageable pageable) {
         try {
-            VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+            VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                     .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                     .maxPrice(Double.parseDouble(maxPrice))
                     .build();

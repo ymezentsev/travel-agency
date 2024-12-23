@@ -6,11 +6,7 @@
 </head>
 <body>
 <div th:fragment="voucher-dashboard(myLinks)">
-    <h2 class="table-title" align="center" th:if="${myLinks}">My tours</h2>
-    <h2 class="table-title" align="center" th:unless="${myLinks}">Tours</h2>
 
-    <input type="hidden" name="requestURI" th:value="${requestURI}">
-    <input type="hidden" name="queryString" th:value="${queryString}">
 
     <table class="table table-bordered table-hover">
         <thead>
@@ -83,7 +79,7 @@
                     </div>
                 </td>
                 <td>
-                    <div th:replace="~{fragments/action-button.html :: action-button}"></div>
+                    <div th:replace="~{fragments/voucher-action-button.html :: action-button}"></div>
                 </td>
             </div>
 
@@ -93,7 +89,7 @@
                         <div th:text="${voucher.status}"></div>
                     </td>
                     <td>
-                        <div th:replace="~{fragments/action-button.html :: action-button}"></div>
+                        <div th:replace="~{fragments/voucher-action-button.html :: action-button}"></div>
                     </td>
                 </div>
 
@@ -107,8 +103,8 @@
                     </td>
                 </div>
             </div>
+            </tbody>
         </div>
-        </tbody>
     </table>
 </div>
 </body>

@@ -3,7 +3,7 @@ package com.epam.finaltask.controller;
 import com.epam.finaltask.controller.openapi.VoucherControllerOpenApi;
 import com.epam.finaltask.dto.RemoteResponse;
 import com.epam.finaltask.dto.VoucherDTO;
-import com.epam.finaltask.dto.VoucherSearchParametersDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.dto.group.OnChangeStatus;
 import com.epam.finaltask.dto.group.OnCreate;
 import com.epam.finaltask.dto.group.OnUpdate;
@@ -155,7 +155,7 @@ public class VoucherController implements VoucherControllerOpenApi {
 
     @Override
     @GetMapping("/search")
-    public ResponseEntity<RemoteResponse> search(VoucherSearchParametersDto params, Pageable pageable) {
+    public ResponseEntity<RemoteResponse> search(VoucherSearchParamsDto params, Pageable pageable) {
         return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
                 STATUS_MESSAGE_OK, List.of(voucherService.search(params, pageable))),
                 HttpStatus.OK);

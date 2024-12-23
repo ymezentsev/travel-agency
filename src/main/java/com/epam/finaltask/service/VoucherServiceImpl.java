@@ -1,7 +1,7 @@
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
-import com.epam.finaltask.dto.VoucherSearchParametersDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.exception.InvalidVoucherOperationException;
@@ -9,12 +9,11 @@ import com.epam.finaltask.mapper.UserMapper;
 import com.epam.finaltask.mapper.VoucherMapper;
 import com.epam.finaltask.model.*;
 import com.epam.finaltask.repository.VoucherRepository;
-import com.epam.finaltask.repository.searchcriteria.SpecificationBuilder;
+import com.epam.finaltask.specification.VoucherSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class VoucherServiceImpl implements VoucherService {
     private final VoucherRepository voucherRepository;
     private final UserService userService;
     private final UserMapper userMapper;
-    private final SpecificationBuilder<Voucher> specificationBuilder;
+    private final VoucherSpecification voucherSpecification;
 
     private static final String VOUCHER_NOT_EXISTS = "Voucher not exists";
     private static final String VOUCHER_ALREADY_ORDERED = "Voucher is already ordered";
@@ -208,9 +207,8 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<VoucherDTO> search(VoucherSearchParametersDto params, Pageable pageable) {
-        Specification<Voucher> voucherSpecification = specificationBuilder.build(params);
-        return voucherRepository.findAll(voucherSpecification, pageable)
+    public Page<VoucherDTO> search(VoucherSearchParamsDto params, Pageable pageable) {
+        return voucherRepository.findAll(voucherSpecification.build(params), pageable)
                 .map(voucherMapper::toVoucherDTO);
     }
 

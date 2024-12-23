@@ -1,7 +1,7 @@
 package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.VoucherDTO;
-import com.epam.finaltask.dto.VoucherSearchParametersDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.model.*;
 import com.epam.finaltask.service.VoucherService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class VoucherAuthManagerViewController {
                                                 Model model,
                                                 @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                         sort = {"arrivalDate", "id"}) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .voucherStatuses(new String[]{voucherStatus})
                 .build();
 
@@ -48,7 +48,7 @@ public class VoucherAuthManagerViewController {
                                           Model model,
                                           @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                   sort = {"status", "arrivalDate", "id"}) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .tourTypes(new String[]{tourType})
                 .build();
 
@@ -61,7 +61,7 @@ public class VoucherAuthManagerViewController {
                                                Model model,
                                                @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                        sort = {"status", "arrivalDate", "id"}) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .transferTypes(new String[]{transferType})
                 .build();
 
@@ -74,7 +74,7 @@ public class VoucherAuthManagerViewController {
                                             Model model,
                                             @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                     sort = {"status", "arrivalDate", "id"}) Pageable pageable) {
-        VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+        VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                 .hotelTypes(new String[]{hotelType})
                 .build();
 
@@ -88,7 +88,7 @@ public class VoucherAuthManagerViewController {
                                         @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                 sort = {"status", "arrivalDate", "id"}) Pageable pageable) {
         try {
-            VoucherSearchParametersDto searchParams = VoucherSearchParametersDto.builder()
+            VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
                     .maxPrice(Double.parseDouble(maxPrice))
                     .build();
             model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
@@ -110,6 +110,7 @@ public class VoucherAuthManagerViewController {
             voucherService.changeHotStatus(voucherId, voucherDTO);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
+            return "vouchers/vouchers";
         }
         return "redirect:" + getPreviousPageUri(request);
     }
@@ -126,6 +127,7 @@ public class VoucherAuthManagerViewController {
             voucherService.changeStatus(voucherId, voucherDTO);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
+            return "vouchers/vouchers";
         }
         return "redirect:" + getPreviousPageUri(request);
     }

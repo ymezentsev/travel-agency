@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>User dashboard</title>
+</head>
+
+<body>
+<div th:fragment="user-dashboard">
+    <h2 class="table-title" align="center">Users</h2>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col" class="col-1">Username</th>
+            <th scope="col" class="col-1">Phone number</th>
+            <th scope="col" class="col-1">Email</th>
+            <th scope="col" class="col-1">Balance</th>
+            <th scope="col" class="col-1">Is locked</th>
+            <th scope="col" class="col-1">Role</th>
+            <th scope="col" class="col-1">Action</th>
+        </tr>
+        </thead>
+
+        <div class="form-group mb-2" th:each="user : ${users}">
+            <tbody>
+            <td>
+                <div th:text="${user.username}"></div>
+            </td>
+            <td>
+                <div th:text="${user.phoneNumber}"></div>
+            </td>
+            <td>
+                <div th:text="${user.email}"></div>
+            </td>
+            <td>
+                <div th:text="${user.balance}"></div>
+            </td>
+            <td>
+                <div th:unless="${user.accountStatus}">Locked</div>
+            </td>
+            <td>
+                <div th:text="${user.role}"></div>
+            </td>
+            <td>
+                <div th:replace="~{fragments/user-action-button.html :: action-button}"></div>
+            </td>
+            </tbody>
+        </div>
+    </table>
+</div>
+</body>
+</html>

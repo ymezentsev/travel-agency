@@ -2,7 +2,7 @@ package com.epam.finaltask.controller.openapi;
 
 import com.epam.finaltask.dto.RemoteResponse;
 import com.epam.finaltask.dto.VoucherDTO;
-import com.epam.finaltask.dto.VoucherSearchParametersDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.dto.group.OnChangeStatus;
 import com.epam.finaltask.dto.group.OnCreate;
 import com.epam.finaltask.dto.group.OnUpdate;
@@ -374,5 +374,5 @@ public interface VoucherControllerOpenApi {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = Error.class)))
     })
-    ResponseEntity<RemoteResponse> search(VoucherSearchParametersDto params, Pageable pageable);
+    ResponseEntity<RemoteResponse> search(VoucherSearchParamsDto params, Pageable pageable);
 }

@@ -77,6 +77,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/v1/vouchers/auth-manager/**")
                                 .hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
                                 .requestMatchers("/v1/vouchers/auth-admin/**").hasAuthority("ROLE_ADMIN")
+                                .requestMatchers("/v1/users/auth-admin/**").hasAuthority("ROLE_ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
