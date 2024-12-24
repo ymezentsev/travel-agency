@@ -8,7 +8,7 @@
 <div th:fragment="search-panel">
     <form sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
           th:action="@{/v1/vouchers/anonymous/by-price}" method="get" class="row g-3">
-        <label for="maxPrice">Search by price (less or equal than input)</label>
+        <label for="maxPrice"><strong>Search by price (less or equal than input)</strong></label>
         <div class="col-md-2">
             <input type="text" class="form-control" id="maxPrice" name="maxPrice"
                    placeholder="Maximum price">
@@ -20,7 +20,7 @@
 
     <form sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
           th:action="@{/v1/vouchers/auth-manager/by-price}" method="get" class="row g-3">
-        <label for="maxPrice">Search by price (less or equal than input)</label>
+        <label for="maxPrice"><strong>Search by price (less or equal than input)</strong></label>
         <div class="col-md-2">
             <input type="text" class="form-control" id="maxPrice" name="maxPrice"
                    placeholder="Maximum price">

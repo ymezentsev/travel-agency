@@ -177,11 +177,18 @@ public interface UserControllerOpenApi {
     ResponseEntity<RemoteResponse> getUserById(@PathVariable("userId") String userId);
 
     @Operation(summary = "Get page of users filtered by username, role, phone number, email, " +
-            "isUnlocked status, and sorted by chosen parameters")
+            "isUnlocked status, and sorted by chosen parameters (admin only)",
+            security = @SecurityRequirement(name = "Bearer Authentication"))
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Users successfully obtained",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RemoteResponse.class))),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Access denied. User not admin",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = RemoteResponse.class))),

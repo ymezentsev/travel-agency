@@ -80,6 +80,7 @@ public class UserController implements UserControllerOpenApi {
 
     @Override
     @GetMapping("/search")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<RemoteResponse> search(UserSearchParamsDto params, Pageable pageable) {
         return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
                 STATUS_MESSAGE_OK, List.of(userService.search(params, pageable))),

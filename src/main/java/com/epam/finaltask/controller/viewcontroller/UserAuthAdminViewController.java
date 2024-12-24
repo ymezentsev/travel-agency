@@ -1,6 +1,8 @@
 package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.UserSearchParamsDto;
+import com.epam.finaltask.model.Role;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,8 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.utils.ViewUtils.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.utils.ViewUtils.getPreviousPageUri;
+import static com.epam.finaltask.utils.ViewUtils.*;
 
 @Controller
 @RequestMapping("/v1/users/auth-admin")
@@ -65,6 +66,89 @@ public class UserAuthAdminViewController {
         return "redirect:" + getPreviousPageUri(request);
     }
 
+    @GetMapping("/by-role/{role}")
+    public String getAllUsersByRole(Model model,
+                                    @PathVariable("role") String role,
+                                    @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                            sort = {"username"}) Pageable pageable) {
+        UserSearchParamsDto searchParams = UserSearchParamsDto.builder()
+                .roles(new String[]{role})
+                .build();
+
+        model.addAttribute("users", userService.search(searchParams, pageable));
+        return "users/users";
+    }
+
+    @GetMapping("/by-lockedStatus/{isUnlocked}")
+    public String getAllUsersByLockedStatus(Model model,
+                                            @PathVariable("isUnlocked") boolean isUnlocked,
+                                            @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                                    sort = {"role", "username"}) Pageable pageable) {
+        UserSearchParamsDto searchParams = UserSearchParamsDto.builder()
+                .isUnlocked(isUnlocked)
+                .build();
+
+        model.addAttribute("users", userService.search(searchParams, pageable));
+        return "users/users";
+    }
+
+    @GetMapping("/by-username")
+    public String getAllUsersByUsername(Model model,
+                                        @RequestParam("username") String username,
+                                        @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                                sort = {"role", "username"}) Pageable pageable) {
+        try {
+            UserSearchParamsDto searchParams = UserSearchParamsDto.builder()
+                    .usernames(username.split(SPLITTER))
+                    .build();
+
+            model.addAttribute("users", userService.search(searchParams, pageable));
+        } catch (Exception e) {
+            model.addAttribute("errors", e.getMessage());
+        }
+        return "users/users";
+    }
+
+    @GetMapping("/by-phoneNumber")
+    public String getAllUsersByPhoneNumber(Model model,
+                                           @RequestParam("phoneNumber") String phoneNumber,
+                                           @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                                   sort = {"role", "username"}) Pageable pageable) {
+        try {
+            UserSearchParamsDto searchParams = UserSearchParamsDto.builder()
+                    .phoneNumbers(phoneNumber.split(SPLITTER))
+                    .build();
+
+            model.addAttribute("users", userService.search(searchParams, pageable));
+        } catch (Exception e) {
+            model.addAttribute("errors", e.getMessage());
+        }
+        return "users/users";
+    }
+
+    @GetMapping("/by-email")
+    public String getAllUsersByEmail(Model model,
+                                     @RequestParam("email") String email,
+                                     @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                             sort = {"role", "username"}) Pageable pageable) {
+        try {
+            UserSearchParamsDto searchParams = UserSearchParamsDto.builder()
+                    .emails(email.split(SPLITTER))
+                    .build();
+
+            model.addAttribute("users", userService.search(searchParams, pageable));
+        } catch (Exception e) {
+            model.addAttribute("errors", e.getMessage());
+        }
+        return "users/users";
+    }
+
+    @GetMapping("/search")
+    public String getSearchPage(Model model) {
+        // model.addAttribute("users", userService.getAllUsers(pageable));
+        return "users/user-search";
+    }
+
     @ModelAttribute
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user,
@@ -73,6 +157,7 @@ public class UserAuthAdminViewController {
             model.addAttribute("authUser", user);
         }
 
+        model.addAttribute("roles", Role.values());
         model.addAttribute("requestURI", request.getRequestURI());
         model.addAttribute("queryString", request.getQueryString());
     }

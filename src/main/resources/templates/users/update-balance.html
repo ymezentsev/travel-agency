@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
 <body>
 <header th:replace="~{fragments/header.html :: header}"></header>
 
-<main>
+<main sec:authorize="isAuthenticated()">
     <div class="container mt-4">
         <div class="col-md-12 mb-4" style="height: 40px;"></div>
 

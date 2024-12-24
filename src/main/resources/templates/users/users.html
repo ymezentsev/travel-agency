@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,7 @@
 <body>
 <header th:replace="~{fragments/header.html :: header}"></header>
 
-<main>
+<main sec:authorize="hasAuthority('ROLE_ADMIN')">
     <div class="container mt-4">
         <div class="container dynamic-container">
             <div class="container col-12">
@@ -24,8 +24,11 @@
                     <input type="hidden" name="requestURI" th:value="${requestURI}">
                     <input type="hidden" name="queryString" th:value="${queryString}">
 
-
                     <div class="col-12 mt-5">
+                        <a th:href="@{/v1/users/auth-admin/search}" class="btn btn-success btn-lg">Advanced search</a>
+                    </div>
+
+                    <div class="col-12 mt-4">
                         <div th:replace="~{fragments/user-search-panel.html :: search-panel}"></div>
                     </div>
 

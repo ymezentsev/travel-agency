@@ -18,52 +18,52 @@ public class VoucherSpecification {
             return spec;
         }
 
-        if (searchParams.titles() != null && searchParams.titles().length > 0) {
-            spec = spec.and(buildLikePredicate("title", searchParams.titles()));
+        if (searchParams.getTitles() != null && searchParams.getTitles().length > 0) {
+            spec = spec.and(buildLikePredicate("title", searchParams.getTitles()));
         }
 
-        if (searchParams.tourTypes() != null && searchParams.tourTypes().length > 0) {
+        if (searchParams.getTourTypes() != null && searchParams.getTourTypes().length > 0) {
             spec = spec.and(buildInPredicate("tourType",
-                    Arrays.stream(searchParams.tourTypes())
+                    Arrays.stream(searchParams.getTourTypes())
                             .map(String::toUpperCase)
                             .toArray()));
         }
 
-        if (searchParams.transferTypes() != null && searchParams.transferTypes().length > 0) {
+        if (searchParams.getTransferTypes() != null && searchParams.getTransferTypes().length > 0) {
             spec = spec.and(buildInPredicate("transferType",
-                    Arrays.stream(searchParams.transferTypes())
+                    Arrays.stream(searchParams.getTransferTypes())
                             .map(String::toUpperCase)
                             .toArray()));
         }
 
-        if (searchParams.hotelTypes() != null && searchParams.hotelTypes().length > 0) {
+        if (searchParams.getHotelTypes() != null && searchParams.getHotelTypes().length > 0) {
             spec = spec.and(buildInPredicate("hotelType",
-                    Arrays.stream(searchParams.hotelTypes())
+                    Arrays.stream(searchParams.getHotelTypes())
                             .map(String::toUpperCase)
                             .toArray()));
         }
 
-        if (searchParams.voucherStatuses() != null && searchParams.voucherStatuses().length > 0) {
+        if (searchParams.getVoucherStatuses() != null && searchParams.getVoucherStatuses().length > 0) {
             spec = spec.and(buildInPredicate("status",
-                    Arrays.stream(searchParams.voucherStatuses())
+                    Arrays.stream(searchParams.getVoucherStatuses())
                             .map(String::toUpperCase)
                             .toArray()));
         }
 
-        if (searchParams.arrivalDate() != null) {
-            spec = spec.and(buildEqualPredicate("arrivalDate", searchParams.arrivalDate()));
+        if (searchParams.getArrivalDate() != null) {
+            spec = spec.and(buildEqualPredicate("arrivalDate", searchParams.getArrivalDate()));
         }
 
-        if (searchParams.minPrice() != null) {
-            spec = spec.and(buildGreaterThanOrEqualPredicate("price", searchParams.minPrice()));
+        if (searchParams.getMinPrice() != null) {
+            spec = spec.and(buildGreaterThanOrEqualPredicate("price", searchParams.getMinPrice()));
         }
 
-        if (searchParams.maxPrice() != null) {
-            spec = spec.and(buildLessThanOrEqualPredicate("price", searchParams.maxPrice()));
+        if (searchParams.getMaxPrice() != null) {
+            spec = spec.and(buildLessThanOrEqualPredicate("price", searchParams.getMaxPrice()));
         }
 
-        if (searchParams.isHot() != null) {
-            spec = spec.and(buildEqualPredicate("isHot", searchParams.isHot()));
+        if (searchParams.getIsHot() != null) {
+            spec = spec.and(buildEqualPredicate("isHot", Boolean.parseBoolean(searchParams.getIsHot())));
         }
         return spec;
     }

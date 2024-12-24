@@ -10,9 +10,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import static com.epam.finaltask.utils.ViewUtils.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.utils.ViewUtils.getErrors;
 
 @Controller
 @RequestMapping("/v1/vouchers/anonymous")
@@ -25,7 +27,7 @@ public class VoucherAnonymousViewController {
                                                        @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                                sort = {"arrivalDate", "id"}) Pageable pageable) {
         VoucherSearchParamsDto searchParams = VoucherSearchParamsDto.builder()
-                .isHot(true)
+                .isHot("true")
                 .voucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()})
                 .build();
 
@@ -36,9 +38,9 @@ public class VoucherAnonymousViewController {
     @GetMapping("/{voucherId}")
     public String getVoucherById(Model model,
                                  @PathVariable("voucherId") String voucherId) {
-        try{
+        try {
             model.addAttribute("voucher", voucherService.findById(voucherId));
-        } catch (Exception e){
+        } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
         }
         return "vouchers/voucher-info";
@@ -117,6 +119,33 @@ public class VoucherAnonymousViewController {
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
         }
+        return "vouchers/vouchers";
+    }
+
+    @GetMapping("/search")
+    public String getSearchPage(Model model) {
+        model.addAttribute("searchParams", new VoucherSearchParamsDto());
+        return "vouchers/voucher-search";
+    }
+
+    @GetMapping("/search-result")
+    public String search(Model model,
+                         @ModelAttribute("searchParams") VoucherSearchParamsDto searchParams,
+                         BindingResult bindingResult,
+                         @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                 sort = {"isHot", "id"},
+                                 direction = Sort.Direction.DESC) Pageable pageable) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", getErrors(bindingResult));
+            return "vouchers/voucher-search";
+        }
+
+        searchParams.setVoucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()});
+        if (searchParams.getIsHot().isEmpty()) {
+            searchParams.setIsHot(null);
+        }
+        System.out.println(searchParams);
+        model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
         return "vouchers/vouchers";
     }
 

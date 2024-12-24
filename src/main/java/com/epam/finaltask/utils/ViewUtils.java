@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ViewUtils {
     public static final int DEFAULT_PAGE_SIZE = 5;
+    public static final String SPLITTER = "(\\*|,)";
 
     //todo add constants for templates and attributes
     public static List<String> getErrors(BindingResult bindingResult) {

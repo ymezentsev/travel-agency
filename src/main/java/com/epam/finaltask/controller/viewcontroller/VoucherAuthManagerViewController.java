@@ -7,14 +7,15 @@ import com.epam.finaltask.service.VoucherService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.utils.ViewUtils.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.utils.ViewUtils.getPreviousPageUri;
+import static com.epam.finaltask.utils.ViewUtils.*;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-manager")
@@ -130,6 +131,26 @@ public class VoucherAuthManagerViewController {
             return "vouchers/vouchers";
         }
         return "redirect:" + getPreviousPageUri(request);
+    }
+
+    @GetMapping("/search-result")
+    public String search(Model model,
+                         @ModelAttribute("searchParams") VoucherSearchParamsDto searchParams,
+                         BindingResult bindingResult,
+                         @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                 sort = {"isHot", "id"},
+                                 direction = Sort.Direction.DESC) Pageable pageable) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", getErrors(bindingResult));
+            return "vouchers/voucher-search";
+        }
+
+        if (searchParams.getIsHot().isEmpty()) {
+            searchParams.setIsHot(null);
+        }
+        System.out.println(searchParams);
+        model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
+        return "vouchers/vouchers";
     }
 
     @ModelAttribute
