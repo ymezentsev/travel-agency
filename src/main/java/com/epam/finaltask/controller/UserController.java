@@ -1,16 +1,16 @@
 package com.epam.finaltask.controller;
 
 import com.epam.finaltask.controller.openapi.UserControllerOpenApi;
-import com.epam.finaltask.dto.RemoteResponse;
-import com.epam.finaltask.dto.UserDTO;
-import com.epam.finaltask.dto.UserSearchParamsDto;
-import com.epam.finaltask.dto.VoucherSearchParamsDto;
+import com.epam.finaltask.dto.*;
 import com.epam.finaltask.dto.group.OnChangeStatus;
 import com.epam.finaltask.dto.group.OnCreate;
+import com.epam.finaltask.service.EmailSenderService;
+import com.epam.finaltask.service.ResetPasswordTokenService;
 import com.epam.finaltask.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +27,8 @@ import static com.epam.finaltask.exception.StatusCodes.OK;
 @RequestMapping("/users")
 public class UserController implements UserControllerOpenApi {
     private final UserService userService;
+    private final ResetPasswordTokenService resetPasswordTokenService;
+    private final EmailSenderService emailSenderService;
 
     private static final String STATUS_MESSAGE_OK = "OK";
     private static final String STATUS_MESSAGE_CREATED = "User is successfully registered";
@@ -85,5 +87,30 @@ public class UserController implements UserControllerOpenApi {
         return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
                 STATUS_MESSAGE_OK, List.of(userService.search(params, pageable))),
                 HttpStatus.OK);
+    }
+
+    //todo add swagger
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestParam("username") String username) {
+        emailSenderService.sendResetPasswordEmail(username);
+    }
+
+    //todo add swagger
+    @GetMapping("/reset-password")
+    //todo add page for set new password
+    public ResponseEntity<Void> getResetPassword(@RequestParam("token") String token) {
+        HttpHeaders headers = new HttpHeaders();
+
+        resetPasswordTokenService.validateResetPasswordToken(
+                resetPasswordTokenService.getResetPasswordToken(token));
+        // headers.add("Location", frontendBaseUrl + TOKEN_RESET_PASSWORD_URL + token);
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
+
+    //todo add swagger
+    @PutMapping("/reset-password")
+    public void resetPassword(@RequestParam("token") String token,
+                              @RequestBody @Valid ChangePasswordRequestDto request) {
+        userService.resetPassword(request.getNewPassword(), token);
     }
 }

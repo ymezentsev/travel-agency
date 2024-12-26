@@ -4,9 +4,10 @@ import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.mapper.UserMapper;
-import com.epam.finaltask.model.Role;
+import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.repository.UserRepository;
+import com.epam.finaltask.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -119,7 +120,7 @@ public class UserServiceImplTest {
         updatedUser.setAccountStatus(userDTO.isAccountStatus());
         updatedUser.setBalance(userDTO.getBalance());
 
-        when(userRepository.findUserByUsername(existingUsername)).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByUsername(existingUsername)).thenReturn(Optional.of(existingUser));
         when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
         when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
@@ -134,7 +135,7 @@ public class UserServiceImplTest {
         assertEquals(userDTO.isAccountStatus(), result.isAccountStatus());
         assertEquals(userDTO.getBalance(), result.getBalance());
 
-        verify(userRepository, times(1)).findUserByUsername(existingUsername);
+        verify(userRepository, times(1)).findByUsername(existingUsername);
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -148,7 +149,7 @@ public class UserServiceImplTest {
         UserDTO expectedUserDTO = new UserDTO();
         expectedUserDTO.setUsername(username);
 
-        when(userRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);
 
         // When
@@ -158,7 +159,7 @@ public class UserServiceImplTest {
         assertNotNull(result, "The returned UserDTO should not be null");
         assertEquals(expectedUserDTO.getUsername(), result.getUsername(), "The username should match the expected value");
 
-        verify(userRepository, times(1)).findUserByUsername(username);
+        verify(userRepository, times(1)).findByUsername(username);
         verify(userMapper, times(1)).toUserDTO(any(User.class));
     }
 
@@ -166,14 +167,14 @@ public class UserServiceImplTest {
     void getUserByUsername_UserDoesNotExist_ThrowsEntityNotFoundException() {
         // Given
         String username = "nonExistentUser";
-        when(userRepository.findUserByUsername(username)).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // When & Then
         assertThrows(EntityNotFoundException.class, () -> {
             userService.getUserByUsername(username);
         }, "Expected EntityNotFoundException to be thrown if user is not found");
 
-        verify(userRepository, times(1)).findUserByUsername(username);
+        verify(userRepository, times(1)).findByUsername(username);
         verify(userMapper, never()).toUserDTO(any(User.class));
     }
 

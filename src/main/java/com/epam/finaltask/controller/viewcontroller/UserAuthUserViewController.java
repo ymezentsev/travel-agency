@@ -3,6 +3,7 @@ package com.epam.finaltask.controller.viewcontroller;
 import com.epam.finaltask.dto.ChangePasswordRequestDto;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.group.OnChangeBalance;
+import com.epam.finaltask.dto.group.OnChangePassword;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,7 +102,7 @@ public class UserAuthUserViewController {
 
     @PostMapping("/change-password")
     public String changePassword(Model model,
-                                 @Valid @ModelAttribute("changePasswordRequestDto")
+                                 @Validated(OnChangePassword.class) @ModelAttribute("changePasswordRequestDto")
                                  ChangePasswordRequestDto requestDto,
                                  BindingResult bindingResult,
                                  @AuthenticationPrincipal User user,

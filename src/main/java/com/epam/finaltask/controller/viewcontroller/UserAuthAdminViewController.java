@@ -2,7 +2,7 @@ package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.UserSearchParamsDto;
-import com.epam.finaltask.model.Role;
+import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import static com.epam.finaltask.utils.ViewUtils.*;
@@ -81,7 +82,7 @@ public class UserAuthAdminViewController {
 
     @GetMapping("/by-lockedStatus/{isUnlocked}")
     public String getAllUsersByLockedStatus(Model model,
-                                            @PathVariable("isUnlocked") boolean isUnlocked,
+                                            @PathVariable("isUnlocked") String isUnlocked,
                                             @PageableDefault(size = DEFAULT_PAGE_SIZE,
                                                     sort = {"role", "username"}) Pageable pageable) {
         UserSearchParamsDto searchParams = UserSearchParamsDto.builder()
@@ -145,8 +146,24 @@ public class UserAuthAdminViewController {
 
     @GetMapping("/search")
     public String getSearchPage(Model model) {
-        // model.addAttribute("users", userService.getAllUsers(pageable));
+        model.addAttribute("searchParams", new UserSearchParamsDto());
         return "users/user-search";
+    }
+
+    @GetMapping("/search-result")
+    public String search(Model model,
+                         @ModelAttribute("searchParams") UserSearchParamsDto searchParams,
+                         BindingResult bindingResult,
+                         @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                 sort = {"role", "id"}) Pageable pageable) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", getErrors(bindingResult));
+            return "users/user-search";
+        }
+
+        updateUserSearchParam(searchParams);
+        model.addAttribute("users", userService.search(searchParams, pageable));
+        return "users/users";
     }
 
     @ModelAttribute

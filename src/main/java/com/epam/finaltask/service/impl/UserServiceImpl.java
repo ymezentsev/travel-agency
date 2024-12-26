@@ -1,13 +1,18 @@
-package com.epam.finaltask.service;
+package com.epam.finaltask.service.impl;
 
-import com.epam.finaltask.dto.*;
+import com.epam.finaltask.dto.ChangePasswordRequestDto;
+import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.UserSearchParamsDto;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.exception.InvalidPasswordException;
 import com.epam.finaltask.mapper.UserMapper;
-import com.epam.finaltask.model.Role;
+import com.epam.finaltask.model.ResetPasswordToken;
 import com.epam.finaltask.model.User;
+import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.repository.UserRepository;
+import com.epam.finaltask.service.ResetPasswordTokenService;
+import com.epam.finaltask.service.UserService;
 import com.epam.finaltask.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +21,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.epam.finaltask.exception.StatusCodes.*;
+import static com.epam.finaltask.utils.ServiceUtils.*;
 
 @Slf4j
 @Service
@@ -29,10 +36,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserSpecification userSpecification;
+    private final ResetPasswordTokenService resetPasswordTokenService;
 
-    private static final String USER_NOT_FOUND = "User not found";
-    private static final String USER_ALREADY_EXISTS = "This username is already exist";
-    private static final String INVALID_PASSWORD = "Invalid current password";
 
     @Override
     public UserDTO register(UserDTO userDTO) {
@@ -51,7 +56,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(String username, UserDTO userDTO) {
 //        username = username.toLowerCase().strip();
-        User user = userRepository.findUserByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
 
         if (userDTO.getRole() != null) {
@@ -89,7 +94,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUserByUsername(String username) {
 //        username = username.toLowerCase().strip();
-        User user = userRepository.findUserByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
         return userMapper.toUserDTO(user);
     }
@@ -140,6 +145,20 @@ public class UserServiceImpl implements UserService {
             throw new InvalidPasswordException(INVALID_CREDENTIALS.name(), INVALID_PASSWORD);
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+
+    @Override
+    public void resetPassword(String newPassword, String token) {
+        ResetPasswordToken resetPasswordToken = resetPasswordTokenService.getResetPasswordToken(token);
+        resetPasswordTokenService.validateResetPasswordToken(resetPasswordToken);
+
+        resetPasswordToken.setConfirmedAt(LocalDateTime.now());
+        resetPasswordTokenService.saveResetPasswordToken(resetPasswordToken);
+
+        User user = resetPasswordToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 

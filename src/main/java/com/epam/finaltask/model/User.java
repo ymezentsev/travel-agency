@@ -1,5 +1,6 @@
 package com.epam.finaltask.model;
 
+import com.epam.finaltask.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

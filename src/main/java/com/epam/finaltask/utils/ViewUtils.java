@@ -1,5 +1,7 @@
 package com.epam.finaltask.utils;
 
+import com.epam.finaltask.dto.UserSearchParamsDto;
+import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindingResult;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class ViewUtils {
     public static final int DEFAULT_PAGE_SIZE = 5;
-    public static final String SPLITTER = "(\\*|,)";
+    public static final String SPLITTER = "(\\*)";
 
     //todo add constants for templates and attributes
     public static List<String> getErrors(BindingResult bindingResult) {
@@ -20,5 +22,33 @@ public class ViewUtils {
 
     public static String getPreviousPageUri(HttpServletRequest request) {
         return request.getParameter("requestURI") + "?" + request.getParameter("queryString");
+    }
+
+    public static void updateVoucherSearchParam(VoucherSearchParamsDto searchParams) {
+        if (searchParams.getTitles().length != 0) {
+            searchParams.setTitles(searchParams.getTitles()[0].split(SPLITTER));
+        }
+
+        if (searchParams.getIsHot().isEmpty()) {
+            searchParams.setIsHot(null);
+        }
+    }
+
+    public static void updateUserSearchParam(UserSearchParamsDto searchParams) {
+        if (searchParams.getUsernames().length != 0) {
+            searchParams.setUsernames(searchParams.getUsernames()[0].split(SPLITTER));
+        }
+
+        if (searchParams.getPhoneNumbers().length != 0) {
+            searchParams.setPhoneNumbers(searchParams.getPhoneNumbers()[0].split(SPLITTER));
+        }
+
+        if (searchParams.getEmails().length != 0) {
+            searchParams.setEmails(searchParams.getEmails()[0].split(SPLITTER));
+        }
+
+        if (searchParams.getIsUnlocked().isEmpty()) {
+            searchParams.setIsUnlocked(null);
+        }
     }
 }

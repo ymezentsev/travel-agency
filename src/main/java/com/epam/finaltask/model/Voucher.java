@@ -1,5 +1,9 @@
 package com.epam.finaltask.model;
 
+import com.epam.finaltask.model.enums.HotelType;
+import com.epam.finaltask.model.enums.TourType;
+import com.epam.finaltask.model.enums.TransferType;
+import com.epam.finaltask.model.enums.VoucherStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.epam.finaltask.service;
+package com.epam.finaltask.service.impl;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
@@ -8,7 +8,14 @@ import com.epam.finaltask.exception.InvalidVoucherOperationException;
 import com.epam.finaltask.mapper.UserMapper;
 import com.epam.finaltask.mapper.VoucherMapper;
 import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.enums.HotelType;
+import com.epam.finaltask.model.enums.TourType;
+import com.epam.finaltask.model.enums.TransferType;
+import com.epam.finaltask.model.enums.VoucherStatus;
 import com.epam.finaltask.repository.VoucherRepository;
+import com.epam.finaltask.service.EmailSenderService;
+import com.epam.finaltask.service.UserService;
+import com.epam.finaltask.service.VoucherService;
 import com.epam.finaltask.specification.VoucherSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +37,7 @@ public class VoucherServiceImpl implements VoucherService {
     private final UserService userService;
     private final UserMapper userMapper;
     private final VoucherSpecification voucherSpecification;
+    private final EmailSenderService emailSenderService;
 
     private static final String VOUCHER_NOT_EXISTS = "Voucher not exists";
     private static final String VOUCHER_ALREADY_ORDERED = "Voucher is already ordered";
@@ -128,6 +136,13 @@ public class VoucherServiceImpl implements VoucherService {
         }
 
         voucher.setStatus(voucherStatus);
+
+        if (voucherStatus.equals(VoucherStatus.PAID)) {
+            emailSenderService.sendPaymentConfirmationEmail(voucher);
+        }
+        if (voucherStatus.equals(VoucherStatus.CANCELED)) {
+            emailSenderService.sendOrderCanceledEmail(voucher, voucher.getUser());
+        }
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
@@ -203,6 +218,7 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setUser(user);
         voucher.setStatus(VoucherStatus.REGISTERED);
 
+        emailSenderService.sendOrderConfirmationEmail(voucher);
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
@@ -233,8 +249,11 @@ public class VoucherServiceImpl implements VoucherService {
                     String.format(INVALID_CANCEL_ORDER, voucher.getStatus()));
         }
 
+        User user = voucher.getUser();
         voucher.setStatus(VoucherStatus.AVAILABLE);
         voucher.setUser(null);
+
+        emailSenderService.sendOrderCanceledEmail(voucher, user);
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
@@ -254,6 +273,8 @@ public class VoucherServiceImpl implements VoucherService {
 
         user.setBalance(user.getBalance() - voucher.getPrice());
         voucher.setStatus(VoucherStatus.PAID);
+
+        emailSenderService.sendPaymentConfirmationEmail(voucher);
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 

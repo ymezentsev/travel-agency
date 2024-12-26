@@ -26,12 +26,14 @@
                         <input type="hidden" name="requestURI" th:value="${requestURI}">
                         <input type="hidden" name="queryString" th:value="${queryString}">
 
-                        <a sec:authorize="hasAuthority('ROLE_ADMIN')"
+                        <a th:unless="${myLinks}"
+                           sec:authorize="hasAuthority('ROLE_ADMIN')"
                            th:href="@{/v1/vouchers/auth-admin/create
                            (requestURI=${requestURI}, queryString=${queryString})}"
                            class="btn btn-success btn-lg">Add voucher</a>
 
-                        <a th:href="@{/v1/vouchers/anonymous/search}"
+                        <a th:unless="${myLinks}"
+                           th:href="@{/v1/vouchers/anonymous/search}"
                            class="btn btn-success btn-lg">Advanced search</a>
                     </div>
                     <br>

@@ -1,4 +1,4 @@
-package com.epam.finaltask.model;
+package com.epam.finaltask.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.epam.finaltask.model.Permission.*;
+import static com.epam.finaltask.model.enums.Permission.*;
 
 @Getter
 @RequiredArgsConstructor

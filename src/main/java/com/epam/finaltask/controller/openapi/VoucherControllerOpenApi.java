@@ -7,9 +7,9 @@ import com.epam.finaltask.dto.group.OnChangeStatus;
 import com.epam.finaltask.dto.group.OnCreate;
 import com.epam.finaltask.dto.group.OnUpdate;
 import com.epam.finaltask.dto.validator.ValueOfEnum;
-import com.epam.finaltask.model.HotelType;
-import com.epam.finaltask.model.TourType;
-import com.epam.finaltask.model.TransferType;
+import com.epam.finaltask.model.enums.HotelType;
+import com.epam.finaltask.model.enums.TourType;
+import com.epam.finaltask.model.enums.TransferType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -190,7 +190,7 @@ public interface VoucherControllerOpenApi {
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = Error.class)))
     })
-    public ResponseEntity<RemoteResponse> findAllByUserId(@PathVariable("userId") String userId);
+    ResponseEntity<RemoteResponse> findAllByUserId(@PathVariable("userId") String userId);
 
     @Operation(summary = "Get vouchers by tour type")
     @ApiResponses(value = {

@@ -2,6 +2,10 @@ package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.enums.HotelType;
+import com.epam.finaltask.model.enums.TourType;
+import com.epam.finaltask.model.enums.TransferType;
+import com.epam.finaltask.model.enums.VoucherStatus;
 import com.epam.finaltask.service.VoucherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.utils.ViewUtils.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.utils.ViewUtils.getErrors;
+import static com.epam.finaltask.utils.ViewUtils.*;
 
 @Controller
 @RequestMapping("/v1/vouchers/anonymous")
@@ -141,10 +144,7 @@ public class VoucherAnonymousViewController {
         }
 
         searchParams.setVoucherStatuses(new String[]{VoucherStatus.AVAILABLE.name()});
-        if (searchParams.getIsHot().isEmpty()) {
-            searchParams.setIsHot(null);
-        }
-        System.out.println(searchParams);
+        updateVoucherSearchParam(searchParams);
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
         return "vouchers/vouchers";
     }

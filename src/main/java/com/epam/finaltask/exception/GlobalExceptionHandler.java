@@ -78,6 +78,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         e.getMessage(), null));
     }
 
+    @ExceptionHandler(TokenAlreadyConfirmedException.class)
+    public ResponseEntity<RemoteResponse> handleTokenAlreadyConfirmedException(TokenAlreadyConfirmedException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<RemoteResponse> handleTokenExpiredException(TokenExpiredException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

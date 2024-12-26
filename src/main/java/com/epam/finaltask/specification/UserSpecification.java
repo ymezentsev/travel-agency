@@ -18,27 +18,27 @@ public class UserSpecification {
             return spec;
         }
 
-        if (searchParams.usernames() != null && searchParams.usernames().length > 0) {
-            spec = spec.and(buildLikePredicate("username", searchParams.usernames()));
+        if (searchParams.getUsernames() != null && searchParams.getUsernames().length > 0) {
+            spec = spec.and(buildLikePredicate("username", searchParams.getUsernames()));
         }
 
-        if (searchParams.roles() != null && searchParams.roles().length > 0) {
+        if (searchParams.getRoles() != null && searchParams.getRoles().length > 0) {
             spec = spec.and(buildInPredicate("role",
-                    Arrays.stream(searchParams.roles())
+                    Arrays.stream(searchParams.getRoles())
                             .map(String::toUpperCase)
                             .toArray()));
         }
 
-        if (searchParams.phoneNumbers() != null && searchParams.phoneNumbers().length > 0) {
-            spec = spec.and(buildLikePredicate("phoneNumber", searchParams.phoneNumbers()));
+        if (searchParams.getPhoneNumbers() != null && searchParams.getPhoneNumbers().length > 0) {
+            spec = spec.and(buildLikePredicate("phoneNumber", searchParams.getPhoneNumbers()));
         }
 
-        if (searchParams.emails() != null && searchParams.emails().length > 0) {
-            spec = spec.and(buildLikePredicate("email", searchParams.emails()));
+        if (searchParams.getEmails() != null && searchParams.getEmails().length > 0) {
+            spec = spec.and(buildLikePredicate("email", searchParams.getEmails()));
         }
 
-        if (searchParams.isUnlocked() != null) {
-            spec = spec.and(buildEqualPredicate("accountStatus", searchParams.isUnlocked()));
+        if (searchParams.getIsUnlocked() != null) {
+            spec = spec.and(buildEqualPredicate("accountStatus", Boolean.parseBoolean(searchParams.getIsUnlocked())));
         }
         return spec;
     }

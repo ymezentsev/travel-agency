@@ -3,6 +3,10 @@ package com.epam.finaltask.controller.viewcontroller;
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.enums.HotelType;
+import com.epam.finaltask.model.enums.TourType;
+import com.epam.finaltask.model.enums.TransferType;
+import com.epam.finaltask.model.enums.VoucherStatus;
 import com.epam.finaltask.service.VoucherService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -145,13 +149,11 @@ public class VoucherAuthManagerViewController {
             return "vouchers/voucher-search";
         }
 
-        if (searchParams.getIsHot().isEmpty()) {
-            searchParams.setIsHot(null);
-        }
-        System.out.println(searchParams);
+        updateVoucherSearchParam(searchParams);
         model.addAttribute("vouchers", voucherService.search(searchParams, pageable));
         return "vouchers/vouchers";
     }
+
 
     @ModelAttribute
     public void populateModel(Model model,

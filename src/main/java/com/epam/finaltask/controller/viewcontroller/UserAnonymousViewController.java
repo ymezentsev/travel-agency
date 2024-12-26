@@ -1,26 +1,33 @@
 package com.epam.finaltask.controller.viewcontroller;
 
+import com.epam.finaltask.dto.ChangePasswordRequestDto;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.group.OnCreate;
+import com.epam.finaltask.service.EmailSenderService;
+import com.epam.finaltask.service.ResetPasswordTokenService;
 import com.epam.finaltask.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static com.epam.finaltask.utils.ViewUtils.getErrors;
 
 @Controller
-@RequestMapping("/v1/users")
+@RequestMapping("/v1/users/anonymous")
 @RequiredArgsConstructor
 public class UserAnonymousViewController {
     private final UserService userService;
+    private final EmailSenderService emailSenderService;
+    private final ResetPasswordTokenService resetPasswordTokenService;
+
+    @Value("${reset.password.token.lifetime}")
+    private Long tokenLifetime;
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -45,6 +52,65 @@ public class UserAnonymousViewController {
             return "users/register";
         }
         redirectAttributes.addFlashAttribute("message", "User registered successfully");
+        return "redirect:/v1/auth/login";
+    }
+
+    @GetMapping("/reset-password-request")
+    public String getResetPasswordRequestPage() {
+        return "users/reset-password-request";
+    }
+
+    @PostMapping("/reset-password-request")
+    public String sendResetPasswordRequest(Model model,
+                                           @RequestParam("username") String username,
+                                           RedirectAttributes redirectAttributes) {
+
+        try {
+            emailSenderService.sendResetPasswordEmail(username);
+        } catch (Exception e) {
+            model.addAttribute("errors", e.getMessage());
+            return "users/reset-password-request";
+        }
+        redirectAttributes.addFlashAttribute("message", String.format("A message with instructions " +
+                "has been sent to your email. The message is valid for %d minutes", tokenLifetime));
+        return "redirect:/v1/auth/login";
+    }
+
+    @GetMapping("/reset-password")
+    public String getResetPasswordPage(Model model,
+                                       @RequestParam("token") String token) {
+        try {
+            resetPasswordTokenService.validateResetPasswordToken(
+                    resetPasswordTokenService.getResetPasswordToken(token));
+        } catch (Exception e) {
+            model.addAttribute("errors", e.getMessage());
+            return "users/reset-password-request";
+        }
+        model.addAttribute("changePasswordRequestDto", new ChangePasswordRequestDto());
+        model.addAttribute("token", token);
+        return "users/reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(Model model,
+                                @RequestParam("token") String token,
+                                @Valid @ModelAttribute("changePasswordRequestDto")
+                                ChangePasswordRequestDto request,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", getErrors(bindingResult));
+            model.addAttribute("token", token);
+            return "users/reset-password";
+        }
+
+        try {
+            userService.resetPassword(request.getNewPassword(), token);
+        } catch (Exception e) {
+            model.addAttribute("errors", e.getMessage());
+            return "users/reset-password";
+        }
+        redirectAttributes.addFlashAttribute("message", "Password changed successfully");
         return "redirect:/v1/auth/login";
     }
 }

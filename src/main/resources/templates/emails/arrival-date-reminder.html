@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Registration confirmation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+        body {
+          font-family: calibri, 'DejaVu Sans', Arial, Helvetica, sans-serif;
+        }
+        p {
+          border: solid 1px #000;
+          background-color: #0eb311;
+          text-decoration: none;
+          color: #fff;
+          font-weight: bold;
+          display: block;
+          text-align: center;
+          padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<table align="center">
+    <tr>
+        <td style="text-align: center;">
+
+            <h1>Dear <b th:text="${username}">username</b>,</h1>
+            <h3>
+                We would like to remind you that you are going on tour "<span th:text="${voucher.title}">title</span>".
+                There are <span th:text="${daysToArrive}">daysToArrive</span> days left before the arrival date.
+                <br>
+                If you have any questions, please contact us by email:
+                <a href="mailto:appnewhotel@gmail.com">appnewhotel@gmail.com</a>
+            </h3>
+
+            <h2><p>Voucher details:</p></h2>
+            <h3>
+                <table align="center">
+
+                    <tr>
+                        <td>Arrival date: </td>
+                        <td th:text="${voucher.arrivalDate}"></td>
+                    </tr>
+                    <tr>
+                        <td>Eviction date: </td>
+                        <td th:text="${voucher.evictionDate}"></td>
+                    </tr>
+                    <tr>
+                        <td>Price: </td>
+                        <td th:text="${voucher.price}"></td>
+                    </tr>
+                    <tr>
+                        <td>Tour type: </td>
+                        <td th:text="${voucher.tourType}"></td>
+                    </tr>
+                    <tr>
+                        <td>Transfer type: </td>
+                        <td th:text="${voucher.transferType}"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Hotel type: </td>
+                        <td th:text="${voucher.hotelType}"></td>
+                    </tr>
+
+                    <tr>
+                        <td>Description: </td>
+                        <td th:text="${voucher.description}"></td>
+                    </tr>
+                </table>
+            </h3>
+
+            <p style="text-align: center;"></p>
+            <h3>
+                <em>
+                    Regards, <br/>
+                    &emsp; <em>The Travel agency team</em>
+                </em>
+            </h3>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

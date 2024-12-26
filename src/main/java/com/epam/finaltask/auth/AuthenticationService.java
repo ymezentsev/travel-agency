@@ -32,7 +32,7 @@ public class AuthenticationService {
     //todo add update username to lower case
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
 //        request.setUsername(request.getUsername().toLowerCase().strip());
-        User user = userRepository.findUserByUsername(request.getUsername())
+        User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), "Invalid credentials"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {

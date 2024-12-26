@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                                         "/css/**",
 
                                         "/v1/auth/**",
-                                        "/v1/users/register",
+                                        "/v1/users/anonymous/**",
                                         "/v1/vouchers/anonymous/**",
 
                                        /* "/api/v1/users/forgot-password/**",

@@ -22,6 +22,8 @@ public interface UserService {
 
     void changePassword(ChangePasswordRequestDto requestDto, UUID userId);
 
+    void resetPassword(String newPassword, String token);
+
     Page<UserDTO> getAllUsers(Pageable pageable);
     Page<UserDTO> search(UserSearchParamsDto params, Pageable pageable);
 }

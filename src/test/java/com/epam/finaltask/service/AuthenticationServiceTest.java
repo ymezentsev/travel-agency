@@ -5,7 +5,7 @@ import com.epam.finaltask.auth.AuthenticationResponse;
 import com.epam.finaltask.auth.AuthenticationService;
 import com.epam.finaltask.token.JwtService;
 import com.epam.finaltask.exception.EntityNotFoundException;
-import com.epam.finaltask.model.Role;
+import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -61,7 +61,7 @@ public class AuthenticationServiceTest {
                 true
         );
 
-        when(userRepository.findUserByUsername(userName)).thenReturn(Optional.of(expectedUser));
+        when(userRepository.findByUsername(userName)).thenReturn(Optional.of(expectedUser));
         when(jwtService.generateToken(expectedUser)).thenReturn("Token");
         when(passwordEncoder.matches(password, password)).thenReturn(true);
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -73,7 +73,7 @@ public class AuthenticationServiceTest {
         AuthenticationResponse actualResponse = authenticationService.authenticate(authenticationRequest);
 
         assertEquals(expectedResponse, actualResponse);
-        verify(userRepository, times(1)).findUserByUsername(userName);
+        verify(userRepository, times(1)).findByUsername(userName);
 
     }
 
@@ -85,7 +85,7 @@ public class AuthenticationServiceTest {
 
         AuthenticationRequest request = new AuthenticationRequest(userName, password);
 
-        when(userRepository.findUserByUsername(userName)).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(userName)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> authenticationService.authenticate(request));
     }
@@ -95,7 +95,7 @@ public class AuthenticationServiceTest {
 
         AuthenticationRequest request = new AuthenticationRequest("Admin", "cookie");
 
-        when(userRepository.findUserByUsername("Admin")).thenReturn(Optional.of(new User()));
+        when(userRepository.findByUsername("Admin")).thenReturn(Optional.of(new User()));
         assertThrows(EntityNotFoundException.class, () -> authenticationService.authenticate(request));
     }
 

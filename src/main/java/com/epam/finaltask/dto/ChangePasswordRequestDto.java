@@ -1,5 +1,6 @@
 package com.epam.finaltask.dto;
 
+import com.epam.finaltask.dto.group.OnChangePassword;
 import com.epam.finaltask.dto.validator.FieldMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -12,10 +13,10 @@ import lombok.NoArgsConstructor;
 @FieldMatch(first = "newPassword", second = "repeatNewPassword", message = "New and repeat passwords do not match")
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Dto for change user password")
+@Schema(description = "Dto for change and reset user password")
 public class ChangePasswordRequestDto {
 
-    @NotBlank(message = "Current password is required")
+    @NotBlank(groups = {OnChangePassword.class}, message = "Current password is required")
     @Schema(description = "User Current Password", example = "Qwerty123")
     private String oldPassword;
 

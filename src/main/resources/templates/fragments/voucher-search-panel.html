@@ -2,24 +2,12 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Search panel</title>
+    <title>Voucher search panel</title>
 </head>
 <body>
 <div th:fragment="search-panel">
-    <form sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
-          th:action="@{/v1/vouchers/anonymous/by-price}" method="get" class="row g-3">
-        <label for="maxPrice"><strong>Search by price (less or equal than input)</strong></label>
-        <div class="col-md-2">
-            <input type="text" class="form-control" id="maxPrice" name="maxPrice"
-                   placeholder="Maximum price">
-        </div>
-        <div class="col-md-1">
-            <button type="submit" class="btn btn-success btn-sm">Search by price</button>
-        </div>
-    </form>
-
-    <form sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
-          th:action="@{/v1/vouchers/auth-manager/by-price}" method="get" class="row g-3">
+    <form th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}"
+          th:action="@{/v1/vouchers/{path}/by-price(path = ${path})}" method="get" class="row g-3">
         <label for="maxPrice"><strong>Search by price (less or equal than input)</strong></label>
         <div class="col-md-2">
             <input type="text" class="form-control" id="maxPrice" name="maxPrice"
