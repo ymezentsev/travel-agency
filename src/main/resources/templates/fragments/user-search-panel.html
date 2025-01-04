@@ -9,7 +9,7 @@
     <div class="row">
         <div class="btn-group col-md-2">
             <button class="form-control" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                    aria-expanded="false" th:text="#{user.search.panel.button.role}">
                 Search by role
             </button>
             <ul class="dropdown-menu">
@@ -23,19 +23,21 @@
 
         <div class="btn-group col-md-2">
             <button class="form-control" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                    aria-expanded="false" th:text="#{user.search.panel.button.locked}">
                 Search by locked status
             </button>
             <ul class="dropdown-menu">
                 <li>
                     <a class="dropdown-item"
-                       th:href="@{/v1/users/auth-admin/by-lockedStatus/{isUnlocked}(isUnlocked=${false})}">
+                       th:href="@{/v1/users/auth-admin/by-lockedStatus/{isUnlocked}(isUnlocked=${false})}"
+                       th:text="#{user.search.panel.locked}">
                         Locked
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item"
-                       th:href="@{/v1/users/auth-admin/by-lockedStatus/{isUnlocked}(isUnlocked=${true})}">
+                       th:href="@{/v1/users/auth-admin/by-lockedStatus/{isUnlocked}(isUnlocked=${true})}"
+                       th:text="#{user.search.panel.unlocked}">
                         Unlocked
                     </a>
                 </li>
@@ -47,39 +49,43 @@
     <div class="row">
         <div class="col-md-4">
             <form th:action="@{/v1/users/auth-admin/by-username}" method="get" class="row g-3">
-                <label for="username"><strong>Search by username</strong></label>
+                <label for="username"><strong th:text="#{user.search.panel.by-username}">Search by username</strong></label>
                 <div class="col-md-6">
                     <input type="text" class="form-control" id="username" name="username"
-                           placeholder="Username">
+                           th:attr="placeholder=#{user.search.panel.placeholder-user}">
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-success btn-sm">Search by username</button>
+                    <button type="submit" class="btn btn-success btn-sm" th:text="#{user.search.panel.by-username}">
+                        Search by username</button>
                 </div>
             </form>
         </div>
 
         <div class="col-md-4">
             <form th:action="@{/v1/users/auth-admin/by-phoneNumber}" method="get" class="row g-3">
-                <label for="phoneNumber"><strong>Search by phone number</strong></label>
+                <label for="phoneNumber"><strong th:text="#{user.search.panel.by-phone}">
+                    Search by phone number</strong></label>
                 <div class="col-md-5">
                     <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
-                           placeholder="Phone number">
+                           th:attr="placeholder=#{user.search.panel.placeholder-phone}">
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-success btn-sm">Search by phone number</button>
+                    <button type="submit" class="btn btn-success btn-sm" th:text="#{user.search.panel.by-phone}">
+                        Search by phone number</button>
                 </div>
             </form>
         </div>
 
         <div class="col-md-4">
             <form th:action="@{/v1/users/auth-admin/by-email}" method="get" class="row g-3">
-                <label for="email"><strong>Search by email</strong></label>
+                <label for="email"><strong th:text="#{user.search.panel.by-email}">Search by email</strong></label>
                 <div class="col-md-6">
                     <input type="text" class="form-control" id="email" name="email"
-                           placeholder="Email">
+                           th:attr="placeholder=#{user.search.panel.placeholder-email}">
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-success btn-sm">Search by email</button>
+                    <button type="submit" class="btn btn-success btn-sm" th:text="#{user.search.panel.by-email}">
+                        Search by email</button>
                 </div>
             </form>
         </div>

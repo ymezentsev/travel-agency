@@ -9,20 +9,20 @@
     <button sec:authorize="hasAuthority('ROLE_USER')"
             th:if="${voucher.status} == 'REGISTERED'"
             class="form-control" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+            aria-expanded="false" th:text="#{voucher.action.button.choose}">
         Choose action
     </button>
 
     <button sec:authorize="hasAuthority('ROLE_MANAGER')"
             th:if="${voucher.status} == 'REGISTERED' or ${voucher.status} == 'AVAILABLE'"
             class="form-control" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+            aria-expanded="false" th:text="#{voucher.action.button.choose}">
         Choose action
     </button>
 
     <button sec:authorize="hasAuthority('ROLE_ADMIN')" th:if="${voucher.status} != 'PAID'"
             class="form-control" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+            aria-expanded="false" th:text="#{voucher.action.button.choose}">
         Choose action
     </button>
 
@@ -32,19 +32,22 @@
             <li th:if="${authUser.balance} - ${voucher.price} >= 0">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-user/{voucherId}/pay-confirmation
-                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.pay-by-balance}">
                     Pay with balance</a>
             </li>
             <li th:unless="${authUser.balance} - ${voucher.price} >= 0">
                 <a class="dropdown-item"
                    th:href="@{/v1/users/auth-user/balance/{userId}
-                   (userId=${authUser.id}, requestURI=${requestURI}, queryString=${queryString})}">
+                   (userId=${authUser.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.top-up-balance}">
                     Top up balance</a>
             </li>
             <li>
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-user/{voucherId}/cancelOrder
-                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">Cancel order</a>
+                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.cancel-order}">Cancel order</a>
             </li>
         </div>
 
@@ -53,25 +56,29 @@
             <li th:if="${!voucher.isHot} and ${voucher.status} == 'AVAILABLE'">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-manager/{voucherId}?newHotStatus=true
-               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.make-hot}">
                     Make hot</a>
             </li>
             <li th:if="${voucher.isHot} and ${voucher.status} == 'AVAILABLE'">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-manager/{voucherId}?newHotStatus=false
-               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.cancel-hot}">
                     Cancel "hot" status</a>
             </li>
             <li th:if="${voucher.status} == 'REGISTERED'">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-manager/{voucherId}/status?newStatus=PAID
-               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.set-paid}">
                     Set status "PAID"</a>
             </li>
             <li th:if="${voucher.status} == 'REGISTERED'">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-manager/{voucherId}/status?newStatus=CANCELED
-               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">
+               (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.set-canceled}">
                     Set status "CANCELED"</a>
             </li>
         </div>
@@ -81,12 +88,14 @@
             <li th:if="${voucher.status} != 'REGISTERED' and ${voucher.status} != 'PAID'">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-admin/{voucherId}/update
-                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">Update</a>
+                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.update}">Update</a>
             </li>
             <li th:if="${voucher.status} != 'REGISTERED' and ${voucher.status} != 'PAID'">
                 <a class="dropdown-item"
                    th:href="@{/v1/vouchers/auth-admin/{voucherId}/delete
-                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}">Delete</a>
+                   (voucherId=${voucher.id}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{voucher.action.button.delete}">Delete</a>
             </li>
         </div>
     </ul>

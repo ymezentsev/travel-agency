@@ -6,14 +6,14 @@
 </head>
 <body>
     <div th:fragment="paginationLinks(pagination)"
-         th:with="urlBuilder=${T(com.epam.finaltask.utils.ServletUriComponentsBuilderWrapper)}">
+         th:with="urlBuilder=${T(com.epam.finaltask.util.ServletUriComponentsBuilderWrapper)}">
         <nav aria-label="page navigation" th:if="${pagination.totalPages > 1}" th:with="max=3">
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:if="${pagination.hasPrevious()}">
                     <a class="page-link"
                        th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pagination.number - 1)
                                                     .replaceQueryParam('size', pagination.size).toUriString()}}">
-                        Prev</a>
+                        <<</a>
                 </li>
                 <li class="page-item" th:each="page: ${#numbers.sequence(0, pagination.totalPages-1)}"
                     th:if="${pagination.number} >= ${page - max} and ${pagination.number} <= ${page + max} or ${page} == ${pagination.totalPages - 1} or ${page} == 0"
@@ -32,7 +32,7 @@
                     <a class="page-link"
                        th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pagination.number + 1)
                                                    .replaceQueryParam('size', pagination.size).toUriString()}}">
-                        Next</a>
+                        >></a>
                 </li>
             </ul>
         </nav>

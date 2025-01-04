@@ -31,7 +31,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Value("${scheduler.days.to.arrive.reminder}")
     private int daysToArriveReminder;
 
-
+    //todo change logger
     @Override
     @Async("myAsyncPoolTaskExecutor")
     //Scheduled every day at midnight

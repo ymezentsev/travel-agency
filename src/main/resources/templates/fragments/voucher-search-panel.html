@@ -8,13 +8,16 @@
 <div th:fragment="search-panel">
     <form th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}"
           th:action="@{/v1/vouchers/{path}/by-price(path = ${path})}" method="get" class="row g-3">
-        <label for="maxPrice"><strong>Search by price (less or equal than input)</strong></label>
+        <label for="maxPrice"><strong th:text="#{voucher.search.panel.label.by-price}">
+            Search by price (less or equal than input)</strong></label>
         <div class="col-md-2">
             <input type="text" class="form-control" id="maxPrice" name="maxPrice"
-                   placeholder="Maximum price">
+                   th:attr="placeholder=#{voucher.search.panel.button.placeholder-price}">
         </div>
         <div class="col-md-1">
-            <button type="submit" class="btn btn-success btn-sm">Search by price</button>
+            <button type="submit" class="btn btn-success btn-sm"
+                    th:text="#{voucher.search.panel.button.by-price}">Search by price
+            </button>
         </div>
     </form>
 
@@ -26,7 +29,7 @@
 
     <div class="btn-group">
         <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+                aria-expanded="false" th:text="#{voucher.search.panel.by-tour-type}">
             Search by tour type
         </button>
         <ul class="dropdown-menu">
@@ -45,7 +48,7 @@
 
     <div class="btn-group">
         <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+                aria-expanded="false" th:text="#{voucher.search.panel.by-transfer-type}">
             Search by transfer type
         </button>
         <ul class="dropdown-menu">
@@ -64,7 +67,7 @@
 
     <div class="btn-group">
         <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+                aria-expanded="false" th:text="#{voucher.search.panel.by-hotel-type}">
             Search by hotel type
         </button>
         <ul class="dropdown-menu">
@@ -83,7 +86,7 @@
 
     <div class="btn-group" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
         <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
+                aria-expanded="false" th:text="#{voucher.search.panel.by-status}">
             Search by voucher status
         </button>
         <ul class="dropdown-menu">

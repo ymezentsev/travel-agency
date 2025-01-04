@@ -7,10 +7,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpecificationBuilder {
+
     static <T> Specification<T> buildLikePredicate(String field, String[] values) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = Arrays.stream(values)
-                    .map(param -> criteriaBuilder.like(root.get(field), "%" + param.strip() + "%"))
+                    .map(param -> criteriaBuilder.like(criteriaBuilder.lower(root.get(field)),
+                            "%" + param.toLowerCase().strip() + "%"))
                     .toList();
             return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
         };

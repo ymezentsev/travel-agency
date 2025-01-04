@@ -1,5 +1,6 @@
 package com.epam.finaltask.service.impl;
 
+import com.epam.finaltask.auth.AuthenticationService;
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
@@ -7,7 +8,8 @@ import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.exception.InvalidVoucherOperationException;
 import com.epam.finaltask.mapper.UserMapper;
 import com.epam.finaltask.mapper.VoucherMapper;
-import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.User;
+import com.epam.finaltask.model.Voucher;
 import com.epam.finaltask.model.enums.HotelType;
 import com.epam.finaltask.model.enums.TourType;
 import com.epam.finaltask.model.enums.TransferType;
@@ -17,18 +19,17 @@ import com.epam.finaltask.service.EmailSenderService;
 import com.epam.finaltask.service.UserService;
 import com.epam.finaltask.service.VoucherService;
 import com.epam.finaltask.specification.VoucherSpecification;
+import com.epam.finaltask.util.I18nUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
-import static com.epam.finaltask.exception.StatusCodes.*;
+import static com.epam.finaltask.model.enums.StatusCodes.*;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VoucherServiceImpl implements VoucherService {
@@ -38,17 +39,8 @@ public class VoucherServiceImpl implements VoucherService {
     private final UserMapper userMapper;
     private final VoucherSpecification voucherSpecification;
     private final EmailSenderService emailSenderService;
-
-    private static final String VOUCHER_NOT_EXISTS = "Voucher not exists";
-    private static final String VOUCHER_ALREADY_ORDERED = "Voucher is already ordered";
-    private static final String INVALID_HOT_CHANGE = "'HOT' change is allowed only for vouchers with the 'AVAILABLE' status";
-    private static final String INVALID_STATUS_CHANGE = "Status '%s' cannot be set for a voucher with status '%s'";
-    private static final String INVALID_DELETE = "Voucher with status '%s' cannot be deleted";
-    private static final String INVALID_UPDATE = "Status '%s' cannot be set by an update operation";
-    private static final String INVALID_CANCEL_ORDER = "For voucher with status '%s' order cannot be canceled";
-    private static final String INVALID_PAY_VOUCHER = "Voucher with status '%s' cannot be paid";
-    private static final String NOT_ENOUGH_BALANCE = "Not enough balance to pay voucher";
-
+    private final AuthenticationService authenticationService;
+    private final I18nUtil i18nUtil;
 
     @Override
     public VoucherDTO create(VoucherDTO voucherDTO) {
@@ -57,48 +49,37 @@ public class VoucherServiceImpl implements VoucherService {
         voucherDTO.setHotelType(voucherDTO.getHotelType().toUpperCase().strip());
         voucherDTO.setStatus(VoucherStatus.AVAILABLE.name());
 
-        return voucherMapper.toVoucherDTO(
-                voucherRepository.save(
-                        voucherMapper.toVoucher(voucherDTO)));
+        return voucherMapper.toVoucherDTO(voucherRepository.save(voucherMapper.toVoucher(voucherDTO)));
     }
 
-    //todo for tests remove check if voucher has status paid
     @Override
     public VoucherDTO update(String id, VoucherDTO voucherDTO) {
         Voucher voucher = getVoucherById(id);
 
-        voucherDTO.setTourType(voucherDTO.getTourType().toUpperCase().strip());
-        voucherDTO.setTransferType(voucherDTO.getTransferType().toUpperCase().strip());
-        voucherDTO.setHotelType(voucherDTO.getHotelType().toUpperCase().strip());
-        voucherDTO.setStatus(voucherDTO.getStatus().toUpperCase().strip());
-
-        Voucher newVoucher = voucherMapper.toVoucher(voucherDTO);
-        voucher.setTitle(newVoucher.getTitle());
-        voucher.setDescription(newVoucher.getDescription());
-        voucher.setPrice(newVoucher.getPrice());
-        voucher.setTourType(newVoucher.getTourType());
-        voucher.setTransferType(newVoucher.getTransferType());
-        voucher.setHotelType(newVoucher.getHotelType());
-        voucher.setArrivalDate(newVoucher.getArrivalDate());
-        voucher.setEvictionDate(newVoucher.getEvictionDate());
-        voucher.setHot(newVoucher.isHot());
-
-        if (newVoucher.getStatus().equals(VoucherStatus.PAID)
-                || newVoucher.getStatus().equals(VoucherStatus.REGISTERED)) {
+        VoucherStatus newStatus = VoucherStatus.valueOf(voucherDTO.getStatus().toUpperCase().strip());
+        if (newStatus.equals(VoucherStatus.PAID) || newStatus.equals(VoucherStatus.REGISTERED)) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
-                    String.format(INVALID_UPDATE, newVoucher.getStatus()));
+                    i18nUtil.getMessage("error.invalid-update", newStatus.name()));
         }
 
-        if ((newVoucher.getStatus().equals(VoucherStatus.AVAILABLE)
-                || newVoucher.getStatus().equals(VoucherStatus.NOT_SOLD))
+        voucher.setTitle(voucherDTO.getTitle());
+        voucher.setDescription(voucherDTO.getDescription());
+        voucher.setPrice(voucherDTO.getPrice());
+        voucher.setTourType(TourType.valueOf(voucherDTO.getTourType().toUpperCase().strip()));
+        voucher.setTransferType(TransferType.valueOf(voucherDTO.getTransferType().toUpperCase().strip()));
+        voucher.setHotelType(HotelType.valueOf(voucherDTO.getHotelType().toUpperCase().strip()));
+        voucher.setArrivalDate(voucherDTO.getArrivalDate());
+        voucher.setEvictionDate(voucherDTO.getEvictionDate());
+        voucher.setHot(Boolean.parseBoolean(voucherDTO.getIsHot()));
+
+        if ((newStatus.equals(VoucherStatus.AVAILABLE) || newStatus.equals(VoucherStatus.NOT_SOLD))
                 && voucher.getUser() != null) {
             voucher.setUser(null);
         }
-        voucher.setStatus(newVoucher.getStatus());
+        voucher.setStatus(newStatus);
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
-    //todo for tests remove check if voucher has status paid
     @Override
     public void delete(String voucherId) {
         Voucher voucher = getVoucherById(voucherId);
@@ -106,51 +87,43 @@ public class VoucherServiceImpl implements VoucherService {
         if (voucher.getStatus().equals(VoucherStatus.PAID)
                 || voucher.getStatus().equals(VoucherStatus.REGISTERED)) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
-                    String.format(INVALID_DELETE, voucher.getStatus()));
+                    i18nUtil.getMessage("error.invalid-delete", voucher.getStatus().name()));
         }
         voucherRepository.deleteById(UUID.fromString(voucherId));
     }
 
-    //todo for tests remove check if voucher has status available
     @Override
     public VoucherDTO changeHotStatus(String id, VoucherDTO voucherDTO) {
         Voucher voucher = getVoucherById(id);
-        Voucher newVoucher = voucherMapper.toVoucher(voucherDTO);
 
         if (!voucher.getStatus().equals(VoucherStatus.AVAILABLE)) {
-            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(), INVALID_HOT_CHANGE);
+            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
+                    i18nUtil.getMessage("error.invalid-hot-change"));
         }
-        voucher.setHot(newVoucher.isHot());
+        voucher.setHot(Boolean.parseBoolean(voucherDTO.getIsHot()));
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
     @Override
     public VoucherDTO changeStatus(String id, VoucherDTO voucherDTO) {
         Voucher voucher = getVoucherById(id);
-        VoucherStatus voucherStatus = VoucherStatus.valueOf(voucherDTO.getStatus().toUpperCase().strip());
+        VoucherStatus newStatus = VoucherStatus.valueOf(voucherDTO.getStatus().toUpperCase().strip());
 
         if (!voucher.getStatus().equals(VoucherStatus.REGISTERED)
-                || !(voucherStatus.equals(VoucherStatus.PAID) || voucherStatus.equals(VoucherStatus.CANCELED))) {
+                || !(newStatus.equals(VoucherStatus.PAID) || newStatus.equals(VoucherStatus.CANCELED))) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
-                    String.format(INVALID_STATUS_CHANGE, voucherStatus, voucher.getStatus()));
+                    i18nUtil.getMessage("error.invalid-status-change",
+                            newStatus.name(), voucher.getStatus().name()));
         }
+        voucher.setStatus(newStatus);
 
-        voucher.setStatus(voucherStatus);
-
-        if (voucherStatus.equals(VoucherStatus.PAID)) {
+        if (newStatus.equals(VoucherStatus.PAID)) {
             emailSenderService.sendPaymentConfirmationEmail(voucher);
         }
-        if (voucherStatus.equals(VoucherStatus.CANCELED)) {
+        if (newStatus.equals(VoucherStatus.CANCELED)) {
             emailSenderService.sendOrderCanceledEmail(voucher, voucher.getUser());
         }
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
-    }
-
-    @Override
-    public List<VoucherDTO> findAll() {
-        return voucherRepository.findAll().stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
     }
 
     @Override
@@ -159,60 +132,18 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public List<VoucherDTO> findAllOrderByIsHot() {
-        return voucherRepository.findAllOrderByIsHotDesc().stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
-    }
-
-    @Override
-    public List<VoucherDTO> findAllByUserId(String userId) {
-        return voucherRepository.findAllByUserId(UUID.fromString(userId)).stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
-    }
-
-    @Override
-    public List<VoucherDTO> findAllByTourType(String tourType) {
-        TourType tourTypeValue = Enum.valueOf(TourType.class, tourType.toUpperCase().strip());
-
-        return voucherRepository.findAllByTourTypeOrderByIsHotDesc(tourTypeValue).stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
-    }
-
-    @Override
-    public List<VoucherDTO> findAllByTransferType(String transferType) {
-        TransferType transferTypeValue = Enum.valueOf(TransferType.class, transferType.toUpperCase().strip());
-
-        return voucherRepository.findAllByTransferTypeOrderByIsHotDesc(transferTypeValue).stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
-    }
-
-    @Override
-    public List<VoucherDTO> findAllByHotelType(String hotelType) {
-        HotelType hotelTypeValue = Enum.valueOf(HotelType.class, hotelType.toUpperCase().strip());
-
-        return voucherRepository.findAllByHotelTypeOrderByIsHotDesc(hotelTypeValue).stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
-    }
-
-    @Override
-    public List<VoucherDTO> findAllByPrice(double price) {
-        return voucherRepository.findAllByPriceLessThanEqualOrderByIsHotDesc(price).stream()
-                .map(voucherMapper::toVoucherDTO)
-                .toList();
-    }
-
-    @Override
     public VoucherDTO order(String id, String userId) {
         Voucher voucher = getVoucherById(id);
         User user = userMapper.toUser(userService.getUserById(UUID.fromString(userId)));
 
+        if (!voucher.getStatus().equals(VoucherStatus.AVAILABLE)) {
+            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
+                    i18nUtil.getMessage("error.invalid-order"));
+        }
+
         if (voucher.getUser() != null) {
-            throw new EntityAlreadyExistsException(DUPLICATE_ORDER.name(), VOUCHER_ALREADY_ORDERED);
+            throw new EntityAlreadyExistsException(DUPLICATE_ORDER.name(),
+                    i18nUtil.getMessage("error.voucher-already-ordered"));
         }
 
         voucher.setUser(user);
@@ -223,8 +154,8 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<VoucherDTO> search(VoucherSearchParamsDto params, Pageable pageable) {
-        return voucherRepository.findAll(voucherSpecification.build(params), pageable)
+    public Page<VoucherDTO> findAll(Pageable pageable) {
+        return voucherRepository.findAll(pageable)
                 .map(voucherMapper::toVoucherDTO);
     }
 
@@ -235,8 +166,8 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public Page<VoucherDTO> findAll(Pageable pageable) {
-        return voucherRepository.findAll(pageable)
+    public Page<VoucherDTO> search(VoucherSearchParamsDto params, Pageable pageable) {
+        return voucherRepository.findAll(voucherSpecification.build(params), pageable)
                 .map(voucherMapper::toVoucherDTO);
     }
 
@@ -244,9 +175,13 @@ public class VoucherServiceImpl implements VoucherService {
     public VoucherDTO cancelOrder(String voucherId) {
         Voucher voucher = getVoucherById(voucherId);
 
+        if (voucher.getUser() == null || !authenticationService.isCurrentUser(voucher.getUser().getId())) {
+            throw new AccessDeniedException(FORBIDDEN.name());
+        }
+
         if (!voucher.getStatus().equals(VoucherStatus.REGISTERED)) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
-                    String.format(INVALID_CANCEL_ORDER, voucher.getStatus()));
+                    i18nUtil.getMessage("error.invalid-cancel-order", voucher.getStatus().name()));
         }
 
         User user = voucher.getUser();
@@ -262,13 +197,18 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher voucher = getVoucherById(voucherId);
         User user = voucher.getUser();
 
+        if (user == null || !authenticationService.isCurrentUser(user.getId())) {
+            throw new AccessDeniedException(FORBIDDEN.name());
+        }
+
         if (!voucher.getStatus().equals(VoucherStatus.REGISTERED)) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
-                    String.format(INVALID_PAY_VOUCHER, voucher.getStatus()));
+                    i18nUtil.getMessage("error.invalid-pay-voucher", voucher.getStatus().name()));
         }
 
         if (user.getBalance() < voucher.getPrice()) {
-            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(), NOT_ENOUGH_BALANCE);
+            throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
+                    i18nUtil.getMessage("error.not-enough-balance"));
         }
 
         user.setBalance(user.getBalance() - voucher.getPrice());
@@ -281,6 +221,6 @@ public class VoucherServiceImpl implements VoucherService {
     private Voucher getVoucherById(String id) {
         return voucherRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
-                        VOUCHER_NOT_EXISTS));
+                        i18nUtil.getMessage("error.voucher-not-exists")));
     }
 }

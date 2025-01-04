@@ -1,11 +1,12 @@
 package com.epam.finaltask.controller.viewcontroller;
 
-import com.epam.finaltask.dto.ChangePasswordRequestDto;
+import com.epam.finaltask.dto.ChangePasswordRequest;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.group.OnCreate;
 import com.epam.finaltask.service.EmailSenderService;
 import com.epam.finaltask.service.ResetPasswordTokenService;
 import com.epam.finaltask.service.UserService;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.epam.finaltask.utils.ViewUtils.getErrors;
+import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
 
 @Controller
 @RequestMapping("/v1/users/anonymous")
@@ -25,6 +26,7 @@ public class UserAnonymousViewController {
     private final UserService userService;
     private final EmailSenderService emailSenderService;
     private final ResetPasswordTokenService resetPasswordTokenService;
+    private final I18nUtil i18nUtil;
 
     @Value("${reset.password.token.lifetime}")
     private Long tokenLifetime;
@@ -51,7 +53,8 @@ public class UserAnonymousViewController {
             model.addAttribute("errors", e.getMessage());
             return "users/register";
         }
-        redirectAttributes.addFlashAttribute("message", "User registered successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.user-registered"));
         return "redirect:/v1/auth/login";
     }
 
@@ -71,8 +74,8 @@ public class UserAnonymousViewController {
             model.addAttribute("errors", e.getMessage());
             return "users/reset-password-request";
         }
-        redirectAttributes.addFlashAttribute("message", String.format("A message with instructions " +
-                "has been sent to your email. The message is valid for %d minutes", tokenLifetime));
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.user-reset-password-email", String.valueOf(tokenLifetime)));
         return "redirect:/v1/auth/login";
     }
 
@@ -86,7 +89,7 @@ public class UserAnonymousViewController {
             model.addAttribute("errors", e.getMessage());
             return "users/reset-password-request";
         }
-        model.addAttribute("changePasswordRequestDto", new ChangePasswordRequestDto());
+        model.addAttribute("changePasswordRequestDto", new ChangePasswordRequest());
         model.addAttribute("token", token);
         return "users/reset-password";
     }
@@ -95,7 +98,7 @@ public class UserAnonymousViewController {
     public String resetPassword(Model model,
                                 @RequestParam("token") String token,
                                 @Valid @ModelAttribute("changePasswordRequestDto")
-                                ChangePasswordRequestDto request,
+                                ChangePasswordRequest request,
                                 BindingResult bindingResult,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -110,7 +113,8 @@ public class UserAnonymousViewController {
             model.addAttribute("errors", e.getMessage());
             return "users/reset-password";
         }
-        redirectAttributes.addFlashAttribute("message", "Password changed successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.user-password-change"));
         return "redirect:/v1/auth/login";
     }
 }

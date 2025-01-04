@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/js/language-switch.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -20,7 +23,7 @@
     <div class="container col-10 mt-4">
         <div class="row g-3" style="height: 100px;"></div>
 
-        <h1 align="center">User information</h1>
+        <h1 align="center" th:text="#{user.info.title}">User information</h1>
         <br>
 
         <input type="hidden" name="requestURI" th:value="${requestURI}">
@@ -28,7 +31,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-2">
-                <strong>Username: </strong>
+                <strong th:text="#{user.info.username}">Username: </strong>
             </div>
             <div class="col-md-2">
                 <span th:text="${userDto.username}"></span>
@@ -39,7 +42,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-2">
-                <strong>Phone number: </strong>
+                <strong th:text="#{user.info.phone}">Phone number: </strong>
             </div>
             <div class="col-md-2">
                 <span th:text="${userDto.phoneNumber}"></span>
@@ -49,7 +52,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-2">
-                <strong>Email: </strong>
+                <strong th:text="#{user.info.email}">Email: </strong>
             </div>
             <div class="col-md-2">
                 <span th:text="${userDto.email}"></span>
@@ -59,7 +62,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-2">
-                <strong>Balance: </strong>
+                <strong th:text="#{user.info.balance}">Balance: </strong>
             </div>
             <div class="col-md-2">
                 <span th:text="${userDto.balance}"></span>
@@ -69,17 +72,18 @@
 
         <div class="row justify-content-md-center" th:if="${#strings.equals(userDto.id, authUser.id)}">
             <div class="col-md-2">
-                <a th:href="@{/v1/users/auth-user/update/{userId}(userId=${userId})}" class="btn btn-success btn-lg">
+                <a th:href="@{/v1/users/auth-user/update/{userId}(userId=${userId})}" class="btn btn-success btn-lg"
+                   th:text="#{user.info.button-update}">
                     Update user</a>
             </div>
             <div class="col-md-2">
                 <a th:href="@{/v1/users/auth-user/change-password}"
-                   class="btn btn-success btn-lg"> Change password</a>
+                   class="btn btn-success btn-lg" th:text="#{user.info.button-password}"> Change password</a>
             </div>
             <div class="col-md-2" sec:authorize="hasAuthority('ROLE_USER')">
                 <a th:href="@{/v1/users/auth-user/balance/{userId}
             (userId=${userId}, requestURI=${requestURI}, queryString=${queryString})}"
-                   class="btn btn-success btn-lg"> Top up balance</a>
+                   class="btn btn-success btn-lg" th:text="#{user.info.button-balance}"> Top up balance</a>
             </div>
         </div>
         <br>

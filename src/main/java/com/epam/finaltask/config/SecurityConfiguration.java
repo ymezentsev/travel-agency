@@ -58,21 +58,18 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/auth/**",
-                                        "/users/register",
+                                        "users/reset-password-email/**",
+                                        "users/reset-password/**",
                                         "/images/**",
                                         "/css/**",
-
+                                        "/js/**",
                                         "/v1/auth/**",
                                         "/v1/users/anonymous/**",
                                         "/v1/vouchers/anonymous/**",
-
-                                       /* "/api/v1/users/forgot-password/**",
-                                        "/api/v1/users/reset-password/**",
-                                        "/api/v1/google/**",
-                                        "/error",*/
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.POST, "users").permitAll()
                                 .requestMatchers(HttpMethod.GET, "vouchers/**").permitAll()
                                 .requestMatchers("/v1/vouchers/auth-manager/**")
                                 .hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")

@@ -46,19 +46,6 @@ public class User implements UserDetails {
     @Column
     private String email;
 
-    public User(UUID id, String username, String password,
-                Role role, List<Voucher> vouchers, String phoneNumber,
-                Double balance, boolean accountStatus) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.vouchers = vouchers;
-        this.phoneNumber = phoneNumber;
-        this.balance = balance;
-        this.accountStatus = accountStatus;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();

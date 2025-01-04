@@ -1,7 +1,7 @@
 package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
-import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.User;
 import com.epam.finaltask.model.enums.HotelType;
 import com.epam.finaltask.model.enums.TourType;
 import com.epam.finaltask.model.enums.TransferType;
@@ -17,7 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.utils.ViewUtils.*;
+import static com.epam.finaltask.util.ViewControllerUtil.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
+import static com.epam.finaltask.util.ViewControllerUtil.updateVoucherSearchParam;
 
 @Controller
 @RequestMapping("/v1/vouchers/anonymous")
@@ -152,9 +154,6 @@ public class VoucherAnonymousViewController {
     @ModelAttribute
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user) {
-        if (user != null) {
-            model.addAttribute("authUser", user);
-        }
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());
         model.addAttribute("hotelTypes", HotelType.values());

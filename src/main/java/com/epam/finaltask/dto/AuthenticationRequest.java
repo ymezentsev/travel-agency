@@ -1,4 +1,4 @@
-package com.epam.finaltask.auth;
+package com.epam.finaltask.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(description = "Dto for login user")
 public class AuthenticationRequest {
-    @NotBlank(message = "Username is required")
-    @Schema(description = "Username", example = "User1")
-    String username;
+    @NotBlank(message = "{validation.username-required}")
+    @Schema(description = "Username", example = "User")
+    private String username;
 
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "{validation.password-required}")
     @Schema(description = "User password", example = "Qwerty123")
-    String password;
+    private String password;
 }

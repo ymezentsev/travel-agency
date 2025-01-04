@@ -1,11 +1,12 @@
 package com.epam.finaltask.controller.viewcontroller;
 
-import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.User;
 import com.epam.finaltask.model.enums.HotelType;
 import com.epam.finaltask.model.enums.TourType;
 import com.epam.finaltask.model.enums.TransferType;
 import com.epam.finaltask.model.enums.VoucherStatus;
 import com.epam.finaltask.service.VoucherService;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -17,14 +18,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.epam.finaltask.utils.ViewUtils.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.utils.ViewUtils.getPreviousPageUri;
+import static com.epam.finaltask.util.ViewControllerUtil.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.util.ViewControllerUtil.getPreviousPageUri;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-user")
 @RequiredArgsConstructor
 public class VoucherAuthUserViewController {
     private final VoucherService voucherService;
+    private final I18nUtil i18nUtil;
 
     @PostMapping("/{voucherId}/{userId}")
     public String orderVoucher(Model model,
@@ -46,7 +48,8 @@ public class VoucherAuthUserViewController {
                                               sort = {"arrivalDate", "id"},
                                               direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute("myLinks", true);
-        model.addAttribute("vouchers", voucherService.findAllByUserId(String.valueOf(user.getId()), pageable));
+        model.addAttribute("vouchers",
+                voucherService.findAllByUserId(String.valueOf(user.getId()), pageable));
         return "vouchers/vouchers";
     }
 
@@ -87,7 +90,8 @@ public class VoucherAuthUserViewController {
             model.addAttribute("previousPage", previousPage);
             return "vouchers/pay-confirmation";
         }
-        redirectAttributes.addFlashAttribute("message", "Tour was paid successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.voucher-payed"));
         return "redirect:" + previousPage;
     }
 
@@ -95,9 +99,6 @@ public class VoucherAuthUserViewController {
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user,
                               HttpServletRequest request) {
-        if (user != null) {
-            model.addAttribute("authUser", user);
-        }
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());
         model.addAttribute("hotelTypes", HotelType.values());

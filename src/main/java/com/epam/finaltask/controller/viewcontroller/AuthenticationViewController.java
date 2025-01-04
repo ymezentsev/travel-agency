@@ -1,7 +1,7 @@
 package com.epam.finaltask.controller.viewcontroller;
 
-import com.epam.finaltask.auth.AuthenticationRequest;
 import com.epam.finaltask.auth.AuthenticationService;
+import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.model.User;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static com.epam.finaltask.utils.ViewUtils.getErrors;
+import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
 
 @Controller
 @RequestMapping("/v1/auth")

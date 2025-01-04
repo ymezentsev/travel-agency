@@ -12,13 +12,11 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 
-    <script>
-        $('select').selectpicker();
-    </script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/js/language-switch.js" type="text/javascript"></script>
+
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 </head>
@@ -32,32 +30,38 @@
         <form th:action="@{/v1/users/auth-admin/search-result}" th:object="${searchParams}" method="get"
               class="row g-3" id="form" style="height: 524px;">
 
-            <h1>User search</h1>
+            <h1 th:text="#{user.search.title}">User search</h1>
 
             <div class="col-md-4">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label" th:text="#{user.search.username}">Username</label>
                 <input type="text" th:field="*{usernames}" class="form-control" id="username"
-                       aria-describedby="usernameHelp" placeholder="Enter username">
-                <small id="usernameHelp" class="form-text text-muted">To search for multiple values, use "*"</small>
+                       aria-describedby="usernameHelp"
+                       th:attr="placeholder=#{user.search.username-placeholder}">
+                <small id="usernameHelp" class="form-text text-muted" th:text="#{user.search.help}">
+                    To search for multiple values, use "*"</small>
             </div>
 
             <div class="col-md-4">
-                <label for="phoneNumber" class="form-label">Phone number</label>
+                <label for="phoneNumber" class="form-label" th:text="#{user.search.phone}">Phone number</label>
                 <input type="text" th:field="*{phoneNumbers}" class="form-control" id="phoneNumber"
-                       aria-describedby="phoneNumberHelp" placeholder="Enter phone number">
-                <small id="phoneNumberHelp" class="form-text text-muted">To search for multiple values, use "*"</small>
+                       aria-describedby="phoneNumberHelp"
+                       th:attr="placeholder=#{user.search.phone-placeholder}">
+                <small id="phoneNumberHelp" class="form-text text-muted" th:text="#{user.search.help}">
+                    To search for multiple values, use "*"</small>
             </div>
 
             <div class="col-md-4">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label" th:text="#{user.search.email}">Email</label>
                 <input type="text" th:field="*{emails}" class="form-control" id="email"
-                       aria-describedby="emailHelp" placeholder="Enter email">
-                <small id="emailHelp" class="form-text text-muted">To search for multiple values, use "*"</small>
+                       aria-describedby="emailHelp"
+                       th:attr="placeholder=#{user.search.email-placeholder}">
+                <small id="emailHelp" class="form-text text-muted" th:text="#{user.search.help}">
+                    To search for multiple values, use "*"</small>
             </div>
 
             <div class="row">
                 <div class="col-md-4">
-                    <label for="role" class="form-label">Role</label>
+                    <label for="role" class="form-label" th:text="#{user.search.role}">Role</label>
                     <select th:field="*{roles}" id="role"
                             class="selectpicker" multiple data-live-search="true">
                         <option th:each="role : ${roles}" th:value="${role}" th:text="${role}"></option>
@@ -65,17 +69,19 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label for="isUnlocked" class="form-label"> Is locked</label>
+                    <label for="isUnlocked" class="form-label" th:text="#{user.search.is-locked}"> Is locked</label>
                     <select th:field="*{isUnlocked}" id="isUnlocked"
                             class="selectpicker" data-live-search="true">
-                        <option th:value="null">All</option>
-                        <option th:value="false">Locked</option>
-                        <option th:value="true">Unlocked</option>
+                        <option th:value="null" th:text="#{user.search.all}">All</option>
+                        <option th:value="false" th:text="#{user.search.locked}">Locked</option>
+                        <option th:value="true" th:text="#{user.search.unlocked}">Unlocked</option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
-                    <button class="btn btn-success btn-lg mt-2" type="submit">Submit</button>
+                    <button class="btn btn-success btn-lg mt-2" type="submit" th:text="#{user.search.button}">
+                        Submit
+                    </button>
                 </div>
             </div>
 

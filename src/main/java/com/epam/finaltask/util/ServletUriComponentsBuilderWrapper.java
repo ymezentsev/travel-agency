@@ -1,4 +1,4 @@
-package com.epam.finaltask.utils;
+package com.epam.finaltask.util;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 

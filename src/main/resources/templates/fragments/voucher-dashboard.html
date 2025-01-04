@@ -11,26 +11,26 @@
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
-            <th scope="col" class="col-2">Title</th>
-            <th scope="col" class="col-1">Tour type</th>
-            <th scope="col" class="col-1">Transfer type</th>
-            <th scope="col" class="col-1">Hotel type</th>
-            <th scope="col" class="col-1">Arrival date</th>
-            <th scope="col" class="col-1">Eviction date</th>
-            <th scope="col" class="col-1">Price</th>
-            <th scope="col" class="col-1">Is hot</th>
+            <th scope="col" class="col-2" th:text="#{voucher.dashboard.title}">Title</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.tour-type}">Tour type</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.transfer-type}">Transfer type</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.hotel-type}">Hotel type</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.arrival-date}">Arrival date</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.eviction-date}">Eviction date</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.price}">Price</th>
+            <th scope="col" class="col-1" th:text="#{voucher.dashboard.is-hot}">Is hot</th>
             <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
-                <th scope="col" class="col-1">Status</th>
-                <th scope="col" class="col-1">User</th>
-                <th scope="col" class="col-1">Action</th>
+                <th scope="col" class="col-1" th:text="#{voucher.dashboard.status}">Status</th>
+                <th scope="col" class="col-1" th:text="#{voucher.dashboard.user}">User</th>
+                <th scope="col" class="col-1" th:text="#{voucher.dashboard.action}">Action</th>
             </div>
             <div sec:authorize="hasAuthority('ROLE_USER')">
                 <div th:if="${myLinks}">
-                    <th scope="col" class="col-1">Status</th>
-                    <th scope="col" class="col-1">Action</th>
+                    <th scope="col" class="col-1" th:text="#{voucher.dashboard.status}">Status</th>
+                    <th scope="col" class="col-1" th:text="#{voucher.dashboard.action}">Action</th>
                 </div>
                 <div th:unless="${myLinks}">
-                    <th scope="col" class="col-1">Action</th>
+                    <th scope="col" class="col-1" th:text="#{voucher.dashboard.action}">Action</th>
                 </div>
             </div>
         </tr>
@@ -98,7 +98,8 @@
                         <form th:action="@{/v1/vouchers/auth-user/{voucherId}/{userId}
                         (voucherId=${voucher.id}, userId=${authUser.id})}"
                               method="post" class="form-inline">
-                            <button type="submit" class="btn btn-outline-dark btn-sm">Order</button>
+                            <button type="submit" class="btn btn-outline-dark btn-sm"
+                                    th:text="#{voucher.dashboard.order}">Order</button>
                         </form>
                     </td>
                 </div>

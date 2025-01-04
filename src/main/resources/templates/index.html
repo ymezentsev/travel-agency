@@ -14,20 +14,8 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 
-
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("#locales").change(function () {
-                var selectedOption = $('#locales').val();
-                if (selectedOption != ''){
-                    window.location.replace('/v1/vouchers/anonymous/index?lang=' + selectedOption);
-                }
-            });
-        });
-    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/js/language-switch.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -38,23 +26,15 @@
         <div class="row mt-4">
             <div class="col-md-12 mb-4" style="height: 40px;"></div>
 
-            <h1 align="center" style="height: 100px;">Travel agency</h1>
+            <h1 align="center" style="height: 100px;" th:text="#{index.title}">Travel agency</h1>
         </div>
     </div>
-
-    <h1 th:text="#{greeting}"></h1>
-    <span th:text="#{lang.change}"></span>:
-    <select id="locales">
-        <option value=""></option>
-        <option value="en" th:text="#{lang.eng}"></option>
-        <option value="fr" th:text="#{lang.fr}"></option>
-    </select>
 
     <div sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
          class="container dynamic-container"
          th:if="${vouchers} != null and ${vouchers.content.size() > 0}">
         <div class="container col-12">
-            <h2 class="table-title" align="center">Hot vouchers</h2>
+            <h2 class="table-title" align="center" th:text="#{index.hot}">Hot vouchers</h2>
             <div th:replace="~{fragments/voucher-dashboard.html :: voucher-dashboard(myLinks = ${myLinks})}"></div>
             <div th:replace="~{fragments/pagination.html :: paginationLinks(pagination = ${vouchers})}"></div>
         </div>
@@ -65,7 +45,7 @@
          th:if="${vouchers} != null and ${vouchers.content.size() == 0}">
         <div class="col-md-12 mb-4" style="height: 100px;"></div>
         <div>
-            <h2 align="center">We offer the best tours at the best price!</h2>
+            <h2 align="center" th:text="#{index.slogan}">We offer the best tours at the best price!</h2>
         </div>
     </div>
 
@@ -73,10 +53,9 @@
          class="container col-4 mt-4">
         <div class="col-md-12 mb-4" style="height: 100px;"></div>
         <div>
-            <h2 align="center">We offer the best tours at the best price!</h2>
+            <h2 align="center" th:text="#{index.slogan}">We offer the best tours at the best price!</h2>
         </div>
     </div>
-
 </main>
 
 </body>

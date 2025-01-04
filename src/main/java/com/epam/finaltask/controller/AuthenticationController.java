@@ -1,35 +1,35 @@
 package com.epam.finaltask.controller;
 
-import com.epam.finaltask.auth.AuthenticationRequest;
 import com.epam.finaltask.auth.AuthenticationService;
 import com.epam.finaltask.controller.openapi.AuthenticationControllerOpenApi;
+import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.RemoteResponse;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.epam.finaltask.exception.StatusCodes.OK;
+import static com.epam.finaltask.model.enums.StatusCodes.OK;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthenticationController implements AuthenticationControllerOpenApi {
     private final AuthenticationService authenticationService;
-
-    private static final String STATUS_AUTH_MESSAGE = "User is successfully authenticated";
+    private final I18nUtil i18nUtil;
 
     @Override
     @PostMapping("/login")
-    public ResponseEntity<RemoteResponse> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_AUTH_MESSAGE, List.of(authenticationService.authenticate(authenticationRequest))),
-                HttpStatus.ACCEPTED);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public RemoteResponse authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.auth-succeed"))
+                .results(List.of(authenticationService.authenticate(authenticationRequest)))
+                .build();
     }
 }

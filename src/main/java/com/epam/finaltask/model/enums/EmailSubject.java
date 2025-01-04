@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EmailSubject {
-    //todo update getTemplate and getLink
     RESET_PASSWORD("Reset password instruction") {
         @Override
         public String getTemplate() {

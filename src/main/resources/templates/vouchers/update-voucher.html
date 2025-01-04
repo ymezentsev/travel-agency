@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/js/language-switch.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -22,44 +25,47 @@
         <form th:action="@{/v1/vouchers/auth-admin/update}" th:object="${voucherDto}" method="post" class="row g-3"
               id="form" style="height: 524px;">
 
-            <h1>Update voucher</h1>
+            <h1 th:text="#{update.voucher.title}">Update voucher</h1>
 
             <input type="hidden" th:field="*{id}">
             <input type="hidden" name="previousPage" th:value="${previousPage}">
 
             <div class="col-md-8">
-                <label for="title" class="form-label">Title</label>
+                <label for="title" class="form-label" th:text="#{create.voucher.title-label}">Title</label>
                 <input type="text" th:field="*{title}" class="form-control" id="title"
-                       aria-describedby="titleHelp" placeholder="Enter voucher's title">
-                <small id="titleHelp" class="form-text text-muted">Max size for title is 255 characters</small>
+                       aria-describedby="titleHelp" th:attr="placeholder=#{create.voucher.title-placeholder}">
+                <small id="titleHelp" class="form-text text-muted" th:text="#{create.voucher.title-help}">
+                    Max size for title is 255 characters</small>
             </div>
 
             <div class="col-md-4">
-                <label for="price" class="form-label">Price</label>
+                <label for="price" class="form-label" th:text="#{create.voucher.price}">Price</label>
                 <input type="text" th:field="*{price}" class="form-control" id="price"
-                       aria-describedby="priceHelp" placeholder="Enter voucher's price">
-                <small id="priceHelp" class="form-text text-muted">Price must be positive number</small>
+                       aria-describedby="priceHelp" th:attr="placeholder=#{create.voucher.price-placeholder}">
+                <small id="priceHelp" class="form-text text-muted" th:text="#{create.voucher.price-help}">
+                    Price must be positive number</small>
             </div>
 
             <div class="col-md-12">
-                <label for="description" class="form-label">Description</label>
+                <label for="description" class="form-label" th:text="#{create.voucher.description}">Description</label>
                 <textarea th:field="*{description}" class="form-control" id="description"
                           cols="30" rows="4" aria-describedby="descriptionHelp"
-                          placeholder="Voucher's description"></textarea>
-                <small id="descriptionHelp" class="form-text text-muted">Max size for description is 2000
-                    characters</small>
+                          th:attr="placeholder=#{create.voucher.description-placeholder}"></textarea>
+                <small id="descriptionHelp" class="form-text text-muted" th:text="#{create.voucher.description-help}">
+                    Max size for description is 2000 characters</small>
             </div>
 
             <div class="row">
                 <div class="col-md-3">
-                    <label for="tourType" class="form-label">Tour type</label>
+                    <label for="tourType" class="form-label" th:text="#{create.voucher.tour-type}">Tour type</label>
                     <select th:field="*{tourType}" id="tourType" class="form-select">
                         <option th:each="tourType : ${tourTypes}" th:value="${tourType}" th:text="${tourType}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
-                    <label for="transferType" class="form-label">Transfer Type</label>
+                    <label for="transferType" class="form-label" th:text="#{create.voucher.transfer-type}">Transfer
+                        Type</label>
                     <select th:field="*{transferType}" id="transferType" class="form-select">
                         <option th:each="transferType : ${transferTypes}" th:value="${transferType}"
                                 th:text="${transferType}"></option>
@@ -67,7 +73,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="hotelType" class="form-label">Hotel type</label>
+                    <label for="hotelType" class="form-label" th:text="#{create.voucher.hotel-type}">Hotel type</label>
                     <select th:field="*{hotelType}" id="hotelType" class="form-select">
                         <option th:each="hotelType : ${hotelTypes}" th:value="${hotelType}"
                                 th:text="${hotelType}"></option>
@@ -75,7 +81,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="status" class="form-label">Voucher status</label>
+                    <label for="status" class="form-label" th:text="#{update.voucher.status}">Voucher status</label>
                     <select th:field="*{status}" id="status" class="form-select">
                         <option th:each="status : ${voucherStatuses}" th:value="${status}"
                                 th:text="${status}"></option>
@@ -84,32 +90,38 @@
             </div>
 
             <div class="col-md-4">
-                <label for="arrivalDate" class="form-label">Arrival date</label>
+                <label for="arrivalDate" class="form-label" th:text="#{create.voucher.arrival-date}">
+                    Arrival date</label>
                 <input type="date" name="arrivalDate" id="arrivalDate" class="form-control"
                        aria-describedby="arrivalDateHelp" min="2024-12-01" max="2034-01-01"
                        th:value="${#temporals.format(voucherDto.arrivalDate, 'yyyy-MM-dd')}">
-                <small id="arrivalDateHelp" class="form-text text-muted">Arrival date must be future or present</small>
+                <small id="arrivalDateHelp" class="form-text text-muted" th:text="#{create.voucher.arrival-date-help}">
+                    Arrival date must be future or present</small>
             </div>
 
             <div class="col-md-4">
-                <label for="evictionDate" class="form-label">Eviction date</label>
+                <label for="evictionDate" class="form-label" th:text="#{create.voucher.eviction-date}">
+                    Eviction date</label>
                 <input type="date" name="evictionDate" id="evictionDate" class="form-control"
                        aria-describedby="evictionDateHelp" min="2024-12-01" max="2034-01-01"
                        th:value="${#temporals.format(voucherDto.evictionDate, 'yyyy-MM-dd')}">
-                <small id="evictionDateHelp" class="form-text text-muted">Eviction date must be future and
-                    after arrival date</small>
+                <small id="evictionDateHelp" class="form-text text-muted"
+                       th:text="#{create.voucher.eviction-date-help}">
+                    Eviction date must be future and after arrival date</small>
             </div>
 
             <div class="col-4">
                 <div class="form-check">
                     <br>
                     <input type="checkbox" th:field="*{isHot}" id="isHot" value="true" class="form-check-input">
-                    <label class="form-check-label" for="isHot"> Is hot </label>
+                    <label class="form-check-label" for="isHot" th:text="#{create.voucher.is-hot}"> Is hot </label>
                 </div>
             </div>
 
             <div class="col-12">
-                <button class="btn btn-success btn-lg mt-2" type="submit">Submit</button>
+                <button class="btn btn-success btn-lg mt-2" type="submit" th:text="#{create.voucher.button}">
+                    Submit
+                </button>
             </div>
 
             <div class="alert alert-danger" role="alert" th:if="${errors}" th:each="error: ${errors}">

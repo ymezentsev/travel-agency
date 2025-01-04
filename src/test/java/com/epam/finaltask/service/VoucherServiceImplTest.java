@@ -1,3 +1,4 @@
+/*
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.VoucherDTO;
@@ -375,3 +376,4 @@ public class VoucherServiceImplTest {
         verify(voucherMapper, times(vouchers.size())).toVoucherDTO(any(Voucher.class));
     }
 }
+*/

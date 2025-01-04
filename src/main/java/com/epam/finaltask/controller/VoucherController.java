@@ -7,25 +7,19 @@ import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.dto.group.OnChangeStatus;
 import com.epam.finaltask.dto.group.OnCreate;
 import com.epam.finaltask.dto.group.OnUpdate;
-import com.epam.finaltask.dto.validator.ValueOfEnum;
-import com.epam.finaltask.model.enums.HotelType;
-import com.epam.finaltask.model.enums.TourType;
-import com.epam.finaltask.model.enums.TransferType;
 import com.epam.finaltask.service.VoucherService;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
-import static com.epam.finaltask.exception.StatusCodes.OK;
+import static com.epam.finaltask.model.enums.StatusCodes.OK;
 
 @Validated
 @RestController
@@ -33,131 +27,154 @@ import static com.epam.finaltask.exception.StatusCodes.OK;
 @RequestMapping("/vouchers")
 public class VoucherController implements VoucherControllerOpenApi {
     private final VoucherService voucherService;
-
-    private static final String STATUS_MESSAGE_OK = "OK";
-    private static final String STATUS_MESSAGE_CREATED = "Voucher is successfully created";
-    private static final String STATUS_MESSAGE_UPDATED = "Voucher is successfully updated";
-    private static final String STATUS_MESSAGE_DELETED = "Voucher with Id %s has been deleted";
-    private static final String STATUS_MESSAGE_CHANGED = "Voucher status is successfully changed";
-    private static final String STATUS_MESSAGE_ORDERED = "Voucher is successfully ordered";
+    private final I18nUtil i18nUtil;
 
     @Override
-    @PostMapping("/create")
+    @PostMapping()
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<RemoteResponse> createVoucher(@Validated(OnCreate.class) @RequestBody VoucherDTO voucherDTO) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_CREATED, List.of(voucherService.create(voucherDTO))),
-                HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public RemoteResponse createVoucher(@Validated(OnCreate.class) @RequestBody VoucherDTO voucherDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.voucher-created"))
+                .results(List.of(voucherService.create(voucherDTO)))
+                .build();
     }
 
     @Override
-    @PatchMapping("/change/{voucherId}")
+    @PutMapping("/{voucherId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<RemoteResponse> updateVoucher(@PathVariable("voucherId") String voucherId,
-                                                        @Validated(OnUpdate.class) @RequestBody VoucherDTO voucherDTO) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_UPDATED, List.of(voucherService.update(voucherId, voucherDTO))),
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse updateVoucher(@PathVariable("voucherId") String voucherId,
+                                        @Validated(OnUpdate.class) @RequestBody VoucherDTO voucherDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.voucher-updated"))
+                .results(List.of(voucherService.update(voucherId, voucherDTO)))
+                .build();
     }
 
     @Override
     @DeleteMapping("/{voucherId}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<RemoteResponse> deleteVoucherById(@PathVariable("voucherId") String voucherId) {
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse deleteVoucherById(@PathVariable("voucherId") String voucherId) {
         voucherService.delete(voucherId);
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                String.format(STATUS_MESSAGE_DELETED, voucherId), Collections.EMPTY_LIST),
-                HttpStatus.OK);
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.voucher-deleted", voucherId))
+                .build();
     }
 
     @Override
     @PatchMapping("/{voucherId}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
-    public ResponseEntity<RemoteResponse> changeVoucherHotStatus(@PathVariable("voucherId") String voucherId,
-                                                                 @Valid @RequestBody VoucherDTO voucherDTO) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_CHANGED, List.of(voucherService.changeHotStatus(voucherId, voucherDTO))),
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse changeVoucherHotStatus(@PathVariable("voucherId") String voucherId,
+                                                 @Valid @RequestBody VoucherDTO voucherDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.voucher-hot-status-changed"))
+                .results(List.of(voucherService.changeHotStatus(voucherId, voucherDTO)))
+                .build();
     }
 
     @Override
-    @GetMapping
-    public ResponseEntity<RemoteResponse> findAll() {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, voucherService.findAll()),
-                HttpStatus.OK);
-    }
-
-    @Override
-    @GetMapping("/{userId}")
-    public ResponseEntity<RemoteResponse> findAllByUserId(@PathVariable("userId") String userId) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, voucherService.findAllByUserId(userId)),
-                HttpStatus.OK);
-    }
-
-    @Override
-    @GetMapping("/by-tourType")
-    public ResponseEntity<RemoteResponse> findAllByTourType(
-            @RequestParam("tourType") @ValueOfEnum(enumClass = TourType.class) String tourType) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, voucherService.findAllByTourType(tourType)),
-                HttpStatus.OK);
-    }
-
-    @Override
-    @GetMapping("/by-transferType")
-    public ResponseEntity<RemoteResponse> findAllByTransferType(
-            @RequestParam("transferType") @ValueOfEnum(enumClass = TransferType.class) String transferType) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, voucherService.findAllByTransferType(transferType)),
-                HttpStatus.OK);
-    }
-
-    @Override
-    @GetMapping("/by-hotelType")
-    public ResponseEntity<RemoteResponse> findAllByHotelType(
-            @RequestParam("hotelType") @ValueOfEnum(enumClass = HotelType.class) String hotelType) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, voucherService.findAllByHotelType(hotelType)),
-                HttpStatus.OK);
-    }
-
-    @Override
-    @GetMapping("/by-price")
-    public ResponseEntity<RemoteResponse> findAllByPrice(
-            @RequestParam("price")
-            @DecimalMin(value = "0.01", message = "Price must be positive number") double price) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, voucherService.findAllByPrice(price)),
-                HttpStatus.OK);
+    @PatchMapping("/status/{voucherId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse changeVoucherStatus(@PathVariable("voucherId") String voucherId,
+                                              @Validated(OnChangeStatus.class)
+                                              @RequestBody VoucherDTO voucherDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.voucher-status-changed"))
+                .results(List.of(voucherService.changeStatus(voucherId, voucherDTO)))
+                .build();
     }
 
     @Override
     @PatchMapping("/{voucherId}/{userId}")
-    public ResponseEntity<RemoteResponse> orderVoucher(@PathVariable("voucherId") String voucherId,
-                                                       @PathVariable("userId") String userId) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_ORDERED, List.of(voucherService.order(voucherId, userId))),
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse orderVoucher(@PathVariable("voucherId") String voucherId,
+                                       @PathVariable("userId") String userId) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.voucher-ordered"))
+                .results(List.of(voucherService.order(voucherId, userId)))
+                .build();
     }
 
     @Override
-    @PatchMapping("/{voucherId}/status")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
-    public ResponseEntity<RemoteResponse> changeVoucherStatus(@PathVariable("voucherId") String voucherId,
-                                                              @Validated(OnChangeStatus.class)
-                                                              @RequestBody VoucherDTO voucherDTO) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_CHANGED, List.of(voucherService.changeStatus(voucherId, voucherDTO))),
-                HttpStatus.OK);
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse findAll(Pageable pageable) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(voucherService.findAll(pageable)))
+                .build();
+    }
+
+    @Override
+    @GetMapping("/userId/{userId}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER') or @authenticationService.isCurrentUser(#userId)")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse findAllByUserId(@PathVariable("userId") String userId, Pageable pageable) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(voucherService.findAllByUserId(userId, pageable)))
+                .build();
     }
 
     @Override
     @GetMapping("/search")
-    public ResponseEntity<RemoteResponse> search(VoucherSearchParamsDto params, Pageable pageable) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, List.of(voucherService.search(params, pageable))),
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse search(VoucherSearchParamsDto params, Pageable pageable) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(voucherService.search(params, pageable)))
+                .build();
+    }
+
+    @Override
+    @GetMapping("/{voucherId}")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse findById(@PathVariable("voucherId") String voucherId) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(voucherService.findById(voucherId)))
+                .build();
+    }
+
+    @Override
+    @PatchMapping("/cancel/{voucherId}")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse cancelOrder(@PathVariable("voucherId") String voucherId) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(voucherService.cancelOrder(voucherId)))
+                .build();
+    }
+
+    @Override
+    @PatchMapping("/pay/{voucherId}")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse payVoucher(@PathVariable("voucherId") String voucherId) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(voucherService.payVoucher(voucherId)))
+                .build();
     }
 }

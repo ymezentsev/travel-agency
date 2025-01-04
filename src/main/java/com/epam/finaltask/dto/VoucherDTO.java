@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Data
 @DateOrder(groups = {OnCreate.class, OnUpdate.class}, firstDate = "arrivalDate", secondDate = "evictionDate",
-        message = "The eviction date must be after or equal to arrival date")
+        message = "{validation.dates-wrong-order}")
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Dto for voucher")
@@ -29,51 +29,49 @@ public class VoucherDTO {
     @Schema(description = "Voucher id", example = "f3e02ce0-365d-4c03-90a1-98f00cf6d3d1")
     private String id;
 
-    @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "Title is required")
-    @Length(max = 255, message = "Max size for title is 255 characters")
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.title-required}")
+    @Length(max = 255, message = "{validation.title-validation-message}")
     @Schema(description = "Voucher title", example = "Summer escape")
     private String title;
 
-    @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "Description is required")
-    @Length(max = 2000, message = "Max size for description is 2000 characters")
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.description-required}")
+    @Length(max = 2000, message = "{validation.description-validation-message}")
     @Schema(description = "Voucher description", example = "Enjoy a summer escape")
     private String description;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Price is required")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.price-required}")
     @DecimalMin(groups = {OnCreate.class, OnUpdate.class}, value = "0.01",
-            message = "Price must be positive number")
+            message = "{validation.price-validation-message}")
     @Schema(description = "Voucher price", example = "299.99")
     private double price;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Tour type is required")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.tour-type-required}")
     @ValueOfEnum(enumClass = TourType.class)
     @Schema(description = "Tour type", example = "ADVENTURE")
     private String tourType;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Transfer type is required")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.transfer-type-required}")
     @ValueOfEnum(enumClass = TransferType.class)
     @Schema(description = "Transfer type", example = "PLANE")
     private String transferType;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Hotel type is required")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.hotel-type-required}")
     @ValueOfEnum(enumClass = HotelType.class)
     @Schema(description = "Hotel type", example = "FIVE_STARS")
     private String hotelType;
 
-    @NotNull(groups = {OnChangeStatus.class, OnUpdate.class}, message = "Voucher status is required")
+    @NotNull(groups = {OnChangeStatus.class, OnUpdate.class}, message = "{validation.voucher-status-required}")
     @ValueOfEnum(enumClass = VoucherStatus.class)
     @Schema(description = "Voucher status", example = "REGISTERED")
     private String status;
 
-    //todo for tests remove check FutureOrPresent
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Arrival date is required")
-    @FutureOrPresent(message = "Arrival date must be future or present")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.arrival-date-required}")
+    @FutureOrPresent(message = "{validation.arrival-date-validation-message}")
     @Schema(description = "Arrival date", example = "2025-11-23")
     private LocalDate arrivalDate;
 
-    //todo for tests remove check Future
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "Eviction date is required")
-    @Future(message = "Eviction date must be future")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.eviction-date-required}")
+    @Future(message = "{validation.eviction-date-validation-message}")
     @Schema(description = "Eviction date", example = "2025-11-30")
     private LocalDate evictionDate;
 

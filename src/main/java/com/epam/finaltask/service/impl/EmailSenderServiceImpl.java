@@ -9,17 +9,15 @@ import com.epam.finaltask.repository.UserRepository;
 import com.epam.finaltask.service.AsyncEmailService;
 import com.epam.finaltask.service.EmailSenderService;
 import com.epam.finaltask.service.ResetPasswordTokenService;
+import com.epam.finaltask.util.I18nUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import static com.epam.finaltask.exception.StatusCodes.ENTITY_NOT_FOUND;
-import static com.epam.finaltask.utils.ServiceUtils.USER_NOT_FOUND;
+import static com.epam.finaltask.model.enums.StatusCodes.ENTITY_NOT_FOUND;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailSenderServiceImpl implements EmailSenderService {
@@ -27,6 +25,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private final AsyncEmailService asyncEmailService;
     private final UserRepository userRepository;
     private final TemplateEngine htmlTemplateEngine;
+    private final I18nUtil i18nUtil;
 
     @Value("${backend.base.url}")
     private String backendBaseUrl;
@@ -36,8 +35,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     public void sendResetPasswordEmail(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(), USER_NOT_FOUND));
+        User user = userRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new EntityNotFoundException(ENTITY_NOT_FOUND.name(),
+                        i18nUtil.getMessage("error.user-not-found")));
 
         ResetPasswordToken resetPasswordToken = resetPasswordTokenService.generateResetPasswordToken(user);
         String token = resetPasswordTokenService.saveResetPasswordToken(resetPasswordToken);

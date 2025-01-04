@@ -12,13 +12,11 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 
-    <script>
-        $('select').selectpicker();
-    </script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/js/language-switch.js" type="text/javascript"></script>
+
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 </head>
@@ -33,35 +31,38 @@
               th:action="@{/v1/vouchers/{path}/search-result(path = ${path})}" th:object="${searchParams}" method="get"
               class="row g-3" id="form" style="height: 524px;">
 
-            <h1>Voucher search</h1>
+            <h1 th:text="#{voucher.search.title}">Voucher search</h1>
 
             <div class="col-md-3">
-                <label for="title" class="form-label">Title</label>
+                <label for="title" class="form-label" th:text="#{create.voucher.title-label}">Title</label>
                 <input type="text" th:field="*{titles}" class="form-control" id="title"
-                       aria-describedby="titleHelp" placeholder="Enter voucher's title">
-                <small id="titleHelp" class="form-text text-muted">To search for multiple values, use "*"</small>
+                       aria-describedby="titleHelp" th:attr="placeholder=#{create.voucher.title-placeholder}">
+                <small id="titleHelp" class="form-text text-muted" th:text="#{voucher.search.title-help}">
+                    To search for multiple values, use "*"</small>
             </div>
 
             <div class="col-md-3">
-                <label for="minPrice" class="form-label">Min price</label>
+                <label for="minPrice" class="form-label" th:text="#{voucher.search.min-price}">Min price</label>
                 <input type="text" th:field="*{minPrice}" class="form-control" id="minPrice"
-                       placeholder="Enter voucher's min price">
+                       th:attr="placeholder=#{voucher.search.min-price-placeholder}">
             </div>
 
             <div class="col-md-3">
-                <label for="price" class="form-label">Max price</label>
+                <label for="price" class="form-label" th:text="#{voucher.search.max-price}">Max price</label>
                 <input type="text" th:field="*{maxPrice}" class="form-control" id="price"
-                       placeholder="Enter voucher's max price">
+                       th:attr="placeholder=#{voucher.search.max-price-placeholder}">
             </div>
 
             <div class="col-md-3">
-                <label for="arrivalDate" class="form-label">Arrival date</label>
+                <label for="arrivalDate" class="form-label" th:text="#{create.voucher.arrival-date}">
+                    Arrival date</label>
                 <input type="date" th:field="*{arrivalDate}" id="arrivalDate" class="form-control">
             </div>
 
             <div class="row">
                 <div class="col-md-3">
-                    <label for="tourType" class="form-label">Tour type</label>
+                    <label for="tourType" class="form-label" th:text="#{create.voucher.tour-type}">Tour type</label>
+                    <br>
                     <select th:field="*{tourTypes}" id="tourType"
                             class="selectpicker" multiple data-live-search="true">
                         <option th:each="tourType : ${tourTypes}" th:value="${tourType}" th:text="${tourType}"></option>
@@ -69,7 +70,9 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="transferType" class="form-label">Transfer Type</label>
+                    <label for="transferType" class="form-label" th:text="#{create.voucher.transfer-type}">
+                        Transfer Type</label>
+                    <br>
                     <select th:field="*{transferTypes}" id="transferType"
                             class="selectpicker" multiple data-live-search="true">
                         <option th:each="transferType : ${transferTypes}" th:value="${transferType}"
@@ -78,7 +81,8 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="hotelType" class="form-label">Hotel type</label>
+                    <label for="hotelType" class="form-label" th:text="#{create.voucher.hotel-type}">Hotel type</label>
+                    <br>
                     <select th:field="*{hotelTypes}" id="hotelType"
                             class="selectpicker" multiple data-live-search="true">
                         <option th:each="hotelType : ${hotelTypes}" th:value="${hotelType}"
@@ -87,19 +91,21 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="isHot" class="form-label"> Is hot</label>
+                    <label for="isHot" class="form-label" th:text="#{create.voucher.is-hot}"> Is hot</label>
+                    <br>
                     <select th:field="*{isHot}" id="isHot"
                             class="selectpicker" data-live-search="true">
-                        <option th:value="null">All</option>
-                        <option th:value="true">Hot</option>
-                        <option th:value="false">Not hot</option>
+                        <option th:value="null" th:text="#{voucher.search.all}">All</option>
+                        <option th:value="true" th:text="#{voucher.search.hot}">Hot</option>
+                        <option th:value="false" th:text="#{voucher.search.not-hot}">Not hot</option>
                     </select>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-3" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
-                    <label for="status" class="form-label">Voucher status</label>
+                    <label for="status" class="form-label" th:text="#{update.voucher.status}">Voucher status</label>
+                    <br>
                     <select th:field="*{voucherStatuses}" id="status"
                             class="selectpicker" multiple data-live-search="true">
                         <option th:each="status : ${voucherStatuses}" th:value="${status}"
@@ -108,7 +114,9 @@
                 </div>
 
                 <div class="col-md-2">
-                    <button class="btn btn-success btn-lg mt-2" type="submit">Submit</button>
+                    <button class="btn btn-success btn-lg mt-2" type="submit" th:text="#{create.voucher.button}">
+                        Submit
+                    </button>
                 </div>
             </div>
 

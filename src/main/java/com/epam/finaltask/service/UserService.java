@@ -9,21 +9,23 @@ import java.util.UUID;
 public interface UserService {
     UserDTO register(UserDTO userDTO);
 
-    UserDTO updateUser(String username, UserDTO userDTO);
+    UserDTO updateUser(UUID userId, UserDTO userDTO);
 
     UserDTO getUserByUsername(String username);
 
-    UserDTO changeAccountStatus(UserDTO userDTO);
-    UserDTO changeRole(UserDTO userDTO);
-
     UserDTO getUserById(UUID id);
+
+    Page<UserDTO> getAllUsers(Pageable pageable);
+
+    Page<UserDTO> search(UserSearchParamsDto params, Pageable pageable);
+
+    UserDTO changeAccountStatus(UserDTO userDTO);
+
+    UserDTO changeRole(UserDTO userDTO);
 
     UserDTO updateBalance(UserDTO userDTO);
 
-    void changePassword(ChangePasswordRequestDto requestDto, UUID userId);
+    void changePassword(ChangePasswordRequest requestDto, UUID userId);
 
     void resetPassword(String newPassword, String token);
-
-    Page<UserDTO> getAllUsers(Pageable pageable);
-    Page<UserDTO> search(UserSearchParamsDto params, Pageable pageable);
 }

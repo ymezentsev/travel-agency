@@ -11,6 +11,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/js/language-switch.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -20,13 +23,13 @@
     <div class="container col-10 mt-4">
         <div class="row g-3" style="height: 100px;"></div>
 
-        <h1 align="center">You confirm payment for the voucher</h1>
+        <h1 align="center" th:text="#{pay.confirmation.text}">You confirm payment for the voucher</h1>
 
         <input type="hidden" name="previousPage" th:value="${previousPage}">
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Title: </strong>
+                <strong th:text="#{pay.confirmation.title}">Title: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.title}"></span>
@@ -37,7 +40,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Description: </strong>
+                <strong th:text="#{pay.confirmation.description}">Description: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.description}"></span>
@@ -47,7 +50,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Tour type: </strong>
+                <strong th:text="#{pay.confirmation.tour-type}">Tour type: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.tourType}"></span>
@@ -57,7 +60,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Transfer type: </strong>
+                <strong th:text="#{pay.confirmation.transfer-type}">Transfer type: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.transferType}"></span>
@@ -67,7 +70,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Hotel type: </strong>
+                <strong th:text="#{pay.confirmation.hotel-type}">Hotel type: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.hotelType}"></span>
@@ -77,7 +80,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Arrival date: </strong>
+                <strong th:text="#{pay.confirmation.arrival-date}">Arrival date: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.arrivalDate}"></span>
@@ -87,7 +90,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Eviction date: </strong>
+                <strong th:text="#{pay.confirmation.eviction-date}">Eviction date: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.evictionDate}"></span>
@@ -97,7 +100,7 @@
 
         <div class="row justify-content-md-center">
             <div class="col-md-1">
-                <strong>Price: </strong>
+                <strong th:text="#{pay.confirmation.price}">Price: </strong>
             </div>
             <div class="col-md-8">
                 <span th:text="${voucher.price}"></span>
@@ -115,10 +118,12 @@
             <div class="col-md-2">
                 <a th:href="@{/v1/vouchers/auth-user/{voucherId}/pay
                (voucherId=${voucher.id}, previousPage=${previousPage})}"
-                   class="btn btn-success btn-lg"> Confirm</a>
+                   class="btn btn-success btn-lg" th:text="#{pay.confirmation.button-confirm}"> Confirm</a>
             </div>
             <div class="col-md-2">
-                <a th:href="@{${previousPage}}" class="btn btn-success btn-lg">Cancel</a>
+                <a th:href="@{${previousPage}}" class="btn btn-success btn-lg"
+                   th:text="#{pay.confirmation.button-cancel}">
+                    Cancel</a>
             </div>
         </div>
     </div>

@@ -2,8 +2,8 @@ package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.UserSearchParamsDto;
-import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.model.User;
+import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.utils.ViewUtils.*;
+import static com.epam.finaltask.util.ViewControllerUtil.*;
 
 @Controller
 @RequestMapping("/v1/users/auth-admin")
@@ -170,10 +170,6 @@ public class UserAuthAdminViewController {
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user,
                               HttpServletRequest request) {
-        if (user != null) {
-            model.addAttribute("authUser", user);
-        }
-
         model.addAttribute("roles", Role.values());
         model.addAttribute("requestURI", request.getRequestURI());
         model.addAttribute("queryString", request.getQueryString());

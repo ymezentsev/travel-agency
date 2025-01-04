@@ -1,13 +1,14 @@
 package com.epam.finaltask.controller.viewcontroller;
 
-import com.epam.finaltask.dto.ChangePasswordRequestDto;
+import com.epam.finaltask.dto.ChangePasswordRequest;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.group.OnChangeBalance;
 import com.epam.finaltask.dto.group.OnChangePassword;
+import com.epam.finaltask.dto.group.OnUpdate;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.service.UserService;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,14 +20,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
 
-import static com.epam.finaltask.utils.ViewUtils.getErrors;
-import static com.epam.finaltask.utils.ViewUtils.getPreviousPageUri;
+import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
+import static com.epam.finaltask.util.ViewControllerUtil.getPreviousPageUri;
 
+@Validated
 @Controller
 @RequestMapping("/v1/users/auth-user")
 @RequiredArgsConstructor
 public class UserAuthUserViewController {
     private final UserService userService;
+    private final I18nUtil i18nUtil;
 
     @GetMapping("/id/{userId}")
     public String getUserById(Model model,
@@ -44,7 +47,7 @@ public class UserAuthUserViewController {
 
     @PostMapping("/update")
     public String updateUser(Model model,
-                             @Valid @ModelAttribute("userDto") UserDTO userDto,
+                             @Validated(OnUpdate.class) @ModelAttribute("userDto") UserDTO userDto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -53,12 +56,13 @@ public class UserAuthUserViewController {
         }
 
         try {
-            userService.updateUser(userDto.getUsername(), userDto);
+            userService.updateUser(UUID.fromString(userDto.getId()), userDto);
         } catch (Exception e) {
             model.addAttribute("errors", e.getMessage());
             return "users/update-user";
         }
-        redirectAttributes.addFlashAttribute("message", "User updated successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.user-updated"));
         return "redirect:/v1/users/auth-user/id/" + userDto.getId();
     }
 
@@ -90,20 +94,21 @@ public class UserAuthUserViewController {
             model.addAttribute("previousPage", previousPage);
             return "users/update-balance";
         }
-        redirectAttributes.addFlashAttribute("message", "Balance updated successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.user-balance-changed"));
         return "redirect:" + previousPage;
     }
 
     @GetMapping("/change-password")
     public String getChangePasswordPage(Model model) {
-        model.addAttribute("changePasswordRequestDto", new ChangePasswordRequestDto());
+        model.addAttribute("changePasswordRequestDto", new ChangePasswordRequest());
         return "users/change-password";
     }
 
     @PostMapping("/change-password")
     public String changePassword(Model model,
                                  @Validated(OnChangePassword.class) @ModelAttribute("changePasswordRequestDto")
-                                 ChangePasswordRequestDto requestDto,
+                                 ChangePasswordRequest requestDto,
                                  BindingResult bindingResult,
                                  @AuthenticationPrincipal User user,
                                  RedirectAttributes redirectAttributes) {
@@ -118,7 +123,8 @@ public class UserAuthUserViewController {
             model.addAttribute("errors", e.getMessage());
             return "users/change-password";
         }
-        redirectAttributes.addFlashAttribute("message", "Password changed successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.user-password-changed"));
         return "redirect:/v1/users/auth-user/id/" + user.getId();
     }
 
@@ -126,10 +132,6 @@ public class UserAuthUserViewController {
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user,
                               HttpServletRequest request) {
-        if (user != null) {
-            model.addAttribute("authUser", user);
-        }
-
         model.addAttribute("requestURI", request.getRequestURI());
         model.addAttribute("queryString", request.getQueryString());
     }

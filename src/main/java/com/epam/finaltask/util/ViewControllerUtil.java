@@ -1,4 +1,4 @@
-package com.epam.finaltask.utils;
+package com.epam.finaltask.util;
 
 import com.epam.finaltask.dto.UserSearchParamsDto;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
@@ -8,11 +8,10 @@ import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class ViewUtils {
+public class ViewControllerUtil {
     public static final int DEFAULT_PAGE_SIZE = 5;
     public static final String SPLITTER = "(\\*)";
 
-    //todo add constants for templates and attributes
     public static List<String> getErrors(BindingResult bindingResult) {
         return bindingResult.getAllErrors()
                 .stream()

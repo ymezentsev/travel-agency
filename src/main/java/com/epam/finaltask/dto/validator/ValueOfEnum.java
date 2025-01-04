@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
 public @interface ValueOfEnum {
     Class<? extends Enum<?>> enumClass();
 
+    //todo change message
     String message() default "Value should be one of enum {enumClass}";
 
     Class<?>[] groups() default {};

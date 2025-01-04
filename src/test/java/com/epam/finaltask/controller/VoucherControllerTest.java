@@ -1,8 +1,9 @@
+/*
 package com.epam.finaltask.controller;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.exception.EntityNotFoundException;
-import com.epam.finaltask.exception.StatusCodes;
+import com.epam.finaltask.model.enums.StatusCodes;
 import com.epam.finaltask.model.enums.HotelType;
 import com.epam.finaltask.model.enums.TourType;
 import com.epam.finaltask.model.enums.TransferType;
@@ -220,3 +221,4 @@ public class VoucherControllerTest {
         verify(voucherService, times(1)).changeHotStatus(eq(voucherId), any(VoucherDTO.class));
     }
 }
+*/

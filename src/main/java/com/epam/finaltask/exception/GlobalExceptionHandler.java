@@ -1,6 +1,7 @@
 package com.epam.finaltask.exception;
 
 import com.epam.finaltask.dto.RemoteResponse;
+import com.epam.finaltask.model.enums.StatusCodes;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -110,6 +112,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.error(ex.getMessage(), ex);
         return new ResponseEntity<>(body, headers, status);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<RemoteResponse> handleAuthenticationException(AuthenticationException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new RemoteResponse(false, StatusCodes.INVALID_CREDENTIALS.name(),
+                        e.getMessage(), null));
     }
 
     @ExceptionHandler(Exception.class)

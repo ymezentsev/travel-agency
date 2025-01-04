@@ -2,12 +2,13 @@ package com.epam.finaltask.controller.viewcontroller;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.group.OnCreate;
-import com.epam.finaltask.model.*;
+import com.epam.finaltask.model.User;
 import com.epam.finaltask.model.enums.HotelType;
 import com.epam.finaltask.model.enums.TourType;
 import com.epam.finaltask.model.enums.TransferType;
 import com.epam.finaltask.model.enums.VoucherStatus;
 import com.epam.finaltask.service.VoucherService;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.epam.finaltask.utils.ViewUtils.*;
+import static com.epam.finaltask.util.ViewControllerUtil.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
+import static com.epam.finaltask.util.ViewControllerUtil.getPreviousPageUri;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-admin")
@@ -32,6 +35,7 @@ import static com.epam.finaltask.utils.ViewUtils.*;
 @Validated
 public class VoucherAuthAdminViewController {
     private final VoucherService voucherService;
+    private final I18nUtil i18nUtil;
 
     @GetMapping("/{voucherId}/delete")
     public String deleteVoucher(@PathVariable("voucherId") String voucherId,
@@ -44,7 +48,8 @@ public class VoucherAuthAdminViewController {
             model.addAttribute("errors", e.getMessage());
             return "vouchers/vouchers";
         }
-        redirectAttributes.addFlashAttribute("message", "Voucher deleted successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.voucher-deleted", voucherId));
         return "redirect:" + getPreviousPageUri(request);
     }
 
@@ -75,7 +80,8 @@ public class VoucherAuthAdminViewController {
             model.addAttribute("previousPage", previousPage);
             return "vouchers/create-voucher";
         }
-        redirectAttributes.addFlashAttribute("message", "Voucher created successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.voucher-created"));
         return "redirect:" + previousPage;
     }
 
@@ -110,7 +116,8 @@ public class VoucherAuthAdminViewController {
             getVoucherStatusesForUpdate(model);
             return "vouchers/update-voucher";
         }
-        redirectAttributes.addFlashAttribute("message", "Voucher updated successfully");
+        redirectAttributes.addFlashAttribute("message",
+                i18nUtil.getMessage("message.voucher-updated"));
         return "redirect:" + previousPage;
     }
 
@@ -128,9 +135,6 @@ public class VoucherAuthAdminViewController {
     @ModelAttribute
     public void populateModel(Model model,
                               @AuthenticationPrincipal User user) {
-        if (user != null) {
-            model.addAttribute("authUser", user);
-        }
         model.addAttribute("tourTypes", TourType.values());
         model.addAttribute("transferTypes", TransferType.values());
         model.addAttribute("hotelTypes", HotelType.values());

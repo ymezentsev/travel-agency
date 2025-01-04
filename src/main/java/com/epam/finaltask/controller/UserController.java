@@ -1,18 +1,19 @@
 package com.epam.finaltask.controller;
 
 import com.epam.finaltask.controller.openapi.UserControllerOpenApi;
-import com.epam.finaltask.dto.*;
-import com.epam.finaltask.dto.group.OnChangeStatus;
-import com.epam.finaltask.dto.group.OnCreate;
+import com.epam.finaltask.dto.ChangePasswordRequest;
+import com.epam.finaltask.dto.RemoteResponse;
+import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.UserSearchParamsDto;
+import com.epam.finaltask.dto.group.*;
 import com.epam.finaltask.service.EmailSenderService;
-import com.epam.finaltask.service.ResetPasswordTokenService;
 import com.epam.finaltask.service.UserService;
+import com.epam.finaltask.util.I18nUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,97 +21,171 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import static com.epam.finaltask.exception.StatusCodes.OK;
+import static com.epam.finaltask.model.enums.StatusCodes.OK;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController implements UserControllerOpenApi {
     private final UserService userService;
-    private final ResetPasswordTokenService resetPasswordTokenService;
     private final EmailSenderService emailSenderService;
+    private final I18nUtil i18nUtil;
 
-    private static final String STATUS_MESSAGE_OK = "OK";
-    private static final String STATUS_MESSAGE_CREATED = "User is successfully registered";
-    private static final String STATUS_MESSAGE_UPDATED = "User is successfully updated";
-    private static final String STATUS_MESSAGE_GET = "User was obtained successfully";
-    private static final String STATUS_MESSAGE_CHANGED = "User's account status is successfully changed";
+    @Value("${reset.password.token.lifetime}")
+    private Long tokenLifetime;
 
     @Override
-    @PostMapping("/register")
-    public ResponseEntity<RemoteResponse> registerUser(@Validated(OnCreate.class)
-                                                       @RequestBody UserDTO userDto) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_CREATED, List.of(userService.register(userDto))),
-                HttpStatus.CREATED);
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public RemoteResponse registerUser(@Validated(OnCreate.class) @RequestBody UserDTO userDto) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-registered"))
+                .results(List.of(userService.register(userDto)))
+                .build();
     }
 
     @Override
-    @PatchMapping("/{username}")
-    public ResponseEntity<RemoteResponse> updateUser(@PathVariable("username") String username,
-                                                     @Valid @RequestBody UserDTO userDto) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_UPDATED, List.of(userService.updateUser(username, userDto))),
-                HttpStatus.OK);
-    }
-
-    @Override
-    @PatchMapping("/accountStatus")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<RemoteResponse> changeAccountStatus(@Validated(OnChangeStatus.class)
-                                                              @RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_CHANGED, List.of(userService.changeAccountStatus(userDTO))),
-                HttpStatus.OK);
+    @PutMapping("/{userId}")
+    @PreAuthorize("@authenticationService.isCurrentUser(#userId)")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse updateUser(@PathVariable("userId") UUID userId,
+                                     @Validated(OnUpdate.class) @RequestBody UserDTO userDto) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-updated"))
+                .results(List.of(userService.updateUser(userId, userDto)))
+                .build();
     }
 
     @Override
     @GetMapping("/{username}")
-    public ResponseEntity<RemoteResponse> getUserByUsername(@PathVariable("username") String username) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_GET, List.of(userService.getUserByUsername(username))),
-                HttpStatus.OK);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse getUserByUsername(@PathVariable("username") String username) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(userService.getUserByUsername(username)))
+                .build();
     }
 
     @Override
     @GetMapping("/id/{userId}")
-    public ResponseEntity<RemoteResponse> getUserById(@PathVariable("userId") String userId) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_GET, List.of(userService.getUserById(UUID.fromString(userId)))),
-                HttpStatus.OK);
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER') or @authenticationService.isCurrentUser(#userId)")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse getUserById(@PathVariable("userId") UUID userId) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(userService.getUserById(userId)))
+                .build();
+    }
+
+    @Override
+    @GetMapping()
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse getAllUsers(Pageable pageable) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(userService.getAllUsers(pageable)))
+                .build();
     }
 
     @Override
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<RemoteResponse> search(UserSearchParamsDto params, Pageable pageable) {
-        return new ResponseEntity<>(new RemoteResponse(true, OK.name(),
-                STATUS_MESSAGE_OK, List.of(userService.search(params, pageable))),
-                HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse search(UserSearchParamsDto params, Pageable pageable) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .results(List.of(userService.search(params, pageable)))
+                .build();
     }
 
-    //todo add swagger
-    @PostMapping("/reset-password")
-    public void resetPassword(@RequestParam("username") String username) {
+    @Override
+    @PatchMapping("/accountStatus")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse changeAccountStatus(@Validated(OnChangeStatus.class) @RequestBody UserDTO userDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-status-changed"))
+                .results(List.of(userService.changeAccountStatus(userDTO)))
+                .build();
+    }
+
+    @Override
+    @PatchMapping("/role")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse changeRole(@Validated(OnChangeRole.class) @RequestBody UserDTO userDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-role-changed"))
+                .results(List.of(userService.changeRole(userDTO)))
+                .build();
+    }
+
+    @Override
+    @PatchMapping("/balance")
+    @PreAuthorize("@authenticationService.isCurrentUser(#userDTO.getId())")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse changeBalance(@Validated(OnChangeBalance.class) @RequestBody UserDTO userDTO) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-balance-changed"))
+                .results(List.of(userService.updateBalance(userDTO)))
+                .build();
+    }
+
+    @Override
+    @PatchMapping("/change-password/{userId}")
+    @PreAuthorize("@authenticationService.isCurrentUser(#userId)")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse changePassword(@Validated(OnChangePassword.class)
+                                         @RequestBody ChangePasswordRequest requestDto,
+                                         @PathVariable("userId") UUID userId) {
+        userService.changePassword(requestDto, userId);
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-password-changed"))
+                .build();
+    }
+
+    @Override
+    @PostMapping("/reset-password-email")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse sendResetPasswordEmail(@RequestParam("username") String username) {
         emailSenderService.sendResetPasswordEmail(username);
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-reset-password-email",
+                        String.valueOf(tokenLifetime)))
+                .build();
     }
 
-    //todo add swagger
-    @GetMapping("/reset-password")
-    //todo add page for set new password
-    public ResponseEntity<Void> getResetPassword(@RequestParam("token") String token) {
-        HttpHeaders headers = new HttpHeaders();
-
-        resetPasswordTokenService.validateResetPasswordToken(
-                resetPasswordTokenService.getResetPasswordToken(token));
-        // headers.add("Location", frontendBaseUrl + TOKEN_RESET_PASSWORD_URL + token);
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
-    }
-
-    //todo add swagger
-    @PutMapping("/reset-password")
-    public void resetPassword(@RequestParam("token") String token,
-                              @RequestBody @Valid ChangePasswordRequestDto request) {
+    @Override
+    @PatchMapping("/reset-password")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse resetPassword(@RequestParam("token") String token,
+                                        @RequestBody @Valid ChangePasswordRequest request) {
         userService.resetPassword(request.getNewPassword(), token);
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.user-password-changed"))
+                .build();
     }
 }
