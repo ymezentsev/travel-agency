@@ -46,22 +46,22 @@ public class VoucherDTO {
     private double price;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.tour-type-required}")
-    @ValueOfEnum(enumClass = TourType.class)
+    @ValueOfEnum(enumClass = TourType.class, message = "{validation.enum-validation-message}")
     @Schema(description = "Tour type", example = "ADVENTURE")
     private String tourType;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.transfer-type-required}")
-    @ValueOfEnum(enumClass = TransferType.class)
+    @ValueOfEnum(enumClass = TransferType.class, message = "{validation.enum-validation-message}")
     @Schema(description = "Transfer type", example = "PLANE")
     private String transferType;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.hotel-type-required}")
-    @ValueOfEnum(enumClass = HotelType.class)
+    @ValueOfEnum(enumClass = HotelType.class, message = "{validation.enum-validation-message}")
     @Schema(description = "Hotel type", example = "FIVE_STARS")
     private String hotelType;
 
     @NotNull(groups = {OnChangeStatus.class, OnUpdate.class}, message = "{validation.voucher-status-required}")
-    @ValueOfEnum(enumClass = VoucherStatus.class)
+    @ValueOfEnum(enumClass = VoucherStatus.class, message = "{validation.enum-validation-message}")
     @Schema(description = "Voucher status", example = "REGISTERED")
     private String status;
 

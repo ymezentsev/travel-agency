@@ -1,6 +1,6 @@
 package com.epam.finaltask.controller;
 
-import com.epam.finaltask.auth.AuthenticationService;
+import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.controller.openapi.AuthenticationControllerOpenApi;
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.RemoteResponse;

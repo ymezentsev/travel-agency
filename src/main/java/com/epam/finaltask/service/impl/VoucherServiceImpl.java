@@ -1,6 +1,5 @@
 package com.epam.finaltask.service.impl;
 
-import com.epam.finaltask.auth.AuthenticationService;
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
@@ -15,6 +14,7 @@ import com.epam.finaltask.model.enums.TourType;
 import com.epam.finaltask.model.enums.TransferType;
 import com.epam.finaltask.model.enums.VoucherStatus;
 import com.epam.finaltask.repository.VoucherRepository;
+import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.service.EmailSenderService;
 import com.epam.finaltask.service.UserService;
 import com.epam.finaltask.service.VoucherService;

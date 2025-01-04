@@ -3,7 +3,7 @@ package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.AuthenticationResponse;
-import com.epam.finaltask.auth.AuthenticationService;
+import com.epam.finaltask.service.impl.AuthenticationService;
 import com.epam.finaltask.token.JwtService;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.model.enums.Role;

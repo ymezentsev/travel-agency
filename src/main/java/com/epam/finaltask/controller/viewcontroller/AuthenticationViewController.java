@@ -1,6 +1,6 @@
 package com.epam.finaltask.controller.viewcontroller;
 
-import com.epam.finaltask.auth.AuthenticationService;
+import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.model.User;
 import jakarta.servlet.http.HttpServletResponse;

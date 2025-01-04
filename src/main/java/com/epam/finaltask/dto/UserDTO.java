@@ -37,7 +37,7 @@ public class UserDTO {
     private String password;
 
     @NotBlank(groups = {OnChangeRole.class}, message = "{validation.role-required}")
-    @ValueOfEnum(enumClass = Role.class)
+    @ValueOfEnum(enumClass = Role.class, message = "{validation.enum-validation-message}")
     @Schema(description = "User role", example = "USER", defaultValue = "USER")
     private String role;
 

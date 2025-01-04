@@ -49,7 +49,7 @@ public class UserController implements UserControllerOpenApi {
 
     @Override
     @PutMapping("/{userId}")
-    @PreAuthorize("@authenticationService.isCurrentUser(#userId)")
+    @PreAuthorize("@authenticationServiceImpl.isCurrentUser(#userId)")
     @ResponseStatus(HttpStatus.OK)
     public RemoteResponse updateUser(@PathVariable("userId") UUID userId,
                                      @Validated(OnUpdate.class) @RequestBody UserDTO userDto) {
@@ -75,7 +75,7 @@ public class UserController implements UserControllerOpenApi {
 
     @Override
     @GetMapping("/id/{userId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER') or @authenticationService.isCurrentUser(#userId)")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER') or @authenticationServiceImpl.isCurrentUser(#userId)")
     @ResponseStatus(HttpStatus.OK)
     public RemoteResponse getUserById(@PathVariable("userId") UUID userId) {
         return RemoteResponse.builder()
@@ -137,7 +137,7 @@ public class UserController implements UserControllerOpenApi {
 
     @Override
     @PatchMapping("/balance")
-    @PreAuthorize("@authenticationService.isCurrentUser(#userDTO.getId())")
+    @PreAuthorize("@authenticationServiceImpl.isCurrentUser(#userDTO.getId())")
     @ResponseStatus(HttpStatus.OK)
     public RemoteResponse changeBalance(@Validated(OnChangeBalance.class) @RequestBody UserDTO userDTO) {
         return RemoteResponse.builder()
@@ -150,7 +150,7 @@ public class UserController implements UserControllerOpenApi {
 
     @Override
     @PatchMapping("/change-password/{userId}")
-    @PreAuthorize("@authenticationService.isCurrentUser(#userId)")
+    @PreAuthorize("@authenticationServiceImpl.isCurrentUser(#userId)")
     @ResponseStatus(HttpStatus.OK)
     public RemoteResponse changePassword(@Validated(OnChangePassword.class)
                                          @RequestBody ChangePasswordRequest requestDto,

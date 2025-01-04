@@ -1,10 +1,11 @@
-package com.epam.finaltask.auth;
+package com.epam.finaltask.service.impl;
 
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.AuthenticationResponse;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.repository.UserRepository;
+import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.token.JwtService;
 import com.epam.finaltask.util.I18nUtil;
 import jakarta.servlet.http.Cookie;
@@ -23,7 +24,7 @@ import static com.epam.finaltask.model.enums.StatusCodes.ENTITY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;

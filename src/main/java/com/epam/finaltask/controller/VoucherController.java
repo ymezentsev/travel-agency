@@ -124,7 +124,7 @@ public class VoucherController implements VoucherControllerOpenApi {
 
     @Override
     @GetMapping("/userId/{userId}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER') or @authenticationService.isCurrentUser(#userId)")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER') or @authenticationServiceImpl.isCurrentUser(#userId)")
     @ResponseStatus(HttpStatus.OK)
     public RemoteResponse findAllByUserId(@PathVariable("userId") String userId, Pageable pageable) {
         return RemoteResponse.builder()
