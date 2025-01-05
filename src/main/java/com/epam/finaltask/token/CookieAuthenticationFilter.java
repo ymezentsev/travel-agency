@@ -6,7 +6,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,14 +19,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public final class CookieAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    //todo change logger
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -43,7 +40,6 @@ public final class CookieAuthenticationFilter extends OncePerRequestFilter {
             if (jwtTokenCookie.isPresent()) {
                 token = jwtTokenCookie.get().getValue();
                 if (jwtService.isValidToken(token)) {
-                    log.debug("JWT token is valid. Retrieving username...");
                     String username = jwtService.getUsernameFromJwtToken(token);
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                     Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -51,7 +47,6 @@ public final class CookieAuthenticationFilter extends OncePerRequestFilter {
                             null,
                             userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    log.debug("User {} authenticated successfully", username);
                 }
             }
         }

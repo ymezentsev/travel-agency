@@ -20,20 +20,6 @@ public class I18nConfig implements WebMvcConfigurer {
         return localeResolver;
     }
 
-/*    @Bean
-    public LocaleResolver localeResolver() {
-        CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.UK);
-        return localeResolver;
-    }
-
-    @Bean
-    public LocaleResolver localeResolver() {
-        AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.UK);
-        return localeResolver;
-    }*/
-
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();

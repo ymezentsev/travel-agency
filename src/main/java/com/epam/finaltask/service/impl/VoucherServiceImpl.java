@@ -1,5 +1,6 @@
 package com.epam.finaltask.service.impl;
 
+import com.epam.finaltask.aspect.Loggable;
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
@@ -42,6 +43,7 @@ public class VoucherServiceImpl implements VoucherService {
     private final AuthenticationService authenticationService;
     private final I18nUtil i18nUtil;
 
+    @Loggable
     @Override
     public VoucherDTO create(VoucherDTO voucherDTO) {
         voucherDTO.setTourType(voucherDTO.getTourType().toUpperCase().strip());
@@ -52,9 +54,10 @@ public class VoucherServiceImpl implements VoucherService {
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucherMapper.toVoucher(voucherDTO)));
     }
 
+    @Loggable
     @Override
-    public VoucherDTO update(String id, VoucherDTO voucherDTO) {
-        Voucher voucher = getVoucherById(id);
+    public VoucherDTO update(String voucherId, VoucherDTO voucherDTO) {
+        Voucher voucher = getVoucherById(voucherId);
 
         VoucherStatus newStatus = VoucherStatus.valueOf(voucherDTO.getStatus().toUpperCase().strip());
         if (newStatus.equals(VoucherStatus.PAID) || newStatus.equals(VoucherStatus.REGISTERED)) {
@@ -80,6 +83,7 @@ public class VoucherServiceImpl implements VoucherService {
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
+    @Loggable
     @Override
     public void delete(String voucherId) {
         Voucher voucher = getVoucherById(voucherId);
@@ -92,9 +96,10 @@ public class VoucherServiceImpl implements VoucherService {
         voucherRepository.deleteById(UUID.fromString(voucherId));
     }
 
+    @Loggable
     @Override
-    public VoucherDTO changeHotStatus(String id, VoucherDTO voucherDTO) {
-        Voucher voucher = getVoucherById(id);
+    public VoucherDTO changeHotStatus(String voucherId, VoucherDTO voucherDTO) {
+        Voucher voucher = getVoucherById(voucherId);
 
         if (!voucher.getStatus().equals(VoucherStatus.AVAILABLE)) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
@@ -104,6 +109,7 @@ public class VoucherServiceImpl implements VoucherService {
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
+    @Loggable
     @Override
     public VoucherDTO changeStatus(String id, VoucherDTO voucherDTO) {
         Voucher voucher = getVoucherById(id);
@@ -127,13 +133,14 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public VoucherDTO findById(String id) {
-        return voucherMapper.toVoucherDTO(getVoucherById(id));
+    public VoucherDTO findById(String voucherId) {
+        return voucherMapper.toVoucherDTO(getVoucherById(voucherId));
     }
 
+    @Loggable
     @Override
-    public VoucherDTO order(String id, String userId) {
-        Voucher voucher = getVoucherById(id);
+    public VoucherDTO order(String voucherId, String userId) {
+        Voucher voucher = getVoucherById(voucherId);
         User user = userMapper.toUser(userService.getUserById(UUID.fromString(userId)));
 
         if (!voucher.getStatus().equals(VoucherStatus.AVAILABLE)) {
@@ -171,6 +178,7 @@ public class VoucherServiceImpl implements VoucherService {
                 .map(voucherMapper::toVoucherDTO);
     }
 
+    @Loggable
     @Override
     public VoucherDTO cancelOrder(String voucherId) {
         Voucher voucher = getVoucherById(voucherId);
@@ -192,6 +200,7 @@ public class VoucherServiceImpl implements VoucherService {
         return voucherMapper.toVoucherDTO(voucherRepository.save(voucher));
     }
 
+    @Loggable
     @Override
     public VoucherDTO payVoucher(String voucherId) {
         Voucher voucher = getVoucherById(voucherId);

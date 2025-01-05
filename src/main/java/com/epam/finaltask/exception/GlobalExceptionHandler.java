@@ -94,6 +94,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
     }
 
+    @ExceptionHandler(FailedToSendEmailException.class)
+    public ResponseEntity<RemoteResponse> handleFailedToSendEmailException(FailedToSendEmailException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new RemoteResponse(false, e.getErrorCode(), e.getMessage(), null));
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,

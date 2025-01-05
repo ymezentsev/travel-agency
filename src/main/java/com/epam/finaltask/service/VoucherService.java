@@ -8,17 +8,17 @@ import org.springframework.data.domain.Pageable;
 public interface VoucherService {
     VoucherDTO create(VoucherDTO voucherDTO);
 
-    VoucherDTO update(String id, VoucherDTO voucherDTO);
+    VoucherDTO update(String voucherId, VoucherDTO voucherDTO);
 
     void delete(String voucherId);
 
-    VoucherDTO changeHotStatus(String id, VoucherDTO voucherDTO);
+    VoucherDTO changeHotStatus(String voucherId, VoucherDTO voucherDTO);
 
     VoucherDTO changeStatus(String voucherId, VoucherDTO voucherDTO);
 
-    VoucherDTO findById(String id);
+    VoucherDTO findById(String voucherId);
 
-    VoucherDTO order(String id, String userId);
+    VoucherDTO order(String voucherId, String userId);
 
     Page<VoucherDTO> findAll(Pageable pageable);
 

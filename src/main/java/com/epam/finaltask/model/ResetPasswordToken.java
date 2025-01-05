@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "user")
 public class ResetPasswordToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,7 @@ public class ResetPasswordToken {
     @Column(nullable = false)
     private LocalDateTime expiresAt;
 
+    @Column
     private LocalDateTime confirmedAt;
 
     @ManyToOne

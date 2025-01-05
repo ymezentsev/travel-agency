@@ -1,5 +1,6 @@
 package com.epam.finaltask.service.impl;
 
+import com.epam.finaltask.aspect.Loggable;
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.AuthenticationResponse;
 import com.epam.finaltask.exception.EntityNotFoundException;
@@ -11,6 +12,7 @@ import com.epam.finaltask.util.I18nUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,7 @@ import java.util.UUID;
 
 import static com.epam.finaltask.model.enums.StatusCodes.ENTITY_NOT_FOUND;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -34,9 +37,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Duration expiration;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        log.info("Authenticating user with username: '{}'", request.getUsername());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword()));
 
+        log.info("User '{}' successfully authenticated", request.getUsername());
         return new AuthenticationResponse(jwtService.generateToken(request.getUsername()));
     }
 

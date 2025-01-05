@@ -1,5 +1,6 @@
 package com.epam.finaltask.service.impl;
 
+import com.epam.finaltask.aspect.Loggable;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.model.ResetPasswordToken;
 import com.epam.finaltask.model.User;
@@ -33,6 +34,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     @Value("${scheduler.days.to.arrive.reminder}")
     private int daysToArriveReminder;
 
+    @Loggable
     @Override
     public void sendResetPasswordEmail(String username) {
         User user = userRepository.findByUsernameIgnoreCase(username)
@@ -48,6 +50,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                 emailContent, EmailSubject.RESET_PASSWORD.getSubject());
     }
 
+    @Loggable
     @Override
     public void sendOrderConfirmationEmail(Voucher voucher) {
         String emailContent = buildEmailContent(voucher.getUser().getUsername(), null,
@@ -56,6 +59,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                 emailContent, EmailSubject.VOUCHER_ORDER_CONFIRMATION.getSubject());
     }
 
+    @Loggable
     @Override
     public void sendPaymentConfirmationEmail(Voucher voucher) {
         String emailContent = buildEmailContent(voucher.getUser().getUsername(), null,
@@ -64,6 +68,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                 emailContent, EmailSubject.VOUCHER_PAYMENT_CONFIRMATION.getSubject());
     }
 
+    @Loggable
     @Override
     public void sendOrderCanceledEmail(Voucher voucher, User user) {
         String emailContent = buildEmailContent(user.getUsername(), null,
@@ -73,6 +78,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                 EmailSubject.VOUCHER_ORDER_CANCELED.getSubject());
     }
 
+    @Loggable
     @Override
     public void sendReminderAboutArrivalDate(Voucher voucher) {
         String emailContent = buildEmailContent(voucher.getUser().getUsername(), null,

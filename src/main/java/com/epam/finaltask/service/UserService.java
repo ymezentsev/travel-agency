@@ -13,7 +13,7 @@ public interface UserService {
 
     UserDTO getUserByUsername(String username);
 
-    UserDTO getUserById(UUID id);
+    UserDTO getUserById(UUID userId);
 
     Page<UserDTO> getAllUsers(Pageable pageable);
 

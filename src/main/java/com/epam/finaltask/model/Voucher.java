@@ -17,6 +17,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "user")
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -114,7 +114,7 @@ public class UserAnonymousViewController {
             return "users/reset-password";
         }
         redirectAttributes.addFlashAttribute("message",
-                i18nUtil.getMessage("message.user-password-change"));
+                i18nUtil.getMessage("message.user-password-changed"));
         return "redirect:/v1/auth/login";
     }
 }

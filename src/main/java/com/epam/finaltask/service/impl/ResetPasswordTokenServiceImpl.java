@@ -1,5 +1,6 @@
 package com.epam.finaltask.service.impl;
 
+import com.epam.finaltask.aspect.Loggable;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.exception.TokenAlreadyConfirmedException;
 import com.epam.finaltask.exception.TokenExpiredException;
@@ -28,6 +29,7 @@ public class ResetPasswordTokenServiceImpl implements ResetPasswordTokenService 
     @Value("${reset.password.token.lifetime}")
     private Long tokenLifetime;
 
+    @Loggable
     @Override
     public ResetPasswordToken generateResetPasswordToken(User user) {
         return ResetPasswordToken.builder()
@@ -50,6 +52,7 @@ public class ResetPasswordTokenServiceImpl implements ResetPasswordTokenService 
                         i18nUtil.getMessage("error.token-not-found")));
     }
 
+    @Loggable
     @Override
     public void validateResetPasswordToken(ResetPasswordToken resetPasswordToken) {
         if (resetPasswordToken.getConfirmedAt() != null) {

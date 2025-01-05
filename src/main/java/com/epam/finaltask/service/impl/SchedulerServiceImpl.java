@@ -31,19 +31,18 @@ public class SchedulerServiceImpl implements SchedulerService {
     @Value("${scheduler.days.to.arrive.reminder}")
     private int daysToArriveReminder;
 
-    //todo change logger
     @Override
     @Async("myAsyncPoolTaskExecutor")
     //Scheduled every day at midnight
     @Scheduled(cron = "0 0 0 * * *")
     public void makeVoucherStatusNotSold() {
-        log.info("Checking if vouchers are not sold");
+        log.info("Scheduled task - checking if vouchers are not sold");
         voucherRepository.findAll().forEach(voucher -> {
             if (voucher.getArrivalDate().isBefore(LocalDate.now())
                     && voucher.getStatus().equals(VoucherStatus.AVAILABLE)) {
                 voucher.setStatus(VoucherStatus.NOT_SOLD);
                 voucherRepository.save(voucher);
-                log.info("Changed voucher status to NOT_SOLD for voucher: {}", voucher.getId());
+                log.info("Changed status to 'NOT_SOLD' for voucher: {}", voucher.getId());
             }
         });
     }
@@ -53,7 +52,7 @@ public class SchedulerServiceImpl implements SchedulerService {
     //Scheduled every day at midnight
     @Scheduled(cron = "0 0 0 * * *")
     public void makeVoucherHotAndReducePrice() {
-        log.info("Making vouchers hot and reducing price");
+        log.info("Scheduled task - making vouchers hot and reducing price");
         voucherRepository.findAll().forEach(voucher -> {
             if (voucher.getArrivalDate().isBefore(LocalDate.now().plusDays(daysBeforeMakingVoucherHot))
                     && voucher.getStatus().equals(VoucherStatus.AVAILABLE)
@@ -61,7 +60,7 @@ public class SchedulerServiceImpl implements SchedulerService {
                 voucher.setHot(true);
                 voucher.setPrice(voucher.getPrice() * (100 - discountPercentage) / 100);
                 voucherRepository.save(voucher);
-                log.info("Changed voucher to HOT and reduced price for voucher: {}", voucher.getId());
+                log.info("Changed status to 'HOT' and reduced price for voucher: {}", voucher.getId());
             }
         });
     }
@@ -71,13 +70,11 @@ public class SchedulerServiceImpl implements SchedulerService {
     //Scheduled every day at 8 am
     @Scheduled(cron = "0 0 8 * * *")
     public void sendReminderAboutArrivalDate() {
-        log.info("Sending reminders about arrival date");
-
+        log.info("Scheduled task - sending reminders about arrival date");
         voucherRepository.findAll().forEach(voucher -> {
             if (voucher.getArrivalDate()
                     .compareTo(ChronoLocalDate.from(LocalDateTime.now().plusDays(daysToArriveReminder))) == 0
                     && (voucher.getStatus().equals(VoucherStatus.REGISTERED) || voucher.getStatus().equals(VoucherStatus.PAID))) {
-                log.info("Sending arrival date reminder to: {}", voucher.getUser().getEmail());
                 emailSenderService.sendReminderAboutArrivalDate(voucher);
                 log.info("Arrival date reminder sent successfully to: {}", voucher.getUser().getEmail());
             }

@@ -1,5 +1,6 @@
 package com.epam.finaltask.service.impl;
 
+import com.epam.finaltask.aspect.Loggable;
 import com.epam.finaltask.dto.ChangePasswordRequest;
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.UserSearchParamsDto;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final ResetPasswordTokenService resetPasswordTokenService;
     private final I18nUtil i18nUtil;
 
+    @Loggable(hideArgs = true)
     @Override
     public UserDTO register(UserDTO userDTO) {
         if (userRepository.existsByUsernameIgnoreCase(userDTO.getUsername())) {
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
+    @Loggable
     @Override
     public UserDTO updateUser(UUID userId, UserDTO userDTO) {
         User user = getUser(userId);
@@ -75,8 +78,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(UUID id) {
-        return userMapper.toUserDTO(getUser(id));
+    public UserDTO getUserById(UUID userId) {
+        return userMapper.toUserDTO(getUser(userId));
     }
 
     @Override
@@ -91,6 +94,7 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toUserDTO);
     }
 
+    @Loggable
     @Override
     public UserDTO changeAccountStatus(UserDTO userDTO) {
         User user = getUser(UUID.fromString(userDTO.getId()));
@@ -99,6 +103,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
+    @Loggable
     @Override
     public UserDTO changeRole(UserDTO userDTO) {
         User user = getUser(UUID.fromString(userDTO.getId()));
@@ -107,6 +112,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
+    @Loggable
     @Override
     public UserDTO updateBalance(UserDTO userDTO) {
         User user = getUser(UUID.fromString(userDTO.getId()));
@@ -115,6 +121,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userRepository.save(user));
     }
 
+    @Loggable(hideArgs = true)
     @Override
     public void changePassword(ChangePasswordRequest request, UUID userId) {
         User user = getUser(userId);
@@ -127,7 +134,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
+    @Loggable(hideArgs = true)
     @Override
     public void resetPassword(String newPassword, String token) {
         ResetPasswordToken resetPasswordToken = resetPasswordTokenService.getResetPasswordToken(token);
