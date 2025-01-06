@@ -1,6 +1,5 @@
 package com.epam.finaltask.service.impl;
 
-import com.epam.finaltask.aspect.Loggable;
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.AuthenticationResponse;
 import com.epam.finaltask.exception.EntityNotFoundException;
