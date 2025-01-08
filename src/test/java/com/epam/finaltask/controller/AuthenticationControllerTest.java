@@ -1,4 +1,3 @@
-/*
 package com.epam.finaltask.controller;
 
 import com.epam.finaltask.dto.AuthenticationRequest;
@@ -61,7 +60,6 @@ public class AuthenticationControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.statusCode").value(expectedStatusCode))
                 .andExpect(jsonPath("$.statusMessage").value(expectedStatusMessage))
-                .andExpect(jsonPath("$.results[0].access_token").value(authenticationResponse.getAccessToken()));
+                .andExpect(jsonPath("$.results[0].accessToken").value(authenticationResponse.getAccessToken()));
     }
 }
-*/

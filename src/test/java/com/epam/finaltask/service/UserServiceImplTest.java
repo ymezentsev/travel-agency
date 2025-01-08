@@ -1,14 +1,14 @@
-/*
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.exception.EntityAlreadyExistsException;
 import com.epam.finaltask.exception.EntityNotFoundException;
 import com.epam.finaltask.mapper.UserMapper;
-import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.model.User;
+import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.repository.UserRepository;
 import com.epam.finaltask.service.impl.UserServiceImpl;
+import com.epam.finaltask.util.I18nUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +37,9 @@ public class UserServiceImplTest {
     @Mock
     private UserMapper userMapper;
 
+    @Mock
+    private I18nUtil i18nUtil;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -63,7 +66,7 @@ public class UserServiceImplTest {
                 .build();
 
         when(userMapper.toUser(any(UserDTO.class))).thenReturn(user);
-        when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(false);
+        when(userRepository.existsByUsernameIgnoreCase(userDTO.getUsername())).thenReturn(false);
         when(passwordEncoder.encode(eq("Passw0rd"))).thenReturn(encryptedPassword);
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
@@ -87,7 +90,8 @@ public class UserServiceImplTest {
         String errorCode = "DUPLICATE_USERNAME";
 
         // When
-        when(userRepository.existsByUsername(userDto.getUsername())).thenReturn(true);
+        when(userRepository.existsByUsernameIgnoreCase(userDto.getUsername())).thenReturn(true);
+        when(i18nUtil.getMessage(anyString())).thenReturn("This username is already exist");
 
         // Then
         EntityAlreadyExistsException exception = assertThrows(EntityAlreadyExistsException.class, () ->
@@ -101,7 +105,7 @@ public class UserServiceImplTest {
     @Test
     void updateUser_Success() {
         // Given
-        String existingUsername = "existingUser";
+        UUID userId = UUID.fromString("f3e02ce0-365d-4c03-90a1-98f00cf6d3d1");
 
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername("UpdatedUser");
@@ -121,13 +125,12 @@ public class UserServiceImplTest {
         updatedUser.setAccountStatus(userDTO.isAccountStatus());
         updatedUser.setBalance(userDTO.getBalance());
 
-        when(userRepository.findByUsername(existingUsername)).thenReturn(Optional.of(existingUser));
-        when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
         when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
 
         // When
-        UserDTO result = userService.updateUser(existingUsername, userDTO);
+        UserDTO result = userService.updateUser(userId, userDTO);
 
         // Then
         assertNotNull(result, "The returned UserDTO should not be null");
@@ -136,7 +139,7 @@ public class UserServiceImplTest {
         assertEquals(userDTO.isAccountStatus(), result.isAccountStatus());
         assertEquals(userDTO.getBalance(), result.getBalance());
 
-        verify(userRepository, times(1)).findByUsername(existingUsername);
+        verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -150,7 +153,7 @@ public class UserServiceImplTest {
         UserDTO expectedUserDTO = new UserDTO();
         expectedUserDTO.setUsername(username);
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.of(user));
         when(userMapper.toUserDTO(any(User.class))).thenReturn(expectedUserDTO);
 
         // When
@@ -160,7 +163,7 @@ public class UserServiceImplTest {
         assertNotNull(result, "The returned UserDTO should not be null");
         assertEquals(expectedUserDTO.getUsername(), result.getUsername(), "The username should match the expected value");
 
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userMapper, times(1)).toUserDTO(any(User.class));
     }
 
@@ -168,14 +171,14 @@ public class UserServiceImplTest {
     void getUserByUsername_UserDoesNotExist_ThrowsEntityNotFoundException() {
         // Given
         String username = "nonExistentUser";
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameIgnoreCase(username)).thenReturn(Optional.empty());
 
         // When & Then
         assertThrows(EntityNotFoundException.class, () -> {
             userService.getUserByUsername(username);
         }, "Expected EntityNotFoundException to be thrown if user is not found");
 
-        verify(userRepository, times(1)).findByUsername(username);
+        verify(userRepository, times(1)).findByUsernameIgnoreCase(username);
         verify(userMapper, never()).toUserDTO(any(User.class));
     }
 
@@ -196,7 +199,6 @@ public class UserServiceImplTest {
         updatedUser.setAccountStatus(true);
 
         when(userRepository.findById(UUID.fromString(userId))).thenReturn(Optional.of(user));
-        when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
         when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
 
@@ -268,4 +270,3 @@ public class UserServiceImplTest {
         verify(userMapper, never()).toUserDTO(any(User.class)); // Ensure the mapper is not called
     }
 }
-*/

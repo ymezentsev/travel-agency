@@ -1,17 +1,14 @@
-/*
 package com.epam.finaltask.controller;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.exception.EntityNotFoundException;
-import com.epam.finaltask.model.enums.StatusCodes;
-import com.epam.finaltask.model.enums.HotelType;
-import com.epam.finaltask.model.enums.TourType;
-import com.epam.finaltask.model.enums.TransferType;
-import com.epam.finaltask.model.enums.VoucherStatus;
+import com.epam.finaltask.model.enums.*;
 import com.epam.finaltask.service.VoucherService;
+import com.epam.finaltask.service.impl.AuthenticationServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
@@ -51,17 +51,22 @@ public class VoucherControllerTest {
     @MockBean
     private VoucherService voucherService;
 
+    @MockBean
+    private AuthenticationServiceImpl authenticationService;
+
     @Autowired
     private MockMvc mockMvc;
+
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser
+    @Disabled
+        //todo update test with page
     void findAll_Successfully() throws Exception {
         List<VoucherDTO> voucherDTOList = new ArrayList<>();
-        when(voucherService.findAll()).thenReturn(voucherDTOList);
+        when(voucherService.findAll(Pageable.unpaged())).thenReturn(new PageImpl<>(voucherDTOList));
         MvcResult result = mockMvc.perform(get("/vouchers"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -70,20 +75,24 @@ public class VoucherControllerTest {
         JsonNode rootNode = objectMapper.readTree(responseBody);
         JsonNode resultsNode = rootNode.path("results");
 
-        List<VoucherDTO> responseVoucherDTOList = objectMapper.convertValue(resultsNode, new TypeReference<List<VoucherDTO>>() {});
+        List<VoucherDTO> responseVoucherDTOList = objectMapper.convertValue(resultsNode, new TypeReference<List<VoucherDTO>>() {
+        });
 
         assertEquals(voucherDTOList, responseVoucherDTOList);
     }
 
     @Test
     @WithMockUser
+    @Disabled
+        //todo update test with page
     void findAllByUserId_Successfully() throws Exception {
         String userId = String.valueOf(UUID.randomUUID());
         List<VoucherDTO> voucherDTOList = new ArrayList<>();
 
-        when(voucherService.findAllByUserId(userId)).thenReturn(voucherDTOList);
+        when(voucherService.findAllByUserId(userId, Pageable.unpaged())).thenReturn(new PageImpl<>(voucherDTOList));
+        when(authenticationService.isCurrentUser(any(UUID.class))).thenReturn(true);
 
-        MvcResult result = mockMvc.perform(get("/vouchers/" + userId))
+        MvcResult result = mockMvc.perform(get("/vouchers/userId/" + userId))
                 .andExpect(status().isOk())
                 .andReturn();
         String responseBody = result.getResponse().getContentAsString();
@@ -91,7 +100,8 @@ public class VoucherControllerTest {
         JsonNode rootNode = objectMapper.readTree(responseBody);
         JsonNode resultsNode = rootNode.path("results");
 
-        List<VoucherDTO> responseVoucherDTOList = objectMapper.convertValue(resultsNode, new TypeReference<List<VoucherDTO>>() {});
+        List<VoucherDTO> responseVoucherDTOList = objectMapper.convertValue(resultsNode, new TypeReference<List<VoucherDTO>>() {
+        });
 
         assertEquals(voucherDTOList, responseVoucherDTOList);
     }
@@ -106,9 +116,8 @@ public class VoucherControllerTest {
         voucherDTO.setTourType(TourType.ADVENTURE.name());
         voucherDTO.setTransferType(TransferType.PLANE.name());
         voucherDTO.setHotelType(HotelType.FIVE_STARS.name());
-        voucherDTO.setStatus(VoucherStatus.PAID.name());
-        voucherDTO.setArrivalDate(LocalDate.of(2024, 6, 15));
-        voucherDTO.setEvictionDate(LocalDate.of(2024, 6, 20));
+        voucherDTO.setArrivalDate(LocalDate.now());
+        voucherDTO.setEvictionDate(LocalDate.now().plusDays(2));
         voucherDTO.setUserId(UUID.randomUUID());
         voucherDTO.setIsHot("false");
 
@@ -117,7 +126,7 @@ public class VoucherControllerTest {
 
         when(voucherService.create(any(VoucherDTO.class))).thenReturn(voucherDTO);
 
-        mockMvc.perform(post("/vouchers/create")
+        mockMvc.perform(post("/vouchers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(voucherDTO)))
                 .andDo(print())
@@ -138,8 +147,8 @@ public class VoucherControllerTest {
         voucherDTO.setTransferType(TransferType.JEEPS.name());
         voucherDTO.setHotelType(HotelType.THREE_STARS.name());
         voucherDTO.setStatus(VoucherStatus.PAID.name());
-        voucherDTO.setArrivalDate(LocalDate.of(2024, 7, 15));
-        voucherDTO.setEvictionDate(LocalDate.of(2024, 7, 20));
+        voucherDTO.setArrivalDate(LocalDate.now());
+        voucherDTO.setEvictionDate(LocalDate.now().plusDays(2));
         voucherDTO.setUserId(UUID.randomUUID());
         voucherDTO.setIsHot("true");
 
@@ -149,7 +158,7 @@ public class VoucherControllerTest {
 
         when(voucherService.update(eq(voucherId), any(VoucherDTO.class))).thenReturn(voucherDTO);
 
-        mockMvc.perform(patch("/vouchers/change/" + voucherId)
+        mockMvc.perform(put("/vouchers/" + voucherId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(voucherDTO)))
                 .andDo(print())
@@ -164,7 +173,7 @@ public class VoucherControllerTest {
     void deleteVoucherById_VoucherExists_SuccessfullyDeleted() throws Exception {
         String voucherId = String.valueOf(UUID.randomUUID());
         String expectedStatusCode = "OK";
-        String expectedMessage = String.format("Voucher with Id %s has been deleted", voucherId);
+        String expectedMessage = String.format("Voucher with id %s has been deleted", voucherId);
 
         doNothing().when(voucherService).delete(voucherId);
 
@@ -182,9 +191,9 @@ public class VoucherControllerTest {
     void deleteVoucherById_VoucherDoesNotExist_NotFound() throws Exception {
         String voucherId = String.valueOf(UUID.randomUUID());
         String expectedStatusCode = StatusCodes.ENTITY_NOT_FOUND.name();
-        String expectedMessage = String.format("Voucher with Id %s not found", voucherId);
+        String expectedMessage = String.format("Voucher with id %s not found", voucherId);
 
-        doThrow(new EntityNotFoundException(StatusCodes.ENTITY_NOT_FOUND.name(), String.format("Voucher with Id %s not found", voucherId)))
+        doThrow(new EntityNotFoundException(StatusCodes.ENTITY_NOT_FOUND.name(), String.format("Voucher with id %s not found", voucherId)))
                 .when(voucherService).delete(voucherId);
 
         mockMvc.perform(delete("/vouchers/" + voucherId))
@@ -199,13 +208,13 @@ public class VoucherControllerTest {
 
     @Test
     @WithMockUser(authorities = {"ROLE_ADMIN", "ROLE_MANAGER"})
-    void changeVoucherStatus_ValidData_SuccessfullyChanged() throws Exception {
+    void changeVoucherHotStatus_ValidData_SuccessfullyChanged() throws Exception {
         VoucherDTO voucherDTO = new VoucherDTO();
         voucherDTO.setIsHot("true");
 
         String voucherId = String.valueOf(UUID.randomUUID());
         String expectedStatusCode = "OK";
-        String expectedMessage = "Voucher status is successfully changed";
+        String expectedMessage = "Voucher hot status is successfully changed";
 
         when(voucherService.changeHotStatus(eq(voucherId), any(VoucherDTO.class))).thenReturn(voucherDTO);
 
@@ -221,4 +230,3 @@ public class VoucherControllerTest {
         verify(voucherService, times(1)).changeHotStatus(eq(voucherId), any(VoucherDTO.class));
     }
 }
-*/

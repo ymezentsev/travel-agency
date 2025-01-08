@@ -58,8 +58,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/auth/**",
-                                        "users/reset-password-email/**",
-                                        "users/reset-password/**",
+                                        "/users/reset-password-email/**",
+                                        "/users/reset-password/**",
                                         "/images/**",
                                         "/css/**",
                                         "/js/**",
@@ -69,8 +69,8 @@ public class SecurityConfiguration {
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.POST, "users").permitAll()
-                                .requestMatchers(HttpMethod.GET, "vouchers/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/vouchers/**").permitAll()
                                 .requestMatchers("/v1/vouchers/auth-manager/**")
                                 .hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
                                 .requestMatchers("/v1/vouchers/auth-admin/**").hasAuthority("ROLE_ADMIN")

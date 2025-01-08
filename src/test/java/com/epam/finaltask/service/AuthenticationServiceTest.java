@@ -1,14 +1,11 @@
-/*
 package com.epam.finaltask.service;
 
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.dto.AuthenticationResponse;
-import com.epam.finaltask.service.impl.AuthenticationService;
-import com.epam.finaltask.token.JwtService;
-import com.epam.finaltask.exception.EntityNotFoundException;
-import com.epam.finaltask.model.enums.Role;
 import com.epam.finaltask.model.User;
-import com.epam.finaltask.repository.UserRepository;
+import com.epam.finaltask.model.enums.Role;
+import com.epam.finaltask.service.impl.AuthenticationServiceImpl;
+import com.epam.finaltask.token.JwtService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,30 +14,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource
 public class AuthenticationServiceTest {
     @InjectMocks
-    private AuthenticationService authenticationService;
-    @Mock
-    private UserRepository userRepository;
+    private AuthenticationServiceImpl authenticationService;
     @Mock
     private JwtService jwtService;
     @Mock
     private AuthenticationManager authenticationManager;
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @Test
     void testUserFindByUserName() {
@@ -59,12 +49,11 @@ public class AuthenticationServiceTest {
                 null,
                 null,
                 null,
-                true
+                true,
+                null
         );
 
-        when(userRepository.findByUsername(userName)).thenReturn(Optional.of(expectedUser));
-        when(jwtService.generateToken(expectedUser)).thenReturn("Token");
-        when(passwordEncoder.matches(password, password)).thenReturn(true);
+        when(jwtService.generateToken(expectedUser.getUsername())).thenReturn("Token");
         when(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(),
                 authenticationRequest.getPassword()
@@ -74,31 +63,5 @@ public class AuthenticationServiceTest {
         AuthenticationResponse actualResponse = authenticationService.authenticate(authenticationRequest);
 
         assertEquals(expectedResponse, actualResponse);
-        verify(userRepository, times(1)).findByUsername(userName);
-
     }
-
-    @Test
-    void testCheckLoginData_IrrelevantUserName() {
-
-        String userName = "Robin";
-        String password = "password";
-
-        AuthenticationRequest request = new AuthenticationRequest(userName, password);
-
-        when(userRepository.findByUsername(userName)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> authenticationService.authenticate(request));
-    }
-
-    @Test
-    void testCheckLoginData_InvalidPassword() {
-
-        AuthenticationRequest request = new AuthenticationRequest("Admin", "cookie");
-
-        when(userRepository.findByUsername("Admin")).thenReturn(Optional.of(new User()));
-        assertThrows(EntityNotFoundException.class, () -> authenticationService.authenticate(request));
-    }
-
 }
-*/
