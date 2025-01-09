@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
@@ -19,12 +19,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.util.ViewControllerUtil.*;
+import static com.epam.finaltask.util.WebControllerUtil.*;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-manager")
 @RequiredArgsConstructor
-public class VoucherAuthManagerViewController {
+public class VoucherAuthManagerWebController {
     private final VoucherService voucherService;
 
     @GetMapping()

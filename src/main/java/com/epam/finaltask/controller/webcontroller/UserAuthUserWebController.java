@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.dto.ChangePasswordRequest;
 import com.epam.finaltask.dto.UserDTO;
@@ -20,14 +20,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
 
-import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
-import static com.epam.finaltask.util.ViewControllerUtil.getPreviousPageUri;
+import static com.epam.finaltask.util.WebControllerUtil.getErrors;
+import static com.epam.finaltask.util.WebControllerUtil.getPreviousPageUri;
 
 @Validated
 @Controller
 @RequestMapping("/v1/users/auth-user")
 @RequiredArgsConstructor
-public class UserAuthUserViewController {
+public class UserAuthUserWebController {
     private final UserService userService;
     private final I18nUtil i18nUtil;
 

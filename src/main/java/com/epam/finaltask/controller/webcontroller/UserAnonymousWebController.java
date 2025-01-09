@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.dto.ChangePasswordRequest;
 import com.epam.finaltask.dto.UserDTO;
@@ -17,12 +17,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
+import static com.epam.finaltask.util.WebControllerUtil.getErrors;
 
 @Controller
 @RequestMapping("/v1/users/anonymous")
 @RequiredArgsConstructor
-public class UserAnonymousViewController {
+public class UserAnonymousWebController {
     private final UserService userService;
     private final EmailSenderService emailSenderService;
     private final ResetPasswordTokenService resetPasswordTokenService;

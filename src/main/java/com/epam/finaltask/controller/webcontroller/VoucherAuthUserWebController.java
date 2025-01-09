@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.model.User;
 import com.epam.finaltask.model.enums.HotelType;
@@ -18,13 +18,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static com.epam.finaltask.util.ViewControllerUtil.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.util.ViewControllerUtil.getPreviousPageUri;
+import static com.epam.finaltask.util.WebControllerUtil.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.util.WebControllerUtil.getPreviousPageUri;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-user")
 @RequiredArgsConstructor
-public class VoucherAuthUserViewController {
+public class VoucherAuthUserWebController {
     private final VoucherService voucherService;
     private final I18nUtil i18nUtil;
 

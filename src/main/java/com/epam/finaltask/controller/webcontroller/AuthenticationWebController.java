@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.dto.AuthenticationRequest;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
+import static com.epam.finaltask.util.WebControllerUtil.getErrors;
 
 @Controller
 @RequestMapping("/v1/auth")
 @RequiredArgsConstructor
-public class AuthenticationViewController {
+public class AuthenticationWebController {
     private final AuthenticationService authenticationService;
 
     @GetMapping("/login")

@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.dto.VoucherSearchParamsDto;
 import com.epam.finaltask.model.User;
@@ -17,14 +17,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.util.ViewControllerUtil.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
-import static com.epam.finaltask.util.ViewControllerUtil.updateVoucherSearchParam;
+import static com.epam.finaltask.util.WebControllerUtil.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.util.WebControllerUtil.getErrors;
+import static com.epam.finaltask.util.WebControllerUtil.updateVoucherSearchParam;
 
 @Controller
 @RequestMapping("/v1/vouchers/anonymous")
 @RequiredArgsConstructor
-public class VoucherAnonymousViewController {
+public class VoucherAnonymousWebController {
     private final VoucherService voucherService;
 
     @GetMapping("/index")

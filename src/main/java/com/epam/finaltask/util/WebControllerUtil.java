@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class ViewControllerUtil {
+public class WebControllerUtil {
     public static final int DEFAULT_PAGE_SIZE = 5;
     public static final String SPLITTER = "(\\*)";
 

@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.dto.VoucherDTO;
 import com.epam.finaltask.dto.group.OnCreate;
@@ -25,15 +25,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.epam.finaltask.util.ViewControllerUtil.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.util.ViewControllerUtil.getErrors;
-import static com.epam.finaltask.util.ViewControllerUtil.getPreviousPageUri;
+import static com.epam.finaltask.util.WebControllerUtil.DEFAULT_PAGE_SIZE;
+import static com.epam.finaltask.util.WebControllerUtil.getErrors;
+import static com.epam.finaltask.util.WebControllerUtil.getPreviousPageUri;
 
 @Controller
 @RequestMapping("/v1/vouchers/auth-admin")
 @RequiredArgsConstructor
 @Validated
-public class VoucherAuthAdminViewController {
+public class VoucherAuthAdminWebController {
     private final VoucherService voucherService;
     private final I18nUtil i18nUtil;
 

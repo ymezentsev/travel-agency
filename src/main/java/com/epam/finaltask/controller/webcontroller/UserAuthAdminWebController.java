@@ -1,4 +1,4 @@
-package com.epam.finaltask.controller.viewcontroller;
+package com.epam.finaltask.controller.webcontroller;
 
 import com.epam.finaltask.dto.UserDTO;
 import com.epam.finaltask.dto.UserSearchParamsDto;
@@ -15,12 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.util.ViewControllerUtil.*;
+import static com.epam.finaltask.util.WebControllerUtil.*;
 
 @Controller
 @RequestMapping("/v1/users/auth-admin")
 @RequiredArgsConstructor
-public class UserAuthAdminViewController {
+public class UserAuthAdminWebController {
     private final UserService userService;
 
     @GetMapping()
