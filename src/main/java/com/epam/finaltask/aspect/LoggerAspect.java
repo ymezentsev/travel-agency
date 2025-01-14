@@ -41,9 +41,8 @@ public class LoggerAspect {
 
     @AfterReturning(pointcut = "@annotation(Loggable)", returning = "result")
     public void logMethodReturn(JoinPoint joinPoint, Object result) {
-        String className = joinPoint.getSignature().getDeclaringTypeName();
-        String methodName = joinPoint.getSignature().getName();
-        log.info("Method {}.{}() returned result: {}", className, methodName, result);
+        log.info("Method {}.{}() returned result: {}", joinPoint.getSignature().getDeclaringTypeName(),
+                joinPoint.getSignature().getName(), result);
     }
 
     @AfterThrowing(pointcut = "@annotation(Loggable)", throwing = "e")
