@@ -86,6 +86,17 @@
                    class="btn btn-success btn-lg" th:text="#{user.info.button-balance}"> Top up balance</a>
             </div>
         </div>
+
+        <div class="row justify-content-md-center"
+             sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+             th:unless="${#strings.equals(userDto.id, authUser.id)}">
+            <div class="col-md-2">
+                <a th:href="@{/v1/vouchers/auth-manager/user/{userId}(userId=${userId})}"
+                   class="btn btn-success btn-lg"
+                   th:text="#{user.action.button.vouchers}">
+                    User's vouchers</a>
+            </div>
+        </div>
         <br>
     </div>
 </main>

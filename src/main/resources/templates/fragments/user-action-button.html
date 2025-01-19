@@ -47,7 +47,7 @@
         </li>
         <li th:if="${user.vouchers.size} != 0">
             <a class="dropdown-item"
-               th:href="@{/v1/vouchers/auth-admin/{userId}
+               th:href="@{/v1/vouchers/auth-manager/user/{userId}
                    (userId=${user.id}, requestURI=${requestURI}, queryString=${queryString})}"
                th:text="#{user.action.button.vouchers}">
                 User's vouchers</a>

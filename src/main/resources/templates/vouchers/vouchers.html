@@ -44,12 +44,12 @@
                     <div th:replace="~{fragments/voucher-search-panel.html :: search-panel}"></div>
                 </div>
 
-                <h2 class="table-title" align="center" th:if="${myLinks}" th:text="#{voucher.user-vouchers}">
-                    User's vouchers</h2>
-                <h2 class="table-title" align="center" th:unless="${myLinks}" th:text="#{voucher.vouchers}">
-                    Vouchers</h2>
-
                 <div th:if="${vouchers} != null and ${vouchers.content.size() > 0}">
+                    <h2 class="table-title" align="center" th:if="${myLinks}" th:text="#{voucher.user-vouchers}">
+                        User's vouchers</h2>
+                    <h2 class="table-title" align="center" th:unless="${myLinks}" th:text="#{voucher.vouchers}">
+                        Vouchers</h2>
+
                     <div th:replace="~{fragments/voucher-dashboard.html :: voucher-dashboard(myLinks = ${myLinks})}"></div>
                 </div>
 

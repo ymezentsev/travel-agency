@@ -19,7 +19,7 @@ public class CustomLocaleResolver extends AbstractLocaleResolver {
 
         if (request.getCookies() != null) {
             Locale langFromCookie = Arrays.stream(request.getCookies())
-                    .filter(cookie -> "lang" .equals(cookie.getName()))
+                    .filter(cookie -> "lang".equals(cookie.getName()))
                     .map(cookie -> Locale.forLanguageTag(cookie.getValue()))
                     .findFirst()
                     .orElse(null);

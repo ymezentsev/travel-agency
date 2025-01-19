@@ -11,9 +11,6 @@ import com.epam.finaltask.service.VoucherService;
 import com.epam.finaltask.util.I18nUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.epam.finaltask.util.WebControllerUtil.DEFAULT_PAGE_SIZE;
 import static com.epam.finaltask.util.WebControllerUtil.getErrors;
 import static com.epam.finaltask.util.WebControllerUtil.getPreviousPageUri;
 
@@ -119,17 +115,6 @@ public class VoucherAuthAdminWebController {
         redirectAttributes.addFlashAttribute("message",
                 i18nUtil.getMessage("message.voucher-updated"));
         return "redirect:" + previousPage;
-    }
-
-    @GetMapping("/{userId}")
-    public String getAllUsersVouchers(Model model,
-                                      @PathVariable("userId") String userId,
-                                      @PageableDefault(size = DEFAULT_PAGE_SIZE,
-                                              sort = {"status", "arrivalDate", "id"},
-                                              direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute("myLinks", true);
-        model.addAttribute("vouchers", voucherService.findAllByUserId(userId, pageable));
-        return "vouchers/vouchers";
     }
 
     @ModelAttribute

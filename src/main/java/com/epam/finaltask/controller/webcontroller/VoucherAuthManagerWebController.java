@@ -154,6 +154,16 @@ public class VoucherAuthManagerWebController {
         return "vouchers/vouchers";
     }
 
+    @GetMapping("/user/{userId}")
+    public String getAllUsersVouchers(Model model,
+                                      @PathVariable("userId") String userId,
+                                      @PageableDefault(size = DEFAULT_PAGE_SIZE,
+                                              sort = {"status", "arrivalDate", "id"},
+                                              direction = Sort.Direction.DESC) Pageable pageable) {
+        model.addAttribute("myLinks", true);
+        model.addAttribute("vouchers", voucherService.findAllByUserId(userId, pageable));
+        return "vouchers/vouchers";
+    }
 
     @ModelAttribute
     public void populateModel(Model model,
