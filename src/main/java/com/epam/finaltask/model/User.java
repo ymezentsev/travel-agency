@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @Column
-    private Double balance;
+    private BigDecimal balance;
 
     @Column
     private boolean accountStatus;

@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setRole(Role.USER);
         user.setAccountStatus(true);
-        user.setBalance(0.0);
+        user.setBalance(BigDecimal.ZERO);
         user.setVouchers(new ArrayList<>());
         return userMapper.toUserDTO(userRepository.save(user));
     }

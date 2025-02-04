@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
@@ -58,7 +59,8 @@ public class SchedulerServiceImpl implements SchedulerService {
                     && voucher.getStatus().equals(VoucherStatus.AVAILABLE)
                     && !voucher.isHot()) {
                 voucher.setHot(true);
-                voucher.setPrice(voucher.getPrice() * (100 - discountPercentage) / 100);
+                voucher.setPrice(BigDecimal.valueOf(
+                        voucher.getPrice().doubleValue() * (100 - discountPercentage) / 100));
                 voucherRepository.save(voucher);
                 log.info("Changed status to 'HOT' and reduced price for voucher: {}", voucher.getId());
             }

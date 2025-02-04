@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -43,7 +44,7 @@ public class VoucherDTO {
     @DecimalMin(groups = {OnCreate.class, OnUpdate.class}, value = "0.01",
             message = "{validation.price-validation-message}")
     @Schema(description = "Voucher price", example = "299.99")
-    private double price;
+    private BigDecimal price;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{validation.tour-type-required}")
     @ValueOfEnum(enumClass = TourType.class, message = "{validation.enum-validation-message}")

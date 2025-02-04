@@ -7,6 +7,7 @@ import com.epam.finaltask.model.enums.VoucherStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class Voucher {
     private String description;
 
     @Column
-    private double price;
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     private TourType tourType;

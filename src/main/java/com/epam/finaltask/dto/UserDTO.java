@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.epam.finaltask.util.ValidationRegExp.*;
@@ -52,7 +53,7 @@ public class UserDTO {
     @NotNull(groups = {OnChangeBalance.class}, message = "{validation.balance-required}")
     @DecimalMin(groups = {OnChangeBalance.class}, value = "0.01", message = "{validation.balance-validation-message}")
     @Schema(description = "User balance")
-    private Double balance;
+    private BigDecimal balance;
 
     @Schema(description = "User account status", defaultValue = "true")
     private boolean accountStatus;

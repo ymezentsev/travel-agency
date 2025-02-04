@@ -215,12 +215,12 @@ public class VoucherServiceImpl implements VoucherService {
                     i18nUtil.getMessage("error.invalid-pay-voucher", voucher.getStatus().name()));
         }
 
-        if (user.getBalance() < voucher.getPrice()) {
+        if (user.getBalance().compareTo(voucher.getPrice()) < 0) {
             throw new InvalidVoucherOperationException(INVALID_VOUCHER_OPERATION.name(),
                     i18nUtil.getMessage("error.not-enough-balance"));
         }
 
-        user.setBalance(user.getBalance() - voucher.getPrice());
+        user.setBalance(user.getBalance().subtract(voucher.getPrice()));
         voucher.setStatus(VoucherStatus.PAID);
 
         emailSenderService.sendPaymentConfirmationEmail(voucher);
