@@ -18,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -28,6 +27,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +112,7 @@ public class VoucherControllerTest {
         VoucherDTO voucherDTO = new VoucherDTO();
         voucherDTO.setTitle("SummerSale2024");
         voucherDTO.setDescription("Summer Sale Voucher Description");
-        voucherDTO.setPrice(299.99);
+        voucherDTO.setPrice(BigDecimal.valueOf(299.99));
         voucherDTO.setTourType(TourType.ADVENTURE.name());
         voucherDTO.setTransferType(TransferType.PLANE.name());
         voucherDTO.setHotelType(HotelType.FIVE_STARS.name());
@@ -142,7 +142,7 @@ public class VoucherControllerTest {
         VoucherDTO voucherDTO = new VoucherDTO();
         voucherDTO.setTitle("UpdatedTitle");
         voucherDTO.setDescription("Updated description");
-        voucherDTO.setPrice(499.99);
+        voucherDTO.setPrice(BigDecimal.valueOf(499.99));
         voucherDTO.setTourType(TourType.SAFARI.name());
         voucherDTO.setTransferType(TransferType.JEEPS.name());
         voucherDTO.setHotelType(HotelType.THREE_STARS.name());
