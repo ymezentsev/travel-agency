@@ -1,9 +1,10 @@
 package com.epam.finaltask.controller;
 
-import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.controller.openapi.AuthenticationControllerOpenApi;
 import com.epam.finaltask.dto.AuthenticationRequest;
+import com.epam.finaltask.dto.RefreshTokenRequest;
 import com.epam.finaltask.dto.RemoteResponse;
+import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.util.I18nUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,18 @@ public class AuthenticationController implements AuthenticationControllerOpenApi
                 .statusCode(OK.name())
                 .statusMessage(i18nUtil.getMessage("message.auth-succeed"))
                 .results(List.of(authenticationService.authenticate(authenticationRequest)))
+                .build();
+    }
+
+    @Override
+    @PostMapping("/refresh-token")
+    @ResponseStatus(HttpStatus.OK)
+    public RemoteResponse refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return RemoteResponse.builder()
+                .succeeded(true)
+                .statusCode(OK.name())
+                .statusMessage(i18nUtil.getMessage("message.refresh-token-succeed"))
+                .results(List.of(authenticationService.refreshToken(refreshTokenRequest)))
                 .build();
     }
 }
