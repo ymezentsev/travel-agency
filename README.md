@@ -6,7 +6,8 @@ Duration: **18** hours
 
 ## Description
 
-In this task, you will implement "Travel Agency Service" using MVC pattern. All the main classes are available and waiting
+In this task, you will implement "Travel Agency Service" using MVC pattern. All the main classes are available and
+waiting
 for you in the appropriate folders.
 
 The class diagram of the Domain model is shown in the figure below:
@@ -14,6 +15,7 @@ The class diagram of the Domain model is shown in the figure below:
 ![diagram.png](TravelAgency.jpg)
 
 The travel agency has a catalogue of tours. `Authorized user` can select tours by:
+
 - type (rest, excursion, shopping)
 - by price
 - by transfer type (car, plane, ship)
@@ -22,6 +24,7 @@ The travel agency has a catalogue of tours. `Authorized user` can select tours b
 > Note: only registered users can select and order tours.
 
 `Tour` must have:
+
 1. Title
 2. Description
 3. Price
@@ -34,28 +37,27 @@ The travel agency has a catalogue of tours. `Authorized user` can select tours b
 
 Tour can also be hot.
 
-`User` must have personal account, which contains information about him (name, surname, balance, email, [optional] password), as well as a list of selected tours and their current status.
+`User` must have personal account, which contains information about him (name, surname, balance, email, [optional]
+password), as well as a list of selected tours and their current status.
 
 ### Permissions
 
 `Manager`
+
 - defines tour as `hot`. These tours are always displayed at the top of the list.
 - transfer the status of the tour from `registered` to `paid` or `canceled`
 
 `Administrator` has all manager functionality, plus:
+
 - add/delete tour
 - change tour information (all fields)
 - block/unblock user
-
-
-
 
 ## Commands
 
 ### Run project
 
 ```mvn spring-boot:run```
-
 
 ## Structure
 

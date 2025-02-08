@@ -46,14 +46,13 @@ public enum EmailSubject {
         }
     };
 
-    private final String subject;
-
     private static final String TOKEN_RESET_PASSWORD_URL = "/v1/users/anonymous/reset-password?token=";
     private static final String TEMPLATE_FOR_RESET_PASSWORD_EMAIL = "emails/reset-password-email";
     private static final String TEMPLATE_FOR_ARRIVAL_DATE_REMINDER = "emails/arrival-date-reminder";
     private static final String TEMPLATE_FOR_VOUCHER_ORDER_CONFIRMATION = "emails/voucher-order-confirmation";
     private static final String TEMPLATE_FOR_VOUCHER_PAYMENT_CONFIRMATION = "emails/voucher-payment-confirmation";
     private static final String TEMPLATE_FOR_VOUCHER_ORDER_CANCELED = "emails/voucher-order-canceled";
+    private final String subject;
 
     public abstract String getTemplate();
 

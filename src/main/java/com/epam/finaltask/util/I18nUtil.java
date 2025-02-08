@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class I18nUtil {
     private final MessageSource messageSource;
 
-    public String getMessage(String message, String... args){
+    public String getMessage(String message, String... args) {
         return messageSource.getMessage(message, args, LocaleContextHolder.getLocale());
     }
 }

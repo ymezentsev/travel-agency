@@ -7,18 +7,18 @@
 
 <body>
 <div th:fragment="user-dashboard">
-    <h2 class="table-title" align="center" th:text="#{user.dashboard.title}">Users</h2>
+    <h2 align="center" class="table-title" th:text="#{user.dashboard.title}">Users</h2>
 
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.username}">Username</th>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.phone}">Phone number</th>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.email}">Email</th>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.balance}">Balance</th>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.isLocked}">Is locked</th>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.role}">Role</th>
-            <th scope="col" class="col-1" th:text="#{user.dashboard.action}">Action</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.username}">Username</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.phone}">Phone number</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.email}">Email</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.balance}">Balance</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.isLocked}">Is locked</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.role}">Role</th>
+            <th class="col-1" scope="col" th:text="#{user.dashboard.action}">Action</th>
         </tr>
         </thead>
 
@@ -37,7 +37,7 @@
                 <div th:text="${user.balance}"></div>
             </td>
             <td>
-                <div th:unless="${user.accountStatus}" th:text="#{user.dashboard.locked}">Locked</div>
+                <div th:text="#{user.dashboard.locked}" th:unless="${user.accountStatus}">Locked</div>
             </td>
             <td>
                 <div th:text="${user.role}"></div>

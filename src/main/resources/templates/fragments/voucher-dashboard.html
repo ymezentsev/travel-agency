@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Voucher dashboard</title>
@@ -10,26 +10,26 @@
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
-            <th scope="col" class="col-2" th:text="#{voucher.dashboard.title}">Title</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.tour-type}">Tour type</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.transfer-type}">Transfer type</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.hotel-type}">Hotel type</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.arrival-date}">Arrival date</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.eviction-date}">Eviction date</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.price}">Price</th>
-            <th scope="col" class="col-1" th:text="#{voucher.dashboard.is-hot}">Is hot</th>
+            <th class="col-2" scope="col" th:text="#{voucher.dashboard.title}">Title</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.tour-type}">Tour type</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.transfer-type}">Transfer type</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.hotel-type}">Hotel type</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.arrival-date}">Arrival date</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.eviction-date}">Eviction date</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.price}">Price</th>
+            <th class="col-1" scope="col" th:text="#{voucher.dashboard.is-hot}">Is hot</th>
             <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
-                <th scope="col" class="col-1" th:text="#{voucher.dashboard.status}">Status</th>
-                <th scope="col" class="col-1" th:text="#{voucher.dashboard.user}">User</th>
-                <th scope="col" class="col-1" th:text="#{voucher.dashboard.action}">Action</th>
+                <th class="col-1" scope="col" th:text="#{voucher.dashboard.status}">Status</th>
+                <th class="col-1" scope="col" th:text="#{voucher.dashboard.user}">User</th>
+                <th class="col-1" scope="col" th:text="#{voucher.dashboard.action}">Action</th>
             </div>
             <div sec:authorize="hasAuthority('ROLE_USER')">
                 <div th:if="${myLinks}">
-                    <th scope="col" class="col-1" th:text="#{voucher.dashboard.status}">Status</th>
-                    <th scope="col" class="col-1" th:text="#{voucher.dashboard.action}">Action</th>
+                    <th class="col-1" scope="col" th:text="#{voucher.dashboard.status}">Status</th>
+                    <th class="col-1" scope="col" th:text="#{voucher.dashboard.action}">Action</th>
                 </div>
                 <div th:unless="${myLinks}">
-                    <th scope="col" class="col-1" th:text="#{voucher.dashboard.action}">Action</th>
+                    <th class="col-1" scope="col" th:text="#{voucher.dashboard.action}">Action</th>
                 </div>
             </div>
         </tr>
@@ -39,8 +39,8 @@
             <tbody>
             <td>
                 <div>
-                    <a th:href="@{/v1/vouchers/anonymous/{voucherId}(voucherId=${voucher.id})}"
-                       th:text="${voucher.title}" target="_blank"></a>
+                    <a target="_blank"
+                       th:href="@{/v1/vouchers/anonymous/{voucherId}(voucherId=${voucher.id})}" th:text="${voucher.title}"></a>
                 </div>
             </td>
             <td>
@@ -63,7 +63,7 @@
             </td>
             <td>
                 <div th:if="${voucher.isHot}">
-                    <span><img src="/images/hot.jpg" alt="hot" width="40" height="30"/></span>
+                    <span><img alt="hot" height="30" src="/images/hot.jpg" width="40"/></span>
                 </div>
             </td>
             <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
@@ -72,9 +72,9 @@
                 </td>
                 <td>
                     <div>
-                        <a th:if="${voucher.userId} != null"
+                        <a target="_blank"
                            th:href="@{/v1/users/auth-user/id/{userId}(userId=${voucher.userId})}"
-                           th:text="${voucher.username}" target="_blank"></a>
+                           th:if="${voucher.userId} != null" th:text="${voucher.username}"></a>
                     </div>
                 </td>
                 <td>
@@ -94,11 +94,12 @@
 
                 <div th:unless="${myLinks}">
                     <td>
-                        <form th:action="@{/v1/vouchers/auth-user/{voucherId}/{userId}
-                        (voucherId=${voucher.id}, userId=${authUser.id})}"
-                              method="post" class="form-inline">
-                            <button type="submit" class="btn btn-outline-dark btn-sm"
-                                    th:text="#{voucher.dashboard.order}">Order</button>
+                        <form class="form-inline"
+                              method="post" th:action="@{/v1/vouchers/auth-user/{voucherId}/{userId}
+                        (voucherId=${voucher.id}, userId=${authUser.id})}">
+                            <button class="btn btn-outline-dark btn-sm" th:text="#{voucher.dashboard.order}"
+                                    type="submit">Order
+                            </button>
                         </form>
                     </td>
                 </div>

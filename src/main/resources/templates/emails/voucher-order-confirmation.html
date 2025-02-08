@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:remove="all">Registration confirmation</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
     <style type="text/css">
         body {
           font-family: calibri, 'DejaVu Sans', Arial, Helvetica, sans-serif;
@@ -41,33 +41,33 @@
                 <table align="center">
 
                     <tr>
-                        <td>Arrival date: </td>
+                        <td>Arrival date:</td>
                         <td th:text="${voucher.arrivalDate}"></td>
                     </tr>
                     <tr>
-                        <td>Eviction date: </td>
+                        <td>Eviction date:</td>
                         <td th:text="${voucher.evictionDate}"></td>
                     </tr>
                     <tr>
-                        <td>Price: </td>
+                        <td>Price:</td>
                         <td th:text="${voucher.price}"></td>
                     </tr>
                     <tr>
-                        <td>Tour type: </td>
+                        <td>Tour type:</td>
                         <td th:text="${voucher.tourType}"></td>
                     </tr>
                     <tr>
-                        <td>Transfer type: </td>
+                        <td>Transfer type:</td>
                         <td th:text="${voucher.transferType}"></td>
                     </tr>
 
                     <tr>
-                        <td>Hotel type: </td>
+                        <td>Hotel type:</td>
                         <td th:text="${voucher.hotelType}"></td>
                     </tr>
 
                     <tr>
-                        <td>Description: </td>
+                        <td>Description:</td>
                         <td th:text="${voucher.description}"></td>
                     </tr>
                 </table>

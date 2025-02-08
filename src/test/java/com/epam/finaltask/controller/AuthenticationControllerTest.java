@@ -47,7 +47,8 @@ public class AuthenticationControllerTest {
         String expectedStatusMessage = "User is successfully authenticated";
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("admin", "Password");
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse("access token");
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse("access token",
+                "refresh token");
 
         when(authenticationService.authenticate(authenticationRequest)).thenReturn(authenticationResponse);
 

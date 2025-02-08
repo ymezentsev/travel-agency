@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Header</title>
 </head>
 <body>
-<header th:fragment="header" class="header" style="position: fixed; top: 0; width: 100%; height: 80px;">
+<header class="header" style="position: fixed; top: 0; width: 100%; height: 80px;" th:fragment="header">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-1 mt-2">
                 <a th:href="@{/v1/vouchers/anonymous/index}">
-                    <img src="/images/favicon.png" alt="home-icon" width="75" height="60"/></a>
+                    <img alt="home-icon" height="60" src="/images/favicon.png" width="75"/></a>
             </div>
 
             <div class="col-md-1 mt-2">
@@ -26,15 +26,16 @@
             </div>
 
             <div class="col-md-1 mt-2">
-                <a th:href="@{/swagger-ui/index.html}" target="_blank">Swagger</a>
+                <a target="_blank" th:href="@{/swagger-ui/index.html}">Swagger</a>
                 <br>
                 <select id="locales">
-                    <option value="en" th:text="#{header.lang.en}"></option>
-                    <option value="ua" th:text="#{header.lang.ua}" th:selected="${#strings.equals(locale, 'ua')}"></option>
+                    <option th:text="#{header.lang.en}" value="en"></option>
+                    <option th:selected="${#strings.equals(locale, 'ua')}" th:text="#{header.lang.ua}"
+                            value="ua"></option>
                 </select>
             </div>
 
-            <div class="col-md-6 mt-2 alert alert-success" align="center" role="alert" th:if="${message}">
+            <div align="center" class="col-md-6 mt-2 alert alert-success" role="alert" th:if="${message}">
                 <strong th:text="${message}"></strong></div>
             <div class="col-md-6 mt-2" th:unless="${message}"></div>
             <div class="col-md-2 mt-2"></div>
@@ -42,13 +43,14 @@
             <div class="col-md-1 mt-2" sec:authorize="isAnonymous()">
                 <span class="user"><a th:href="@{/v1/auth/login}" th:text="#{header.sign.in}">Sign in</a></span>
                 <br>
-                <span class="user"><a th:href="@{/v1/users/anonymous/register}" th:text="#{header.register}">Register</a></span>
+                <span class="user"><a th:href="@{/v1/users/anonymous/register}"
+                                      th:text="#{header.register}">Register</a></span>
             </div>
 
-            <div class="col-md-1 mt-2" sec:authorize="isAuthenticated()" align="center">
-                <a th:if="${authUser} != null"
-                   th:href="@{/v1/users/auth-user/id/{userId}(userId=${authUser.id})}">
-                    <span><img src="/images/user-icon.png" alt="User-icon" width="20" height="20"/></span>
+            <div align="center" class="col-md-1 mt-2" sec:authorize="isAuthenticated()">
+                <a th:href="@{/v1/users/auth-user/id/{userId}(userId=${authUser.id})}"
+                   th:if="${authUser} != null">
+                    <span><img alt="User-icon" height="20" src="/images/user-icon.png" width="20"/></span>
                     <span class="user" th:text="${authUser.username}"></span>
                 </a>
                 <br>

@@ -5,37 +5,37 @@
     <title>Pagination</title>
 </head>
 <body>
-    <div th:fragment="paginationLinks(pagination)"
-         th:with="urlBuilder=${T(com.epam.finaltask.util.ServletUriComponentsBuilderWrapper)}">
-        <nav aria-label="page navigation" th:if="${pagination.totalPages > 1}" th:with="max=3">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:if="${pagination.hasPrevious()}">
-                    <a class="page-link"
-                       th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pagination.number - 1)
+<div th:fragment="paginationLinks(pagination)"
+     th:with="urlBuilder=${T(com.epam.finaltask.util.ServletUriComponentsBuilderWrapper)}">
+    <nav aria-label="page navigation" th:if="${pagination.totalPages > 1}" th:with="max=3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:if="${pagination.hasPrevious()}">
+                <a class="page-link"
+                   th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pagination.number - 1)
                                                     .replaceQueryParam('size', pagination.size).toUriString()}}">
-                        <<</a>
-                </li>
-                <li class="page-item" th:each="page: ${#numbers.sequence(0, pagination.totalPages-1)}"
-                    th:if="${pagination.number} >= ${page - max} and ${pagination.number} <= ${page + max} or ${page} == ${pagination.totalPages - 1} or ${page} == 0"
-                    th:classappend="${page} == ${pagination.number} ? 'active'">
+                    <<</a>
+            </li>
+            <li class="page-item" th:classappend="${page} == ${pagination.number} ? 'active'"
+                th:each="page: ${#numbers.sequence(0, pagination.totalPages-1)}"
+                th:if="${pagination.number} >= ${page - max} and ${pagination.number} <= ${page + max} or ${page} == ${pagination.totalPages - 1} or ${page} == 0">
                                             <span class="page-link"
                                                   th:if="${pagination.number} == ${page + max} and ${page != 0}">...</span>
-                    <a class="page-link"
-                       th:if="${pagination.number} > ${page - max} and ${pagination.number} < ${page + max} or ${page} == ${pagination.totalPages - 1} or ${page} == 0"
-                       th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', page)
+                <a class="page-link"
+                   th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', page)
                                                .replaceQueryParam('size', pagination.size).toUriString()}}"
-                       th:text="${page+1}">1</a>
-                    <span class="page-link"
-                          th:if="${pagination.number} == ${page - max} and ${page} != ${pagination.totalPages - 1}">...</span>
-                </li>
-                <li class="page-item" th:if="${pagination.hasNext()}">
-                    <a class="page-link"
-                       th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pagination.number + 1)
+                   th:if="${pagination.number} > ${page - max} and ${pagination.number} < ${page + max} or ${page} == ${pagination.totalPages - 1} or ${page} == 0"
+                   th:text="${page+1}">1</a>
+                <span class="page-link"
+                      th:if="${pagination.number} == ${page - max} and ${page} != ${pagination.totalPages - 1}">...</span>
+            </li>
+            <li class="page-item" th:if="${pagination.hasNext()}">
+                <a class="page-link"
+                   th:href="@{${urlBuilder.fromCurrentRequest().replaceQueryParam('page', pagination.number + 1)
                                                    .replaceQueryParam('size', pagination.size).toUriString()}}">
-                        >></a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+                    >></a>
+            </li>
+        </ul>
+    </nav>
+</div>
 </body>
 </html>

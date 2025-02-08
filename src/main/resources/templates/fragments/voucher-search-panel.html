@@ -1,45 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Voucher search panel</title>
 </head>
 <body>
 <div th:fragment="search-panel">
-    <form th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}"
-          th:action="@{/v1/vouchers/{path}/by-price(path = ${path})}" method="get" class="row g-3">
+    <form class="row g-3"
+          method="get" th:action="@{/v1/vouchers/{path}/by-price(path = ${path})}" th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}">
         <label for="maxPrice"><strong th:text="#{voucher.search.panel.label.by-price}">
             Search by price (less or equal than input)</strong></label>
         <div class="col-md-2">
-            <input type="text" class="form-control" id="maxPrice" name="maxPrice"
-                   th:attr="placeholder=#{voucher.search.panel.button.placeholder-price}">
+            <input class="form-control" id="maxPrice" name="maxPrice" th:attr="placeholder=#{voucher.search.panel.button.placeholder-price}"
+                   type="text">
         </div>
         <div class="col-md-1">
-            <button type="submit" class="btn btn-success btn-sm"
-                    th:text="#{voucher.search.panel.button.by-price}">Search by price
+            <button class="btn btn-success btn-sm" th:text="#{voucher.search.panel.button.by-price}"
+                    type="submit">Search by price
             </button>
         </div>
     </form>
 
-    <div class="alert alert-danger form-group col-md-3" role="alert" th:if="${errors}"
-         th:each="error: ${errors}">
+    <div class="alert alert-danger form-group col-md-3" role="alert" th:each="error: ${errors}"
+         th:if="${errors}">
         <small th:text="${error}"></small>
     </div>
     <br>
 
     <div class="btn-group">
-        <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false" th:text="#{voucher.search.panel.by-tour-type}">
+        <button aria-expanded="false" class="form-control" data-bs-toggle="dropdown"
+                th:text="#{voucher.search.panel.by-tour-type}" type="button">
             Search by tour type
         </button>
         <ul class="dropdown-menu">
             <li th:each="tourType : ${tourTypes}">
-                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
-                   class="dropdown-item"
+                <a class="dropdown-item"
+                   sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
                    th:href="@{/v1/vouchers/anonymous/by-tourType/{tourType}(tourType=${tourType})}"
                    th:text="${tourType}"></a>
-                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
-                   class="dropdown-item"
+                <a class="dropdown-item"
+                   sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
                    th:href="@{/v1/vouchers/auth-manager/by-tourType/{tourType}(tourType=${tourType})}"
                    th:text="${tourType}"></a>
             </li>
@@ -47,18 +47,18 @@
     </div>
 
     <div class="btn-group">
-        <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false" th:text="#{voucher.search.panel.by-transfer-type}">
+        <button aria-expanded="false" class="form-control" data-bs-toggle="dropdown"
+                th:text="#{voucher.search.panel.by-transfer-type}" type="button">
             Search by transfer type
         </button>
         <ul class="dropdown-menu">
             <li th:each="transferType : ${transferTypes}">
-                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
-                   class="dropdown-item"
+                <a class="dropdown-item"
+                   sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
                    th:href="@{/v1/vouchers/anonymous/by-transferType/{transferType}(transferType=${transferType})}"
                    th:text="${transferType}"></a>
-                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
-                   class="dropdown-item"
+                <a class="dropdown-item"
+                   sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
                    th:href="@{/v1/vouchers/auth-manager/by-transferType/{transferType}(transferType=${transferType})}"
                    th:text="${transferType}"></a>
             </li>
@@ -66,18 +66,18 @@
     </div>
 
     <div class="btn-group">
-        <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false" th:text="#{voucher.search.panel.by-hotel-type}">
+        <button aria-expanded="false" class="form-control" data-bs-toggle="dropdown"
+                th:text="#{voucher.search.panel.by-hotel-type}" type="button">
             Search by hotel type
         </button>
         <ul class="dropdown-menu">
             <li th:each="hotelType : ${hotelTypes}">
-                <a sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
-                   class="dropdown-item"
+                <a class="dropdown-item"
+                   sec:authorize="isAnonymous() or hasAuthority('ROLE_USER')"
                    th:href="@{/v1/vouchers/anonymous/by-hotelType/{hotelType}(hotelType=${hotelType})}"
                    th:text="${hotelType}"></a>
-                <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
-                   class="dropdown-item"
+                <a class="dropdown-item"
+                   sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
                    th:href="@{/v1/vouchers/auth-manager/by-hotelType/{hotelType}(hotelType=${hotelType})}"
                    th:text="${hotelType}"></a>
             </li>
@@ -85,8 +85,8 @@
     </div>
 
     <div class="btn-group" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')">
-        <button class="form-control" type="button" data-bs-toggle="dropdown"
-                aria-expanded="false" th:text="#{voucher.search.panel.by-status}">
+        <button aria-expanded="false" class="form-control" data-bs-toggle="dropdown"
+                th:text="#{voucher.search.panel.by-status}" type="button">
             Search by voucher status
         </button>
         <ul class="dropdown-menu">

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Create voucher</title>
     <link href="/images/favicon.png" rel="shortcut icon" type="image/x-icon"/>
-    <link rel="stylesheet" href="/css/style.css"/>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    <link href="/css/style.css" rel="stylesheet"/>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="/js/language-switch.js" type="text/javascript"></script>
@@ -22,99 +22,100 @@
 <main sec:authorize="hasAuthority('ROLE_ADMIN')">
     <div class="container mt-4">
         <div class="col-md-12 mb-4" style="height: 40px;"></div>
-        <form th:action="@{/v1/vouchers/auth-admin/create}" th:object="${voucherDto}" method="post" class="row g-3"
-              id="form" style="height: 524px;">
+        <form class="row g-3" id="form" method="post" style="height: 524px;"
+              th:action="@{/v1/vouchers/auth-admin/create}" th:object="${voucherDto}">
 
             <h1 th:text="#{create.voucher.title}">Create voucher</h1>
 
-            <input type="hidden" name="previousPage" th:value="${previousPage}">
+            <input name="previousPage" th:value="${previousPage}" type="hidden">
 
             <div class="col-md-8">
-                <label for="title" class="form-label" th:text="#{create.voucher.title-label}">Title</label>
-                <input type="text" th:field="*{title}" class="form-control" id="title"
-                       aria-describedby="titleHelp" th:attr="placeholder=#{create.voucher.title-placeholder}">
-                <small id="titleHelp" class="form-text text-muted" th:text="#{create.voucher.title-help}">
+                <label class="form-label" for="title" th:text="#{create.voucher.title-label}">Title</label>
+                <input aria-describedby="titleHelp" class="form-control" id="title" th:attr="placeholder=#{create.voucher.title-placeholder}"
+                       th:field="*{title}" type="text">
+                <small class="form-text text-muted" id="titleHelp" th:text="#{create.voucher.title-help}">
                     Max size for title is 255 characters</small>
             </div>
 
             <div class="col-md-4">
-                <label for="price" class="form-label" th:text="#{create.voucher.price}">Price</label>
-                <input type="text" th:field="*{price}" class="form-control" id="price"
-                       aria-describedby="priceHelp" th:attr="placeholder=#{create.voucher.price-placeholder}">
-                <small id="priceHelp" class="form-text text-muted" th:text="#{create.voucher.price-help}">
+                <label class="form-label" for="price" th:text="#{create.voucher.price}">Price</label>
+                <input aria-describedby="priceHelp" class="form-control" id="price" th:attr="placeholder=#{create.voucher.price-placeholder}"
+                       th:field="*{price}" type="text">
+                <small class="form-text text-muted" id="priceHelp" th:text="#{create.voucher.price-help}">
                     Price must be positive number</small>
             </div>
 
             <div class="col-md-12">
-                <label for="description" class="form-label" th:text="#{create.voucher.description}">Description</label>
-                <textarea th:field="*{description}" class="form-control" id="description"
-                          cols="30" rows="4" aria-describedby="descriptionHelp"
-                          th:attr="placeholder=#{create.voucher.description-placeholder}"></textarea>
-                <small id="descriptionHelp" class="form-text text-muted" th:text="#{create.voucher.description-help}">
+                <label class="form-label" for="description" th:text="#{create.voucher.description}">Description</label>
+                <textarea aria-describedby="descriptionHelp" class="form-control" cols="30"
+                          id="description" rows="4" th:attr="placeholder=#{create.voucher.description-placeholder}"
+                          th:field="*{description}"></textarea>
+                <small class="form-text text-muted" id="descriptionHelp" th:text="#{create.voucher.description-help}">
                     Max size for description is 2000 characters</small>
             </div>
 
             <div class="row">
                 <div class="col-md-4">
-                    <label for="tourType" class="form-label" th:text="#{create.voucher.tour-type}">Tour type</label>
-                    <select th:field="*{tourType}" id="tourType" class="form-select">
-                        <option th:each="tourType : ${tourTypes}" th:value="${tourType}" th:text="${tourType}"></option>
+                    <label class="form-label" for="tourType" th:text="#{create.voucher.tour-type}">Tour type</label>
+                    <select class="form-select" id="tourType" th:field="*{tourType}">
+                        <option th:each="tourType : ${tourTypes}" th:text="${tourType}" th:value="${tourType}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
-                    <label for="transferType" class="form-label" th:text="#{create.voucher.transfer-type}">
+                    <label class="form-label" for="transferType" th:text="#{create.voucher.transfer-type}">
                         Transfer Type</label>
-                    <select th:field="*{transferType}" id="transferType" class="form-select">
-                        <option th:each="transferType : ${transferTypes}" th:value="${transferType}"
-                                th:text="${transferType}"></option>
+                    <select class="form-select" id="transferType" th:field="*{transferType}">
+                        <option th:each="transferType : ${transferTypes}" th:text="${transferType}"
+                                th:value="${transferType}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-4">
-                    <label for="hotelType" class="form-label" th:text="#{create.voucher.hotel-type}">Hotel type</label>
-                    <select th:field="*{hotelType}" id="hotelType" class="form-select">
-                        <option th:each="hotelType : ${hotelTypes}" th:value="${hotelType}"
-                                th:text="${hotelType}"></option>
+                    <label class="form-label" for="hotelType" th:text="#{create.voucher.hotel-type}">Hotel type</label>
+                    <select class="form-select" id="hotelType" th:field="*{hotelType}">
+                        <option th:each="hotelType : ${hotelTypes}" th:text="${hotelType}"
+                                th:value="${hotelType}"></option>
                     </select>
                 </div>
             </div>
 
             <div class="col-md-4">
-                <label for="arrivalDate" class="form-label" th:text="#{create.voucher.arrival-date}">
+                <label class="form-label" for="arrivalDate" th:text="#{create.voucher.arrival-date}">
                     Arrival date</label>
-                <input type="date" name="arrivalDate" id="arrivalDate" class="form-control"
-                       aria-describedby="arrivalDateHelp" min="2024-12-01" max="2034-01-01"
-                       th:value="${#temporals.format(voucherDto.arrivalDate, 'yyyy-MM-dd')}">
-                <small id="arrivalDateHelp" class="form-text text-muted" th:text="#{create.voucher.arrival-date-help}">
+                <input aria-describedby="arrivalDateHelp" class="form-control" id="arrivalDate" max="2034-01-01"
+                       min="2024-12-01" name="arrivalDate" th:value="${#temporals.format(voucherDto.arrivalDate, 'yyyy-MM-dd')}"
+                       type="date">
+                <small class="form-text text-muted" id="arrivalDateHelp" th:text="#{create.voucher.arrival-date-help}">
                     Arrival date must be future or present</small>
             </div>
 
             <div class="col-md-4">
-                <label for="evictionDate" class="form-label" th:text="#{create.voucher.eviction-date}">
+                <label class="form-label" for="evictionDate" th:text="#{create.voucher.eviction-date}">
                     Eviction date</label>
-                <input type="date" name="evictionDate" id="evictionDate" class="form-control"
-                       aria-describedby="evictionDateHelp" min="2024-12-01" max="2034-01-01"
-                       th:value="${#temporals.format(voucherDto.evictionDate, 'yyyy-MM-dd')}">
-                <small id="evictionDateHelp" class="form-text text-muted" th:text="#{create.voucher.eviction-date-help}">
+                <input aria-describedby="evictionDateHelp" class="form-control" id="evictionDate" max="2034-01-01"
+                       min="2024-12-01" name="evictionDate" th:value="${#temporals.format(voucherDto.evictionDate, 'yyyy-MM-dd')}"
+                       type="date">
+                <small class="form-text text-muted" id="evictionDateHelp"
+                       th:text="#{create.voucher.eviction-date-help}">
                     Eviction date must be future and after arrival date</small>
             </div>
 
             <div class="col-4">
                 <div class="form-check">
                     <br>
-                    <input type="checkbox" th:field="*{isHot}" id="isHot" value="true" class="form-check-input">
+                    <input class="form-check-input" id="isHot" th:field="*{isHot}" type="checkbox" value="true">
                     <label class="form-check-label" for="isHot" th:text="#{create.voucher.is-hot}"> Is hot </label>
                 </div>
             </div>
 
             <div class="col-12">
-                <button class="btn btn-success btn-lg mt-2" type="submit" th:text="#{create.voucher.button}">
+                <button class="btn btn-success btn-lg mt-2" th:text="#{create.voucher.button}" type="submit">
                     Submit
                 </button>
             </div>
 
-            <div class="alert alert-danger" role="alert" th:if="${errors}" th:each="error: ${errors}">
+            <div class="alert alert-danger" role="alert" th:each="error: ${errors}" th:if="${errors}">
                 <small th:text="${error}"></small>
             </div>
         </form>

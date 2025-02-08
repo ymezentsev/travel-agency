@@ -13,10 +13,13 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = DateOrderValidator.class)
 public @interface DateOrder {
     String message() default "Wrong dates order";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
     String firstDate();
+
     String secondDate();
 
     @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})

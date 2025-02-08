@@ -6,9 +6,9 @@
 </head>
 <body>
 <div th:fragment="action-button">
-    <button th:unless="${#strings.equals(user.id, authUser.id)}"
-            class="form-control" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false" th:text="#{user.action.button.choose}">
+    <button aria-expanded="false"
+            class="form-control" data-bs-toggle="dropdown" th:text="#{user.action.button.choose}"
+            th:unless="${#strings.equals(user.id, authUser.id)}" type="button">
         Choose action
     </button>
 
