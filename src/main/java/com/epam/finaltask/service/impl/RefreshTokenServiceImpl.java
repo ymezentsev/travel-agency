@@ -2,11 +2,13 @@ package com.epam.finaltask.service.impl;
 
 import com.epam.finaltask.exception.TokenExpiredException;
 import com.epam.finaltask.model.RefreshToken;
+import com.epam.finaltask.model.User;
 import com.epam.finaltask.model.enums.StatusCodes;
 import com.epam.finaltask.repository.RefreshTokenRepository;
 import com.epam.finaltask.repository.UserRepository;
 import com.epam.finaltask.service.RefreshTokenService;
 import com.epam.finaltask.util.I18nUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,11 +34,15 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
+    @Transactional
     public RefreshToken generateRefreshToken(String username) {
+        User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow();
+        deleteRefreshTokenByUser(user);
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(UUID.randomUUID().toString())
                 .expiresAt(LocalDateTime.now().plusHours(refreshExpiration.toHours()))
-                .user(userRepository.findByUsernameIgnoreCase(username).orElseThrow())
+                .user(user)
                 .build();
         return refreshTokenRepository.save(refreshToken);
     }
@@ -49,5 +55,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                     i18nUtil.getMessage("error.token-expired"));
         }
         return token;
+    }
+
+    @Override
+    public void deleteRefreshTokenByUser(User user) {
+        if (refreshTokenRepository.existsByUser(user)) {
+            refreshTokenRepository.deleteByUser(user);
+        }
     }
 }
