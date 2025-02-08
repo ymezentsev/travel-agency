@@ -1,12 +1,9 @@
 package com.epam.finaltask.token;
 
-import com.epam.finaltask.util.I18nUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +12,15 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.function.Function;
 
+@Slf4j
 @Component
 public class JwtService {
-    private final I18nUtil i18nUtil;
     private final Key secretKey;
 
     @Value("${jwt.expiration}")
     private Duration expiration;
 
-    public JwtService(I18nUtil i18nUtil, @Value("${jwt.secret}") String secretString) {
-        this.i18nUtil = i18nUtil;
+    public JwtService(@Value("${jwt.secret}") String secretString) {
         secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
     }
 
@@ -39,15 +35,23 @@ public class JwtService {
 
     public boolean isValidToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
+            Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
-
-            return !claimsJws.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtException(i18nUtil.getMessage("error.invalid-jwt-token"));
+            return true;
+        } catch (ExpiredJwtException expEx) {
+            log.error("Token expired", expEx);
+        } catch (UnsupportedJwtException unsEx) {
+            log.error("Unsupported jwt", unsEx);
+        } catch (MalformedJwtException mjEx) {
+            log.error("Malformed jwt", mjEx);
+        } catch (SignatureException sEx) {
+            log.error("Invalid signature", sEx);
+        } catch (Exception e) {
+            log.error("invalid token", e);
         }
+        return false;
     }
 
     public String getUsernameFromJwtToken(String token) {
