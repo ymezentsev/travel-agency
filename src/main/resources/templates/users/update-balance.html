@@ -36,7 +36,8 @@
 
             <div class="form-group mb-2">
                 <label for="balance" th:text="#{update.balance.balance}">Balance</label>
-                <input aria-describedby="balanceHelp" class="form-control" id="balance" th:attr="placeholder=#{update.balance.balance-placeholder}"
+                <input aria-describedby="balanceHelp" class="form-control" id="balance"
+                       th:attr="placeholder=#{update.balance.balance-placeholder}"
                        th:field="*{balance}" type="text">
                 <small class="form-text text-muted" id="balanceHelp" th:text="#{update.balance.balance-help}">
                     Balance must be positive number</small>

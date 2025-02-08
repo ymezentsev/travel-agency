@@ -8,14 +8,16 @@
 <div th:fragment="action-button">
     <button aria-expanded="false"
             class="form-control"
-            data-bs-toggle="dropdown" sec:authorize="hasAuthority('ROLE_USER')" th:if="${voucher.status} == 'REGISTERED'"
+            data-bs-toggle="dropdown" sec:authorize="hasAuthority('ROLE_USER')"
+            th:if="${voucher.status} == 'REGISTERED'"
             th:text="#{voucher.action.button.choose}" type="button">
         Choose action
     </button>
 
     <button aria-expanded="false"
             class="form-control"
-            data-bs-toggle="dropdown" sec:authorize="hasAuthority('ROLE_MANAGER')" th:if="${voucher.status} == 'REGISTERED' or ${voucher.status} == 'AVAILABLE'"
+            data-bs-toggle="dropdown" sec:authorize="hasAuthority('ROLE_MANAGER')"
+            th:if="${voucher.status} == 'REGISTERED' or ${voucher.status} == 'AVAILABLE'"
             th:text="#{voucher.action.button.choose}" type="button">
         Choose action
     </button>

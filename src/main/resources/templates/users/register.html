@@ -31,7 +31,8 @@
             </div>
             <div class="form-group mb-2">
                 <label for="username" th:text="#{register.username}">Username</label>
-                <input aria-describedby="usernameHelp" class="form-control" contenteditable="false" id="username" th:attr="placeholder=#{register.username-placeholder}"
+                <input aria-describedby="usernameHelp" class="form-control" contenteditable="false" id="username"
+                       th:attr="placeholder=#{register.username-placeholder}"
                        th:field="*{username}"
                        type="text">
                 <small class="form-text text-muted" id="usernameHelp" th:text="#{register.username-help}">
@@ -41,7 +42,8 @@
 
             <div class="form-group mb-2">
                 <label for="password" th:text="#{register.password}">Password </label>
-                <input aria-describedby="passwordHelp" class="form-control" contenteditable="false" id="password" th:attr="placeholder=#{register.password-placeholder}"
+                <input aria-describedby="passwordHelp" class="form-control" contenteditable="false" id="password"
+                       th:attr="placeholder=#{register.password-placeholder}"
                        th:field="*{password}"
                        type="password">
                 <small class="form-text text-muted" id="passwordHelp" th:text="#{register.password-help}">
@@ -62,7 +64,8 @@
 
             <div class="form-group mb-2">
                 <label for="email" th:text="#{register.email}">Email</label>
-                <input class="form-control" id="email" th:attr="placeholder=#{register.email-placeholder}" th:field="*{email}"
+                <input class="form-control" id="email" th:attr="placeholder=#{register.email-placeholder}"
+                       th:field="*{email}"
                        type="text">
             </div>
 

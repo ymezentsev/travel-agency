@@ -7,11 +7,13 @@
 <body>
 <div th:fragment="search-panel">
     <form class="row g-3"
-          method="get" th:action="@{/v1/vouchers/{path}/by-price(path = ${path})}" th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}">
+          method="get" th:action="@{/v1/vouchers/{path}/by-price(path = ${path})}"
+          th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}">
         <label for="maxPrice"><strong th:text="#{voucher.search.panel.label.by-price}">
             Search by price (less or equal than input)</strong></label>
         <div class="col-md-2">
-            <input class="form-control" id="maxPrice" name="maxPrice" th:attr="placeholder=#{voucher.search.panel.button.placeholder-price}"
+            <input class="form-control" id="maxPrice" name="maxPrice"
+                   th:attr="placeholder=#{voucher.search.panel.button.placeholder-price}"
                    type="text">
         </div>
         <div class="col-md-1">

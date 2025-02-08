@@ -29,13 +29,15 @@
         <div class="col-md-12 mb-4" style="height: 50px;"></div>
         <form class="row g-3"
               id="form" method="get" style="height: 524px;"
-              th:action="@{/v1/vouchers/{path}/search-result(path = ${path})}" th:object="${searchParams}" th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}">
+              th:action="@{/v1/vouchers/{path}/search-result(path = ${path})}" th:object="${searchParams}"
+              th:with="path=${authUser == null or #strings.equals(authUser.role, 'USER') ? 'anonymous' : 'auth-manager'}">
 
             <h1 th:text="#{voucher.search.title}">Voucher search</h1>
 
             <div class="col-md-3">
                 <label class="form-label" for="title" th:text="#{create.voucher.title-label}">Title</label>
-                <input aria-describedby="titleHelp" class="form-control" id="title" th:attr="placeholder=#{create.voucher.title-placeholder}"
+                <input aria-describedby="titleHelp" class="form-control" id="title"
+                       th:attr="placeholder=#{create.voucher.title-placeholder}"
                        th:field="*{titles}" type="text">
                 <small class="form-text text-muted" id="titleHelp" th:text="#{voucher.search.title-help}">
                     To search for multiple values, use "*"</small>
@@ -43,13 +45,15 @@
 
             <div class="col-md-3">
                 <label class="form-label" for="minPrice" th:text="#{voucher.search.min-price}">Min price</label>
-                <input class="form-control" id="minPrice" th:attr="placeholder=#{voucher.search.min-price-placeholder}" th:field="*{minPrice}"
+                <input class="form-control" id="minPrice" th:attr="placeholder=#{voucher.search.min-price-placeholder}"
+                       th:field="*{minPrice}"
                        type="text">
             </div>
 
             <div class="col-md-3">
                 <label class="form-label" for="price" th:text="#{voucher.search.max-price}">Max price</label>
-                <input class="form-control" id="price" th:attr="placeholder=#{voucher.search.max-price-placeholder}" th:field="*{maxPrice}"
+                <input class="form-control" id="price" th:attr="placeholder=#{voucher.search.max-price-placeholder}"
+                       th:field="*{maxPrice}"
                        type="text">
             </div>
 

@@ -32,7 +32,8 @@
 
             <div class="col-md-8">
                 <label class="form-label" for="title" th:text="#{create.voucher.title-label}">Title</label>
-                <input aria-describedby="titleHelp" class="form-control" id="title" th:attr="placeholder=#{create.voucher.title-placeholder}"
+                <input aria-describedby="titleHelp" class="form-control" id="title"
+                       th:attr="placeholder=#{create.voucher.title-placeholder}"
                        th:field="*{title}" type="text">
                 <small class="form-text text-muted" id="titleHelp" th:text="#{create.voucher.title-help}">
                     Max size for title is 255 characters</small>
@@ -40,7 +41,8 @@
 
             <div class="col-md-4">
                 <label class="form-label" for="price" th:text="#{create.voucher.price}">Price</label>
-                <input aria-describedby="priceHelp" class="form-control" id="price" th:attr="placeholder=#{create.voucher.price-placeholder}"
+                <input aria-describedby="priceHelp" class="form-control" id="price"
+                       th:attr="placeholder=#{create.voucher.price-placeholder}"
                        th:field="*{price}" type="text">
                 <small class="form-text text-muted" id="priceHelp" th:text="#{create.voucher.price-help}">
                     Price must be positive number</small>
@@ -93,7 +95,8 @@
                 <label class="form-label" for="arrivalDate" th:text="#{create.voucher.arrival-date}">
                     Arrival date</label>
                 <input aria-describedby="arrivalDateHelp" class="form-control" id="arrivalDate" max="2034-01-01"
-                       min="2024-12-01" name="arrivalDate" th:value="${#temporals.format(voucherDto.arrivalDate, 'yyyy-MM-dd')}"
+                       min="2024-12-01" name="arrivalDate"
+                       th:value="${#temporals.format(voucherDto.arrivalDate, 'yyyy-MM-dd')}"
                        type="date">
                 <small class="form-text text-muted" id="arrivalDateHelp" th:text="#{create.voucher.arrival-date-help}">
                     Arrival date must be future or present</small>
@@ -103,7 +106,8 @@
                 <label class="form-label" for="evictionDate" th:text="#{create.voucher.eviction-date}">
                     Eviction date</label>
                 <input aria-describedby="evictionDateHelp" class="form-control" id="evictionDate" max="2034-01-01"
-                       min="2024-12-01" name="evictionDate" th:value="${#temporals.format(voucherDto.evictionDate, 'yyyy-MM-dd')}"
+                       min="2024-12-01" name="evictionDate"
+                       th:value="${#temporals.format(voucherDto.evictionDate, 'yyyy-MM-dd')}"
                        type="date">
                 <small class="form-text text-muted" id="evictionDateHelp"
                        th:text="#{create.voucher.eviction-date-help}">

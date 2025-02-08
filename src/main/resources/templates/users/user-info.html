@@ -78,12 +78,14 @@
             </div>
             <div class="col-md-2">
                 <a class="btn btn-success btn-lg"
-                   th:href="@{/v1/users/auth-user/change-password}" th:text="#{user.info.button-password}"> Change password</a>
+                   th:href="@{/v1/users/auth-user/change-password}" th:text="#{user.info.button-password}"> Change
+                    password</a>
             </div>
             <div class="col-md-2" sec:authorize="hasAuthority('ROLE_USER')">
                 <a class="btn btn-success btn-lg"
                    th:href="@{/v1/users/auth-user/balance/{userId}
-            (userId=${userId}, requestURI=${requestURI}, queryString=${queryString})}" th:text="#{user.info.button-balance}"> Top up balance</a>
+            (userId=${userId}, requestURI=${requestURI}, queryString=${queryString})}"
+                   th:text="#{user.info.button-balance}"> Top up balance</a>
             </div>
         </div>
 

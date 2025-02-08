@@ -118,7 +118,8 @@
             <div class="col-md-2">
                 <a class="btn btn-success btn-lg"
                    th:href="@{/v1/vouchers/auth-user/{voucherId}/pay
-               (voucherId=${voucher.id}, previousPage=${previousPage})}" th:text="#{pay.confirmation.button-confirm}"> Confirm</a>
+               (voucherId=${voucher.id}, previousPage=${previousPage})}" th:text="#{pay.confirmation.button-confirm}">
+                    Confirm</a>
             </div>
             <div class="col-md-2">
                 <a class="btn btn-success btn-lg" th:href="@{${previousPage}}"

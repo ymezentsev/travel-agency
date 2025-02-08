@@ -52,7 +52,8 @@
                 <label for="username"><strong th:text="#{user.search.panel.by-username}">Search by
                     username</strong></label>
                 <div class="col-md-6">
-                    <input class="form-control" id="username" name="username" th:attr="placeholder=#{user.search.panel.placeholder-user}"
+                    <input class="form-control" id="username" name="username"
+                           th:attr="placeholder=#{user.search.panel.placeholder-user}"
                            type="text">
                 </div>
                 <div class="col-md-3">
@@ -68,7 +69,8 @@
                 <label for="phoneNumber"><strong th:text="#{user.search.panel.by-phone}">
                     Search by phone number</strong></label>
                 <div class="col-md-5">
-                    <input class="form-control" id="phoneNumber" name="phoneNumber" th:attr="placeholder=#{user.search.panel.placeholder-phone}"
+                    <input class="form-control" id="phoneNumber" name="phoneNumber"
+                           th:attr="placeholder=#{user.search.panel.placeholder-phone}"
                            type="text">
                 </div>
                 <div class="col-md-4">
@@ -83,7 +85,8 @@
             <form class="row g-3" method="get" th:action="@{/v1/users/auth-admin/by-email}">
                 <label for="email"><strong th:text="#{user.search.panel.by-email}">Search by email</strong></label>
                 <div class="col-md-6">
-                    <input class="form-control" id="email" name="email" th:attr="placeholder=#{user.search.panel.placeholder-email}"
+                    <input class="form-control" id="email" name="email"
+                           th:attr="placeholder=#{user.search.panel.placeholder-email}"
                            type="text">
                 </div>
                 <div class="col-md-3">

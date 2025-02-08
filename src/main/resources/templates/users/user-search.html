@@ -34,7 +34,8 @@
 
             <div class="col-md-4">
                 <label class="form-label" for="username" th:text="#{user.search.username}">Username</label>
-                <input aria-describedby="usernameHelp" class="form-control" id="username" th:attr="placeholder=#{user.search.username-placeholder}"
+                <input aria-describedby="usernameHelp" class="form-control" id="username"
+                       th:attr="placeholder=#{user.search.username-placeholder}"
                        th:field="*{usernames}"
                        type="text">
                 <small class="form-text text-muted" id="usernameHelp" th:text="#{user.search.help}">
@@ -43,7 +44,8 @@
 
             <div class="col-md-4">
                 <label class="form-label" for="phoneNumber" th:text="#{user.search.phone}">Phone number</label>
-                <input aria-describedby="phoneNumberHelp" class="form-control" id="phoneNumber" th:attr="placeholder=#{user.search.phone-placeholder}"
+                <input aria-describedby="phoneNumberHelp" class="form-control" id="phoneNumber"
+                       th:attr="placeholder=#{user.search.phone-placeholder}"
                        th:field="*{phoneNumbers}"
                        type="text">
                 <small class="form-text text-muted" id="phoneNumberHelp" th:text="#{user.search.help}">
@@ -52,7 +54,8 @@
 
             <div class="col-md-4">
                 <label class="form-label" for="email" th:text="#{user.search.email}">Email</label>
-                <input aria-describedby="emailHelp" class="form-control" id="email" th:attr="placeholder=#{user.search.email-placeholder}"
+                <input aria-describedby="emailHelp" class="form-control" id="email"
+                       th:attr="placeholder=#{user.search.email-placeholder}"
                        th:field="*{emails}"
                        type="text">
                 <small class="form-text text-muted" id="emailHelp" th:text="#{user.search.help}">
