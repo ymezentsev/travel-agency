@@ -1,6 +1,9 @@
 package com.epam.finaltask.controller.openapi;
 
-import com.epam.finaltask.dto.*;
+import com.epam.finaltask.dto.ChangePasswordRequest;
+import com.epam.finaltask.dto.RemoteResponse;
+import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.UserSearchParamsDto;
 import com.epam.finaltask.dto.group.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

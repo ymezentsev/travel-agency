@@ -17,9 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static com.epam.finaltask.util.WebControllerUtil.DEFAULT_PAGE_SIZE;
-import static com.epam.finaltask.util.WebControllerUtil.getErrors;
-import static com.epam.finaltask.util.WebControllerUtil.updateVoucherSearchParam;
+import static com.epam.finaltask.util.WebControllerUtil.*;
 
 @Controller
 @RequestMapping("/v1/vouchers/anonymous")

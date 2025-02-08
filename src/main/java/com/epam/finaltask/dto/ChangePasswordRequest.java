@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static com.epam.finaltask.util.ValidationRegExp.*;
+import static com.epam.finaltask.util.ValidationRegExp.PASSWORDS_REGEXP;
 
 @Data
 @FieldMatch(first = "newPassword", second = "repeatNewPassword", message = "{validation.passwords-not-match}")

@@ -1,6 +1,8 @@
 package com.epam.finaltask.service;
 
-import com.epam.finaltask.dto.*;
+import com.epam.finaltask.dto.ChangePasswordRequest;
+import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.dto.UserSearchParamsDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

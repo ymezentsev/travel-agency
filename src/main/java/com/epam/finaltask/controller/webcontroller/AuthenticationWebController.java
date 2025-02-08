@@ -1,8 +1,8 @@
 package com.epam.finaltask.controller.webcontroller;
 
-import com.epam.finaltask.service.AuthenticationService;
 import com.epam.finaltask.dto.AuthenticationRequest;
 import com.epam.finaltask.model.User;
+import com.epam.finaltask.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
