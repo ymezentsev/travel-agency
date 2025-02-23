@@ -59,7 +59,7 @@ public class AuthenticationServiceTest {
                 authenticationRequest.getPassword()
         ))).thenReturn(any(Authentication.class));
 
-        AuthenticationResponse expectedResponse = new AuthenticationResponse("Token");
+        AuthenticationResponse expectedResponse = new AuthenticationResponse("Token", "");
         AuthenticationResponse actualResponse = authenticationService.authenticate(authenticationRequest);
 
         assertEquals(expectedResponse, actualResponse);
